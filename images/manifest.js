@@ -14,6 +14,7 @@ window.MM_IMAGES = [
   "arany-griff/scene-szemelyzet.webp",
   "arany-griff/scene-szoba412.webp",
   "arany-griff/scene-szoba414.webp",
+  "corvin-szinhaz/cover.webp",
   "ejszakai-gyors/cover.webp",
   "ejszakai-gyors/portrait-agnes.webp",
   "ejszakai-gyors/portrait-bodnar.webp",
@@ -28,6 +29,7 @@ window.MM_IMAGES = [
   "ejszakai-gyors/scene-kalauz.webp",
   "ejszakai-gyors/scene-mosdo.webp",
   "ejszakai-gyors/scene-somlo.webp",
+  "hollos-cukraszda/cover.webp",
   "szegfu-villa/cover.webp",
   "szegfu-villa/portrait-gabor.webp",
   "szegfu-villa/portrait-ilona.webp",
@@ -40,5 +42,6 @@ window.MM_IMAGES = [
   "szegfu-villa/scene-szalon.webp",
   "szegfu-villa/scene-titkarsag.webp",
   "szegfu-villa/scene-uveghaz.webp",
-  "szegfu-villa/scene-vendeg.webp"
+  "szegfu-villa/scene-vendeg.webp",
+  "tokaji-pince/cover.webp"
 ];
