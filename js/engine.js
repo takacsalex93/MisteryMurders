@@ -26,11 +26,15 @@
     portrait: (s, c) => pic(`${(c || C).id}/portrait-${s.id}.webp`, () => RAW.portrait(s.look, s.name), s.name),
     scene: (l, alt) => pic(`${C.id}/scene-${l.id}.webp`, () => RAW.scene(l.art || l.id, alt), alt)
   };
-  const coverOf = c => c.cover ? `<div class="art cover">${ART.cover(c)}</div>` : "";
+  const coverOf = c => c.cover ? `<div class="art cover" data-fx="${c.fx || ""}">${ART.cover(c)}</div>` : "";
+  const SND = n => window.MM_AUDIO && window.MM_AUDIO.sfx(n);
+  const SCENE = n => window.MM_AUDIO && window.MM_AUDIO.setScene(n);
+  const FX = () => window.MM_FX && window.MM_FX.scan(app);
+  const list = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " és " + a[a.length - 1];
   const LEVELS = [
     ["Könnyű", "Rövid ügy, öt gyanúsított, egyértelmű nyomok. Háromlépcsős súgó minden rejtvényhez."],
-    ["Közepes", "Zárt szoba, több hamis nyom, új rejtvénytípusok. Kétlépcsős súgó."],
-    ["Nehéz", "Hat gyanúsított, egymásra épülő rejtvények, és a tettes nem egyedül dolgozott. Csak egy súgó rejtvényenként."]
+    ["Közepes", "Trükkös tetthelyek, több hamis nyom, új rejtvénytípusok. Kétlépcsős súgó."],
+    ["Nehéz", "Hat gyanúsított, egymásra épülő rejtvények, és egynél több embert kell leleplezned. Csak egy súgó rejtvényenként."]
   ];
 
   /* ---------- mentés ---------- */
@@ -43,7 +47,7 @@
   let C = null, S = null, confirmReset = false;
   function save() { try { localStorage.setItem(KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   function gain(id) { if (id && !S.clues.includes(id)) S.clues.push(id); }
-  function solve(pid) { S.solved[pid] = true; gain(C.puzzles[pid].reward); save(); }
+  function solve(pid) { S.solved[pid] = true; gain(C.puzzles[pid].reward); save(); SND("success"); }
   const hintsUsed = st => Object.values(st.hints).reduce((a, b) => a + b, 0);
   const pids = c => Object.keys(c.puzzles);
 
@@ -98,6 +102,7 @@
         <p>A játékállás ebben a böngészőben mentődik, bármikor folytathatod.</p>
       </section>
     </div>`;
+    SCENE("home"); FX();
   }
 
   /* ---------- ügy nézet ---------- */
@@ -120,6 +125,8 @@
       confirmReset = false; S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 });
     };
     BIND[S.tab] && BIND[S.tab]();
+    SCENE((S.tab === "hely" && S.loc && C.sounds && C.sounds[S.loc]) || C.sound || "home");
+    FX();
   }
   const go = (tab, loc) => { S.tab = tab; S.loc = loc || null; save(); renderCase(); window.scrollTo({ top: 0 }); };
 
@@ -269,8 +276,8 @@
         root.querySelectorAll("[data-row]").forEach(s => s.onchange = () => { S.inputs[pid][s.dataset.row] = s.value; save(); });
         root.querySelector("[data-try]").onclick = () => {
           const cur = S.inputs[pid], ids = C.suspects.map(s => s.id);
-          if (ids.some(id => !cur[id])) return msg("Mindenkinek adj meg egy helyiséget.");
-          if (new Set(ids.map(id => cur[id])).size < ids.length) return msg("Mindenki más helyiségben volt: egy helyre csak egy ember kerülhet.");
+          if (ids.some(id => !cur[id])) return msg("Minden sort tölts ki.");
+          if (p.unique !== false && new Set(ids.map(id => cur[id])).size < ids.length) return msg(p.uniqueMsg || "Mindenki máshol volt: egy lehetőség csak egyszer szerepelhet.");
           const ok = ids.filter(id => cur[id] === p.answer[id]).length;
           if (ok === ids.length) { solve(pid); renderCase(); } else msg(`${ok} / ${ids.length} helyes. Olvasd újra a vallomásokat.`);
         };
@@ -287,7 +294,7 @@
       },
       bind(pid, p, root, msg) {
         const cipher = shiftTxt(p.plain, p.shift), r = root.querySelector("input[type=range]");
-        const upd = k => { k = (k + 26) % 26; S.inputs[pid] = k; r.value = k; root.querySelector("[data-dn]").textContent = k; root.querySelector("[data-out]").textContent = shiftTxt(cipher, -k); save(); };
+        const upd = k => { SND("tick"); k = (k + 26) % 26; S.inputs[pid] = k; r.value = k; root.querySelector("[data-dn]").textContent = k; root.querySelector("[data-out]").textContent = shiftTxt(cipher, -k); save(); };
         r.oninput = () => upd(+r.value);
         root.querySelector("[data-dm]").onclick = () => upd((S.inputs[pid] || 0) - 1);
         root.querySelector("[data-dp]").onclick = () => upd((S.inputs[pid] || 0) + 1);
@@ -322,7 +329,7 @@
       },
       bind(pid, p, root, msg) {
         const cur = (S.inputs[pid] || p.initial).slice();
-        const move = (i, d) => { [cur[i], cur[i + d]] = [cur[i + d], cur[i]]; S.inputs[pid] = cur; save(); renderCase(); const b = app.querySelector(`[data-${d < 0 ? "up" : "down"}="${i + d}"]`); if (b && !b.disabled) b.focus(); };
+        const move = (i, d) => { SND("tick"); [cur[i], cur[i + d]] = [cur[i + d], cur[i]]; S.inputs[pid] = cur; save(); renderCase(); const b = app.querySelector(`[data-${d < 0 ? "up" : "down"}="${i + d}"]`); if (b && !b.disabled) b.focus(); };
         root.querySelectorAll("[data-up]").forEach(b => b.onclick = () => move(+b.dataset.up, -1));
         root.querySelectorAll("[data-down]").forEach(b => b.onclick = () => move(+b.dataset.down, 1));
         root.querySelector("[data-try]").onclick = () => {
@@ -348,6 +355,25 @@
           if (norm(inp.value).replace(/ /g, "") === norm(p.key)) { solve(pid); renderCase(); } else msg("A szöveg még mindig értelmetlen. Rossz a kulcs.");
         };
       }
+    },
+    /* ellentmondás: a vallomás egyik kiemelt mondatrésze nem igaz, rá kell kattintani */
+    spot: {
+      render(pid, p) {
+        const done = S.solved[pid], miss = (S.inputs[pid] || []);
+        let i = 0;
+        const txt = esc(p.statement).replace(/\[\[(.+?)\]\]/g, (m, t) => { const k = i++; const cls = done && k === p.answer ? " hit" : miss.includes(k) ? " miss" : ""; return done ? `<span class="phrase${cls}">${t}</span>` : `<span class="phrase${cls}" role="button" tabindex="0" data-ph="${k}">${t}</span>`; });
+        return `${p.body}<div class="typed statement">${txt}</div>
+          ${done ? solvedBlock(pid, "Megvan az ellentmondás") : `<p class="msg" data-msg></p>${hintBlock(pid)}`}`;
+      },
+      bind(pid, p, root, msg) {
+        root.querySelectorAll("[data-ph]").forEach(b => b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); b.click(); } });
+        root.querySelectorAll("[data-ph]").forEach(b => b.onclick = () => {
+          const k = +b.dataset.ph;
+          if (k === p.answer) { solve(pid); renderCase(); return; }
+          S.inputs[pid] = Array.from(new Set((S.inputs[pid] || []).concat(k))); save();
+          b.classList.add("miss"); msg((p.wrong && p.wrong[k]) || "Ez a mondat megáll. Keress tovább.");
+        });
+      }
     }
   };
   function renderPuzzle(pid) { const p = C.puzzles[pid]; return `<h3>✦ ${esc(p.title)}</h3>${PUZ[p.type].render(pid, p)}`; }
@@ -358,12 +384,12 @@
     hely() {
       $$("[data-loc]").forEach(b => b.onclick = () => go("hely", b.dataset.loc));
       const bk = $("[data-back]"); if (bk) bk.onclick = () => go("hely");
-      $$("[data-take]").forEach(b => b.onclick = () => { gain(b.dataset.take); save(); renderCase(); });
-      $$("[data-hint]").forEach(b => b.onclick = () => { const id = b.dataset.hint; S.hints[id] = (S.hints[id] || 0) + 1; save(); renderCase(); });
+      $$("[data-take]").forEach(b => b.onclick = () => { gain(b.dataset.take); save(); SND("paper"); renderCase(); });
+      $$("[data-hint]").forEach(b => b.onclick = () => { const id = b.dataset.hint; S.hints[id] = (S.hints[id] || 0) + 1; save(); SND("paper"); renderCase(); });
       const box = $("[data-puzzle]");
       if (box && !S.solved[box.dataset.puzzle]) {
         const pid = box.dataset.puzzle, p = C.puzzles[pid], m = box.querySelector("[data-msg]");
-        PUZ[p.type].bind(pid, p, box, t => { m.className = "msg bad"; m.textContent = t; });
+        PUZ[p.type].bind(pid, p, box, t => { SND("wrong"); m.className = "msg bad"; m.textContent = t; });
       }
     },
     vad() {
@@ -374,10 +400,10 @@
         if (ans.some(a => a === undefined)) { m.className = "msg bad"; m.textContent = "Mindegyik kérdésre válaszolnod kell."; return; }
         S.tries++;
         const wrong = qs.filter((q, i) => ans[i] !== q.answer).map(q => q.name);
-        if (!wrong.length) { S.ended = "win"; save(); renderCase(); window.scrollTo({ top: 0 }); return; }
-        save(); m.className = "msg bad";
+        if (!wrong.length) { S.ended = "win"; save(); SND("stamp"); renderCase(); window.scrollTo({ top: 0 }); return; }
+        save(); SND("wrong"); m.className = "msg bad";
         m.textContent = wrong.length === qs.length ? "Néma csend. A vádlott felnevet. Semmi sem stimmel."
-          : `A vádlott ügyvédje közbevág: ${wrong.join(" és ")} nem áll meg. Gondold át újra.`;
+          : `A vádlott ügyvédje közbevág: ${list(wrong)} nem áll meg. Gondold át újra.`;
       };
     }
   };

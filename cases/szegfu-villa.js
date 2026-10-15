@@ -2,6 +2,9 @@
    Egy ügy = egy ilyen fájl. Új ügyhöz másold le, írd át, és vedd fel az index.html-be. */
 (window.MM_CASES = window.MM_CASES || []).push({
   id: "szegfu-villa",
+  fx: "storm",
+  sound: "storm",
+  sounds: { szalon: "storm-piano" },
   cover: "villa",
   number: 1,
   title: "Gyilkosság a Szegfű-villában",

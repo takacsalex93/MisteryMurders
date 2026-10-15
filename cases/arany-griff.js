@@ -1,6 +1,9 @@
 /* 2. ügy — Halál az Arany Griffben (közepes) */
 (window.MM_CASES = window.MM_CASES || []).push({
   id: "arany-griff",
+  fx: "rain",
+  sound: "city",
+  sounds: { bar: "jazz" },
   cover: "hotel",
   number: 2,
   title: "Halál az Arany Griffben",

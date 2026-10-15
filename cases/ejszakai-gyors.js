@@ -1,6 +1,8 @@
 /* 3. ügy — Éjszakai gyors (nehéz) */
 (window.MM_CASES = window.MM_CASES || []).push({
   id: "ejszakai-gyors",
+  fx: "snow",
+  sound: "train",
   cover: "train",
   number: 3,
   title: "Éjszakai gyors",

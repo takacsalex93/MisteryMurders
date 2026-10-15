@@ -138,7 +138,10 @@
       + [[40, 104, 110], [50, 78, 90], [60, 56, 70]].map(([x, y, w], i) => R(x + w / 2 - 8, y + 3, 16, 4, i === 1 ? I : B) + Ln(`M${x + 14} ${y}V${y + 29 - i * 4}M${x + w - 14} ${y}V${y + 29 - i * 4}`, i === 1 ? I : B, 1.5, 'opacity=".6"')).join("")
       + E(186, 120, 28, 7, B) + R(158, 92, 56, 28, B) + E(186, 92, 28, 7, I) + Ln("M158 106H214", I, 1.5, 'opacity=".5"') + floor
   };
-  function scene(name, label) { const f = SCENES[name]; return f ? framed(240, 150, f(), label, 52) : ""; }
+  // ismeretlen helyszínhez általános art deco ajtó kulcslyukkal
+  SCENES._generic = () => R(84, 26, 72, 107, I, 'rx="3"') + P("M84 32Q120 6 156 32Z", I) + R(92, 40, 56, 40, "none", `stroke="${B}" stroke-width="1.5" opacity=".8"`) + R(92, 86, 56, 40, "none", `stroke="${B}" stroke-width="1.5" opacity=".8"`)
+    + C(144, 84, 3.5, B) + C(120, 60, 6, W) + P("M116 62L124 62L127 76L113 76Z", W) + Ln("M30 133V60M210 133V60", I, 2, 'opacity=".35"') + floor;
+  function scene(name, label) { const f = SCENES[name] || SCENES._generic; return framed(240, 150, f(), label, 52); }
 
   /* ---------------- borítók (600×260) ---------------- */
   const rain = (n, op = ".25") => { let d = ""; for (let i = 0; i < n; i++) { const x = (i * 53) % 640 - 20, y = (i * 37) % 240; d += `M${x} ${y}l-8 22`; } return Ln(d, I, 1, `opacity="${op}"`); };
@@ -162,7 +165,9 @@
       + [[150, 86, 14], [168, 68, 20], [200, 50, 26], [244, 38, 30]].map(([x, y, r]) => C(x, y, r, W, 'opacity=".45"')).join("")
       + P("M0 206Q120 190 240 210T480 204T600 206V260H0Z", W, 'opacity=".9"') + P("M0 230Q150 216 300 234T600 228V260H0Z", W)
   };
-  function cover(name, label) { const f = COVERS[name]; return f ? framed(600, 260, f(), label, 0) : ""; }
+  COVERS._generic = () => C(300, 300, 190, I, 'opacity=".2"') + R(260, 60, 80, 154, I, 'rx="4"') + P("M260 66Q300 30 340 66Z", I) + C(300, 120, 14, W) + P("M291 124L309 124L315 158L285 158Z", W)
+    + Ln("M120 214H480", B, 2, 'opacity=".7"') + R(0, 214, 600, 46, I, 'opacity=".2"');
+  function cover(name, label) { const f = COVERS[name] || COVERS._generic; return framed(600, 260, f(), label, 0); }
 
   window.MM_ART = { portrait, scene, cover };
 })();
