@@ -17,8 +17,16 @@
     let i = 0;
     return text.replace(/[A-Z]/g, c => { const s = k.charCodeAt(i++ % k.length) - 65; return String.fromCharCode((c.charCodeAt(0) - 65 + dir * s + 2600) % 26 + 65); });
   }
-  const ART = window.MM_ART || { portrait: () => "", scene: () => "", cover: () => "" };
-  const coverOf = c => c.cover ? `<div class="art cover">${ART.cover(c.cover, c.title)}</div>` : "";
+  const RAW = window.MM_ART || { portrait: () => "", scene: () => "", cover: () => "" };
+  // ha az images/manifest.js felsorol egy képet, azt mutatjuk, különben a kóddal rajzolt változatot
+  const HAS = new Set(window.MM_IMAGES || []);
+  const pic = (path, svg, alt) => HAS.has(path) ? `<img src="images/${path}" alt="${esc(alt || "")}" loading="lazy" decoding="async">` : svg();
+  const ART = {
+    cover: (c) => pic(`${c.id}/cover.webp`, () => RAW.cover(c.cover, c.title), c.title),
+    portrait: (s, c) => pic(`${(c || C).id}/portrait-${s.id}.webp`, () => RAW.portrait(s.look, s.name), s.name),
+    scene: (l, alt) => pic(`${C.id}/scene-${l.id}.webp`, () => RAW.scene(l.art || l.id, alt), alt)
+  };
+  const coverOf = c => c.cover ? `<div class="art cover">${ART.cover(c)}</div>` : "";
   const LEVELS = [
     ["Könnyű", "Rövid ügy, öt gyanúsított, egyértelmű nyomok. Háromlépcsős súgó minden rejtvényhez."],
     ["Közepes", "Zárt szoba, több hamis nyom, új rejtvénytípusok. Kétlépcsős súgó."],
@@ -143,7 +151,7 @@
           const total = items.length + (l.puzzle ? 1 : 0);
           const got = items.filter(i => S.clues.includes(i.clue)).length + (l.puzzle && S.solved[l.puzzle] ? 1 : 0);
           const status = locked ? `<span class="status locked">Zárva</span>` : got === total ? `<span class="status done">Átkutatva</span>` : `<span class="status">${got}/${total} felderítve</span>`;
-          return `<button class="loc" data-loc="${l.id}" ${locked ? "disabled" : ""}><div class="art" aria-hidden="true">${ART.scene(l.art || l.id, "")}</div><h3>${l.puzzle ? "✦ " : ""}${esc(l.name)}</h3><p>${esc(l.desc)}</p>${status}</button>`;
+          return `<button class="loc" data-loc="${l.id}" ${locked ? "disabled" : ""}><div class="art" aria-hidden="true">${ART.scene(l, "")}</div><h3>${l.puzzle ? "✦ " : ""}${esc(l.name)}</h3><p>${esc(l.desc)}</p>${status}</button>`;
         }).join("")}</div></div>`;
     },
 
@@ -151,7 +159,7 @@
       <p>Mindenki mond valamit, és mindenki elhallgat valamit. Újabb nyomok után a jegyzetek bővülnek.</p>
       <div class="grid2">${C.suspects.map(s => {
         const ex = s.extra && (S.solved[s.extra.after] || S.clues.includes(s.extra.after));
-        return `<div class="suspect">${ex && s.extra.lie ? `<span class="stamp anim">Hazudott</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s.look, s.name)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${esc(s.stmt)}</p>${ex ? `<p class="note">${esc(s.extra.text)}</p>` : ""}</div>`;
+        return `<div class="suspect">${ex && s.extra.lie ? `<span class="stamp anim">Hazudott</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${esc(s.stmt)}</p>${ex ? `<p class="note">${esc(s.extra.text)}</p>` : ""}</div>`;
       }).join("")}</div></div>`,
 
     jegy: () => {
@@ -178,7 +186,7 @@
 
   function viewLoc(l) {
     let h = `<div class="stack"><button class="link" data-back>← Vissza az alaprajzhoz</button>
-      <div class="art locart">${ART.scene(l.art || l.id, l.name)}</div>
+      <div class="art locart">${ART.scene(l, l.name)}</div>
       <span class="eyebrow">Helyszín</span><h2>${esc(l.name)}</h2><p>${esc(l.desc)}</p>`;
     (l.items || []).forEach(it => {
       const has = S.clues.includes(it.clue);
@@ -193,7 +201,7 @@
   function viewEnding() {
     const hu = hintsUsed(S);
     const culprit = C.suspects.find(s => s.id === C.accusation.questions[0].answer);
-    return `<div class="stack"><div class="ending"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit.look, culprit.name) : ""}</div><span class="stamp anim">Ügy lezárva</span></div>
+    return `<div class="stack"><div class="ending"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit) : ""}</div><span class="stamp anim">Ügy lezárva</span></div>
       <h2>${esc(C.ending.heading)}</h2>
       ${C.ending.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}
       <p class="eyebrow">${S.tries}. vádra megoldva · ${hu ? hu + " súgó" : "súgó nélkül"} · ${S.clues.length}/${Object.keys(C.clues).length} nyom</p></div>
