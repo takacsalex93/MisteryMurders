@@ -63,7 +63,7 @@ p{margin:0;max-width:65ch}
 .home-head{display:flex;flex-direction:column;gap:10px;padding-block:24px 28px}
 .home-head h1{font-family:var(--display);font-style:italic;font-weight:700;font-size:clamp(40px,9vw,76px);line-height:.95;margin:0;letter-spacing:-.02em;text-wrap:balance}
 .home-head p{font-size:20px}
-.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px}
 .casecard{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:22px;display:flex;flex-direction:column;gap:12px;position:relative;
   box-shadow:0 14px 30px -20px rgba(0,0,0,.4);min-width:0}
 .casecard h2{font-size:26px;font-style:italic}
