@@ -44,6 +44,8 @@
     try { const v = JSON.parse(localStorage.getItem(KEY(id))); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {}
     return fresh();
   }
+  // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
+  try { Object.keys(localStorage).filter(k => k.startsWith("mm:") && k !== "mm:sound").forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false;
   function save() { try { localStorage.setItem(KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   function gain(id) { if (id && !S.clues.includes(id)) S.clues.push(id); }
