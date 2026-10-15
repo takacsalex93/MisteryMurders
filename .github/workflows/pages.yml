@@ -1,0 +1,35 @@
+# A játék közzététele GitHub Pages-re.
+# Settings → Pages → Source: "GitHub Actions" kell hozzá.
+name: Közzététel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# egyszerre csak egy telepítés fusson; az újabb leállítja a régit, így nem ragadhat be
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verziószám a fájlnevekhez, hogy a böngésző ne a régit töltse be
+        run: sed -i -E "s#\?v=[^\"]*\"#?v=${GITHUB_SHA::7}\"#g" index.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
