@@ -1,6 +1,19 @@
 /* A feltöltött illusztrációk listája. Amit itt felsorolsz, az a kóddal rajzolt kép helyett jelenik meg.
    Elnevezés: <ügy-azonosító>/cover.webp, portrait-<gyanúsított>.webp, scene-<helyszín>.webp */
 window.MM_IMAGES = [
+  "arany-griff/cover.webp",
+  "arany-griff/portrait-ferenczy.webp",
+  "arany-griff/portrait-hartmann.webp",
+  "arany-griff/portrait-kardos.webp",
+  "arany-griff/portrait-lili.webp",
+  "arany-griff/portrait-margit.webp",
+  "arany-griff/scene-bar.webp",
+  "arany-griff/scene-lift.webp",
+  "arany-griff/scene-lili.webp",
+  "arany-griff/scene-porta.webp",
+  "arany-griff/scene-szemelyzet.webp",
+  "arany-griff/scene-szoba412.webp",
+  "arany-griff/scene-szoba414.webp",
   "szegfu-villa/cover.webp",
   "szegfu-villa/portrait-gabor.webp",
   "szegfu-villa/portrait-ilona.webp",
