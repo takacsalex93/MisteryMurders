@@ -164,7 +164,7 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .loc{overflow:hidden}
 .locart{max-width:420px}
 .suspect .head{display:flex;gap:14px;align-items:flex-start}
-.suspect .portrait{width:86px;flex:none}
+.suspect .portrait{width:104px;flex:none}
 .suspect .who{display:flex;flex-direction:column;gap:4px;min-width:0}
 .suspect .who .role{padding-right:0}
 .suspect .stamp{top:auto;bottom:14px}
