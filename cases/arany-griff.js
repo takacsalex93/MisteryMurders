@@ -1,6 +1,7 @@
 /* 2. ügy — Halál az Arany Griffben (közepes) */
 (window.MM_CASES = window.MM_CASES || []).push({
   id: "arany-griff",
+  cover: "hotel",
   number: 2,
   title: "Halál az Arany Griffben",
   meta: "Budapest · 1934. március 3. · Ügyszám 1934/88",
@@ -16,19 +17,19 @@
   },
 
   suspects: [
-    { id: "lili", name: "Fodor Lili", role: "Primadonna, 27 éves. Vándor sztárja, és a pletykák szerint több is annál.",
+    { id: "lili", look: { hair: "bob", hat: "headband", clothes: "dress", acc: ["earrings"], lips: true }, name: "Fodor Lili", role: "Primadonna, 27 éves. Vándor sztárja, és a pletykák szerint több is annál.",
       stmt: "„Elemér meg akart szabadulni tőlem, ezt mindenki tudta. De én egész este a szobámban voltam. Fél tizenkettőkor felhívtam, mert nem válaszolt, és megijedtem.”",
       extra: { after: "tavirat", text: "Vándor perrel fenyegette, de a telefonközpont igazolja: 23:00 és 23:20 között végig a saját szobájából telefonált Bécsbe." } },
-    { id: "hartmann", name: "Hartmann Viktor", role: "Üzlettárs, 48 éves. A varieté pénzügyeit viszi.",
+    { id: "hartmann", look: { hair: "slick", clothes: "suit", acc: ["monocle", "mustache"] }, name: "Hartmann Viktor", role: "Üzlettárs, 48 éves. A varieté pénzügyeit viszi.",
       stmt: "„Elemér és én harminc éve dolgozunk együtt. Ma este a bárban voltam, a pultos mindent látott. Ha ellenségeket keres, nézze meg, kiket rúgott ki.”",
       extra: { after: "fokonyv", text: "Sikkasztott a varietéből, de 22:30-tól éjfélig a bárban ült, ezt a pultos és két vendég is igazolja." } },
-    { id: "margit", name: "Szabó Margit", role: "Szobalány, 22 éves. Ő takarítja a negyedik emeletet.",
+    { id: "margit", look: { hair: "bun", hat: "maid", clothes: "maid", lips: true }, name: "Szabó Margit", role: "Szobalány, 22 éves. Ő takarítja a negyedik emeletet.",
       stmt: "„A tompa puffanást én hallottam, a vasalószobából. Nem mentem be, féltem. A vendégek dolgaihoz soha nem nyúlok.”",
       extra: { after: "mandzsetta", text: "Ellopta Vándor mandzsettagombjait, ezért hazudott. De a puffanáskor a vasalószobában volt egy másik lánnyal." } },
-    { id: "ferenczy", name: "Ferenczy Pál", role: "Éjszakai portás, 56 éves. Húsz éve áll a pult mögött.",
+    { id: "ferenczy", look: { hair: "short", hat: "cap", clothes: "uniform", acc: ["mustache"] }, name: "Ferenczy Pál", role: "Éjszakai portás, 56 éves. Húsz éve áll a pult mögött.",
       stmt: "„Én nyitottam ki a 412-t, uram. Rémes látvány volt. Egész este a pultnál álltam, a vendégek láthattak.”",
       extra: { after: "derkes", text: "Egy „Derkes úrnak” adta ki a 414-es kulcsot, és a borravaló miatt nem kérdezett semmit. Nem gyilkos, csak hallgatott." } },
-    { id: "kardos", name: "Kardos Endre", role: "Fiatal drámaíró, 31 éves. Vándor egyszer bemutatott tőle egy darabot.",
+    { id: "kardos", look: { hair: "short", hat: "fedora", clothes: "trench" }, name: "Kardos Endre", role: "Fiatal drámaíró, 31 éves. Vándor egyszer bemutatott tőle egy darabot.",
       stmt: "„Az egész estét a New York kávéházban töltöttem, a darabomon dolgoztam. A szállodába csak most hívtak be. Vándorral régen nem beszéltem.”",
       extra: { after: "derkes", text: "Nem a kávéházban volt: álnéven kivette a 412 melletti szobát.", lie: true } }
   ],

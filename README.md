@@ -17,6 +17,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 - `index.html` — az oldal váza, itt kell felvenni az új ügyeket
 - `js/engine.js` — a játékmotor (nézetek, mentés, rejtvénytípusok)
 - `css/style.css` — megjelenés, világos és sötét mód
+- `js/art.js` — kóddal rajzolt art deco illusztrációk (portrék, helyszínek, borítók)
 - `cases/*.js` — egy fájl = egy ügy (történet, nyomok, rejtvények, megoldás)
 
 ### Rejtvénytípusok

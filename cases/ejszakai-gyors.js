@@ -1,6 +1,7 @@
 /* 3. ügy — Éjszakai gyors (nehéz) */
 (window.MM_CASES = window.MM_CASES || []).push({
   id: "ejszakai-gyors",
+  cover: "train",
   number: 3,
   title: "Éjszakai gyors",
   meta: "Budapest–Kassa hálókocsi · 1936. december 19. · Ügyszám 1936/1204",
@@ -16,22 +17,22 @@
   },
 
   suspects: [
-    { id: "agnes", name: "Ráday Ágnes", role: "Az áldozat húga, 50 éves. Egyedüli örököse.",
+    { id: "agnes", look: { hair: "bun", clothes: "coat", acc: ["pearls"], lips: true }, name: "Ráday Ágnes", role: "Az áldozat húga, 50 éves. Egyedüli örököse.",
       stmt: "„Fél kettő körül veszekedést hallottam a falon át, Kristóf hangját és egy másik férfiét. Nem értettem a szavakat. Aztán csend lett, és nagyon hideg.”",
       extra: { after: "vegrendelet", text: "Mindent ő örököl, és ezt nem is titkolja. De ő jelentette a veszekedést, és a fülkéjéből nincs átjárás a bátyjához." } },
-    { id: "wolf", name: "Herbert Wolf", role: "Osztrák óraügynök, 44 éves. Gyakran utazik ezen a vonalon.",
+    { id: "wolf", look: { hair: "short", hat: "bowler", clothes: "suit", acc: ["mustache"] }, name: "Herbert Wolf", role: "Osztrák óraügynök, 44 éves. Gyakran utazik ezen a vonalon.",
       stmt: "„Egy óra körül átmentem az étkezőkocsiba, mert nem tudtam aludni. Énekeltek, kártyáztunk. Ezt a bankárt nem ismertem.”",
       extra: { after: "orak", text: "Svájci órákat csempész egy kettős fenekű bőröndben, ezért ideges. 01:00-tól 02:30-ig az étkezőkocsiban ült, a pincér igazolja." } },
-    { id: "iren", name: "Csermák Irén", role: "Nevelőnő, 35 éves. Egyedül utazik Kassára.",
+    { id: "iren", look: { hair: "bob", clothes: "blouse", acc: ["glasses"], lips: true }, name: "Csermák Irén", role: "Nevelőnő, 35 éves. Egyedül utazik Kassára.",
       stmt: "„Nem ismertem Ráday urat. Egész éjjel a fülkémben voltam, rosszul aludtam.”",
       extra: { after: "level", text: "Hazudott: Ráday törvénytelen lánya, és az ő kedvéért szállt fel erre a vonatra. De a mosdótársa, Ágnes egész éjjel hallotta köhögni." } },
-    { id: "kornelia", name: "Vay Kornélia", role: "Operaénekesnő, 29 éves. Vendégszereplésre utazik a kassai színházba.",
+    { id: "kornelia", look: { hair: "bob", hat: "cloche", clothes: "coat", acc: ["earrings"], lips: true }, name: "Vay Kornélia", role: "Operaénekesnő, 29 éves. Vendégszereplésre utazik a kassai színházba.",
       stmt: "„Ráday úr kedves öregúr volt. Egy óra után az étkezőkocsiban énekeltem, mert a hidegben nem lehetett aludni.”",
       extra: { after: "valtok", text: "Ráday kezében voltak a váltói, tönkretehette volna. De 01:00 után végig az étkezőkocsiban volt, a pincér igazolja." } },
-    { id: "somlo", name: "Somló Dezső", role: "Ráday cégvezetője, 39 éves. Tizenkét éve dolgozik a banknak.",
+    { id: "somlo", look: { hair: "slick", clothes: "suit", acc: ["glasses"] }, name: "Somló Dezső", role: "Ráday cégvezetője, 39 éves. Tizenkét éve dolgozik a banknak.",
       stmt: "„Éjfélkor láttam utoljára a főnökömet, átnéztük a számokat. Aztán aludtam, majd kettő előtt átmentem kártyázni. A kalauz úr is mondta, hogy kettő után még élt.”",
       extra: { after: "ido", text: "Az alibije egyetlen dolgon áll: a kalauz 02:10-es történetén. Az pedig nem igaz.", lie: true } },
-    { id: "bodnar", name: "Bodnár Lajos", role: "Hálókocsi-kalauz, 50 éves. Tizennyolc éve szolgál a vonalon.",
+    { id: "bodnar", look: { hair: "short", hat: "cap", clothes: "uniform", acc: ["mustache"] }, name: "Bodnár Lajos", role: "Hálókocsi-kalauz, 50 éves. Tizennyolc éve szolgál a vonalon.",
       stmt: "„02:10-kor bevittem a vezérigazgató úrnak egy takarót, mert elment a fűtés. Élt, morgott, hogy ne zavarjam többet. Reggel hatkor találtam meg.”",
       extra: { after: "boritek", text: "Somló fizette le. Ő zárta el a fűtést, és ő találta ki a 02:10-es takarót.", lie: true } }
   ],

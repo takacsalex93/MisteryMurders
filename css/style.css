@@ -2,6 +2,7 @@
 :root{
   --bg:#ddcfa6; --paper:#f4ecd6; --paper2:#ebe0c1; --ink:#1e2740; --muted:#5f6378;
   --line:#c5b386; --stamp:#a3262c; --accent:#22534a; --accent-fg:#f4ecd6; --good:#2d6a3e;
+  --art-bg:#dccb9c; --art-ink:#1e2740; --art-light:#f7f0dc; --brass:#9c7426;
   --display:"Bodoni Moda", Didot, "Times New Roman", serif;
   --type:"Courier Prime", "Courier New", monospace;
   --body:"Crimson Pro", Georgia, serif;
@@ -9,10 +10,12 @@
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#12151c; --paper:#1c212b; --paper2:#232935; --ink:#e8e0c9; --muted:#9ba1b3;
-  --line:#323a49; --stamp:#e2595e; --accent:#74b6a1; --accent-fg:#12151c; --good:#7cc68e; color-scheme:dark}}
+  --line:#323a49; --stamp:#e2595e; --accent:#74b6a1; --accent-fg:#12151c; --good:#7cc68e;
+  --art-bg:#2a3142; --art-ink:#0e1117; --art-light:#e8dcbc; --brass:#c9a45c; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#12151c; --paper:#1c212b; --paper2:#232935; --ink:#e8e0c9; --muted:#9ba1b3;
-  --line:#323a49; --stamp:#e2595e; --accent:#74b6a1; --accent-fg:#12151c; --good:#7cc68e; color-scheme:dark}
+  --line:#323a49; --stamp:#e2595e; --accent:#74b6a1; --accent-fg:#12151c; --good:#7cc68e;
+  --art-bg:#2a3142; --art-ink:#0e1117; --art-light:#e8dcbc; --brass:#c9a45c; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -109,7 +112,7 @@ ol.facts{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;
 
 /* gyanúsítottak, jegyzetek */
 .suspect{display:flex;flex-direction:column;gap:8px;background:var(--paper2);border:1px solid var(--line);padding:16px;border-radius:3px;position:relative;min-width:0}
-.suspect .role{font-family:var(--type);font-size:13px;color:var(--muted);padding-right:90px}
+.suspect .role{font-family:var(--type);font-size:13px;color:var(--muted)}
 .suspect .note{font-family:var(--type);font-size:14px;border-left:3px solid var(--stamp);padding-left:10px}
 .suspect .stamp{position:absolute;top:12px;right:12px;font-size:12px}
 .clue{display:flex;flex-direction:column;gap:6px;border-bottom:1px dashed var(--line);padding-bottom:14px}
@@ -152,3 +155,16 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .orderlist .otext{flex:1;min-width:0}
 .orderlist .omove{display:flex;gap:4px;flex:none}
 .orderlist .omove .btn{padding:4px 10px}
+
+/* illusztrációk */
+.art svg{display:block;width:100%;height:auto}
+.cover{border-radius:3px;overflow:hidden;border:1px solid var(--line)}
+.casecard .cover{margin:-22px -22px 4px;border:none;border-bottom:1px solid var(--line);border-radius:4px 4px 0 0}
+.loc .art{margin:-16px -16px 6px;border-bottom:1px solid var(--line)}
+.loc{overflow:hidden}
+.locart{max-width:420px}
+.suspect .head{display:flex;gap:14px;align-items:flex-start}
+.suspect .portrait{width:86px;flex:none}
+.suspect .who{display:flex;flex-direction:column;gap:4px;min-width:0}
+.suspect .who .role{padding-right:0}
+.suspect .stamp{top:auto;bottom:14px}

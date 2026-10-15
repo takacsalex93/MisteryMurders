@@ -2,6 +2,7 @@
    Egy ügy = egy ilyen fájl. Új ügyhöz másold le, írd át, és vedd fel az index.html-be. */
 (window.MM_CASES = window.MM_CASES || []).push({
   id: "szegfu-villa",
+  cover: "villa",
   number: 1,
   title: "Gyilkosság a Szegfű-villában",
   meta: "Balatonfüred · 1931. október 9. · Ügyszám 1931/417",
@@ -17,19 +18,19 @@
   },
 
   suspects: [
-    { id: "matild", name: "Kendeffy Matild", role: "Az özvegy, 29 éves. A báró második felesége.",
+    { id: "matild", look: { hair: "wave", clothes: "dress", acc: ["pearls", "earrings"], lips: true }, name: "Kendeffy Matild", role: "Az özvegy, 29 éves. A báró második felesége.",
       stmt: "„Délután összevesztünk Auréllal. Egész este be sem tettem a lábam a könyvtárba. Fájt a fejem, fent voltam.”",
       extra: { after: "alibi", text: "Az emeleten volt, és egész este nem hallott írógép-kopogást." } },
-    { id: "gabor", name: "Kendeffy Gábor", role: "Az unokaöcs, 34 éves. Az örökség fő várományosa.",
+    { id: "gabor", look: { hair: "slick", clothes: "bowtie" }, name: "Kendeffy Gábor", role: "Az unokaöcs, 34 éves. Az örökség fő várományosa.",
       stmt: "„Zongoráztam a szalonban, Chopint. Mindenki hallhatta. Igen, tartozom néhány embernek, de ettől még nem vagyok gyilkos.”",
       extra: { after: "zalog", text: "A zálogcédulák szerint súlyos adósságai vannak. Indíték, de az alibije szilárd." } },
-    { id: "szirmai", name: "Dr. Szirmai Ottó", role: "Háziorvos, 52 éves. Régi barát.",
+    { id: "szirmai", look: { hair: "short", clothes: "suit", acc: ["glasses", "mustache"] }, name: "Dr. Szirmai Ottó", role: "Háziorvos, 52 éves. Régi barát.",
       stmt: "„Kint szivaroztam az üvegháznál. Matild asszony nem tűri a füstöt a házban. A kertész látott, kérdezze csak meg.”",
       extra: { after: "taska", text: "Táskájából hiányzik egy morfiumampulla. Ideges, valamit titkol, de méreg nincs nála." } },
-    { id: "ilona", name: "Bakos Ilona", role: "A báró titkárnője, 31 éves. Négy éve kezeli a gyűjtemény papírjait.",
+    { id: "ilona", look: { hair: "bun", clothes: "blouse", acc: ["glasses"], lips: true }, name: "Bakos Ilona", role: "A báró titkárnője, 31 éves. Négy éve kezeli a gyűjtemény papírjait.",
       stmt: "„Fent gépeltem a dolgozószobámban egész este. A báró úr leveleit tisztáztam le.”",
       extra: { after: "alibi", text: "Nem fent volt: a beosztás szerint ő tartózkodott a könyvtárban.", lie: true } },
-    { id: "lukacs", name: "Lukács János", role: "Komornyik, 61 éves. Harminc éve szolgálja a családot.",
+    { id: "lukacs", look: { hair: "bald", clothes: "bowtie", acc: ["mustache"] }, name: "Lukács János", role: "Komornyik, 61 éves. Harminc éve szolgálja a családot.",
       stmt: "„A konyhában tisztítottam az ezüstöt, Teréz, a szakácsné végig ott volt. A báró úr minden este pontban tízkor iszik egy pohár konyakot a könyvtárban. Én töltöttem ki fél tízkor, ahogy mindig.”" }
   ],
 
