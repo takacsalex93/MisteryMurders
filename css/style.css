@@ -136,3 +136,19 @@ footer button{font:inherit;background:none;border:none;color:var(--muted);text-d
 }
 a.btn,a.link{text-decoration:none;display:inline-block}
 .stack > .link{align-self:flex-start}
+
+/* nehézségi szintek a címoldalon */
+.level{display:flex;flex-direction:column;gap:14px;padding-top:26px;border-top:1px solid var(--line);margin-top:26px}
+.level:first-of-type{border-top:none;margin-top:0;padding-top:0}
+.level-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px}
+.level-head h2{font-size:32px;font-style:italic}
+.level-head p{color:var(--muted);font-size:17px}
+
+/* szöveges válasz, időrend */
+.textin{font-family:var(--type);font-size:17px;padding:9px 12px;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:3px;min-width:0;flex:1 1 220px;max-width:420px}
+.orderlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.orderlist li{display:flex;align-items:center;gap:10px;background:var(--paper2);border:1px solid var(--line);border-radius:3px;padding:8px 10px}
+.orderlist .ord{font-family:var(--type);font-weight:700;width:2ch;flex:none;font-variant-numeric:tabular-nums}
+.orderlist .otext{flex:1;min-width:0}
+.orderlist .omove{display:flex;gap:4px;flex:none}
+.orderlist .omove .btn{padding:4px 10px}

@@ -7,6 +7,21 @@
   const $$ = s => app.querySelectorAll(s);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const shiftTxt = (s, k) => s.replace(/[A-Z]/g, c => String.fromCharCode((c.charCodeAt(0) - 65 + k + 2600) % 26 + 65));
+  // ékezet- és kisbetű-független összehasonlításhoz
+  const norm = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim();
+  const sameWords = (a, b) => norm(a).split(" ").sort().join(" ") === norm(b).split(" ").sort().join(" ");
+  // Vigenère: dir = 1 kódol, -1 visszafejt; a kulcs csak betűknél lép
+  function vig(text, key, dir) {
+    const k = norm(key).replace(/ /g, "");
+    if (!k) return text;
+    let i = 0;
+    return text.replace(/[A-Z]/g, c => { const s = k.charCodeAt(i++ % k.length) - 65; return String.fromCharCode((c.charCodeAt(0) - 65 + dir * s + 2600) % 26 + 65); });
+  }
+  const LEVELS = [
+    ["Könnyű", "Rövid ügy, öt gyanúsított, egyértelmű nyomok. Háromlépcsős súgó minden rejtvényhez."],
+    ["Közepes", "Zárt szoba, több hamis nyom, új rejtvénytípusok. Kétlépcsős súgó."],
+    ["Nehéz", "Hat gyanúsított, egymásra épülő rejtvények, és a tettes nem egyedül dolgozott. Csak egy súgó rejtvényenként."]
+  ];
 
   /* ---------- mentés ---------- */
   const KEY = id => "mm:" + id;
@@ -35,20 +50,25 @@
   /* ---------- címoldal ---------- */
   function renderHome() {
     document.title = "Rejtélyes gyilkosságok";
-    const cards = CASES.map(c => {
+    const card = c => {
       const st = loadState(c.id);
       const done = pids(c).filter(p => st.solved[p]).length, total = pids(c).length;
       const started = st.clues.length > 0 || st.tries > 0;
       const status = st.ended === "win" ? `<span class="stamp">Megoldva</span>` : "";
       const label = st.ended === "win" ? "Újraolvasom" : started ? "Folytatom" : "Nyomozás indítása";
       return `<article class="casecard">${status}
-        <span class="eyebrow">${c.number}. ügy · ${esc(c.difficulty || "")}</span>
+        <span class="eyebrow">${c.number}. ügy · ${pids(c).length} rejtvény · ${c.suspects.length} gyanúsított</span>
         <h2>${esc(c.title)}</h2>
         <span class="meta">${esc(c.meta)}</span>
         <p>${esc(c.teaser)}</p>
         ${started && st.ended !== "win" ? `<span class="meta">${done}/${total} rejtvény · ${st.clues.length}/${Object.keys(c.clues).length} nyom</span>` : ""}
         <div class="row"><a class="btn" href="#${c.id}">${label} →</a></div>
       </article>`;
+    };
+    const sections = LEVELS.map(([lvl, desc]) => {
+      const list = CASES.filter(c => c.difficulty === lvl);
+      if (!list.length) return "";
+      return `<section class="level"><div class="level-head"><h2>${lvl}</h2><p>${esc(desc)}</p></div><div class="cases">${list.map(card).join("")}</div></section>`;
     }).join("");
     app.innerHTML = `<div class="wrap">
       <header class="home-head">
@@ -56,7 +76,7 @@
         <h1>Rejtélyes gyilkosságok</h1>
         <p>Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.</p>
       </header>
-      <section class="cases">${cards}</section>
+      ${sections}
       <section class="howto">
         <span class="eyebrow">Hogyan játssz?</span>
         <ol>
@@ -146,7 +166,7 @@
         <p>Ahogy a nagy detektívek szokták: összehívod a ház lakóit, és elmondod, mi történt. Nevezd meg a tettest, az eszközt és az indítékot.</p>
         ${left ? `<p class="msg bad">Még ${left} rejtvény megoldatlan. Vádolhatsz most is, de kockázatos.</p>` : ""}
         ${C.accusation.questions.map(q => {
-          const opts = q.from === "suspects" ? C.suspects.map(s => ({ v: s.id, label: s.name })) : q.options;
+          const opts = q.from === "suspects" ? C.suspects.map(s => ({ v: s.id, label: s.name })).concat(q.extra || []) : q.options;
           return `<fieldset><legend>${esc(q.legend)}</legend>${opts.map(o => `<label class="opt"><input type="radio" name="q-${q.id}" value="${o.v}"> ${esc(o.label)}</label>`).join("")}</fieldset>`;
         }).join("")}
         <div class="row"><button class="btn" data-accuse>Kimondom a nevet</button></div><p class="msg" data-accmsg></p></div>`;
@@ -259,6 +279,61 @@
         root.querySelector("[data-dm]").onclick = () => upd((S.inputs[pid] || 0) - 1);
         root.querySelector("[data-dp]").onclick = () => upd((S.inputs[pid] || 0) + 1);
         root.querySelector("[data-try]").onclick = () => { if ((S.inputs[pid] || 0) === p.shift) { solve(pid); renderCase(); } else msg("Ez még mindig zagyvaság. Forgasd tovább."); };
+      }
+    },
+    /* szabad szöveges válasz (név, szó, anagramma) */
+    text: {
+      render(pid, p) {
+        if (S.solved[pid]) return p.body + solvedBlock(pid, "Megfejtve");
+        return `${p.body}<div class="row"><input type="text" class="textin" id="${pid}-text" autocomplete="off" placeholder="${esc(p.placeholder || "Válasz")}" aria-label="Válasz" value="${esc(S.inputs[pid] || "")}"><button class="btn" data-try>Ellenőrzöm</button></div>
+          <p class="msg" data-msg></p>${hintBlock(pid)}`;
+      },
+      bind(pid, p, root, msg) {
+        const inp = root.querySelector("input");
+        inp.oninput = () => { S.inputs[pid] = inp.value; save(); };
+        inp.onkeydown = e => { if (e.key === "Enter") root.querySelector("[data-try]").click(); };
+        root.querySelector("[data-try]").onclick = () => {
+          if (!norm(inp.value)) return msg("Írj be valamit.");
+          if (p.answers.some(a => sameWords(a, inp.value))) { solve(pid); renderCase(); } else msg(p.wrong || "Nem ez a megoldás.");
+        };
+      }
+    },
+    /* időrend: elemek sorba rendezése fel/le gombokkal */
+    order: {
+      render(pid, p) {
+        const done = S.solved[pid], cur = done ? p.answer : (S.inputs[pid] || p.initial);
+        const byId = Object.fromEntries(p.items.map(i => [i.id, i.text]));
+        return `${p.body}${p.facts ? `<ol class="facts">${p.facts.map(f => `<li>${esc(f)}</li>`).join("")}</ol>` : ""}
+          <ol class="orderlist">${cur.map((id, i) => `<li><span class="ord">${i + 1}.</span><span class="otext">${esc(byId[id])}</span>${done ? "" : `<span class="omove"><button class="btn ghost small" data-up="${i}" aria-label="Feljebb" ${i === 0 ? "disabled" : ""}>↑</button><button class="btn ghost small" data-down="${i}" aria-label="Lejjebb" ${i === cur.length - 1 ? "disabled" : ""}>↓</button></span>`}</li>`).join("")}</ol>
+          ${done ? solvedBlock(pid, "Az időrend összeállt") : `<div class="row"><button class="btn" data-try>Ellenőrzöm</button></div><p class="msg" data-msg></p>${hintBlock(pid)}`}`;
+      },
+      bind(pid, p, root, msg) {
+        const cur = (S.inputs[pid] || p.initial).slice();
+        const move = (i, d) => { [cur[i], cur[i + d]] = [cur[i + d], cur[i]]; S.inputs[pid] = cur; save(); renderCase(); const b = app.querySelector(`[data-${d < 0 ? "up" : "down"}="${i + d}"]`); if (b && !b.disabled) b.focus(); };
+        root.querySelectorAll("[data-up]").forEach(b => b.onclick = () => move(+b.dataset.up, -1));
+        root.querySelectorAll("[data-down]").forEach(b => b.onclick = () => move(+b.dataset.down, 1));
+        root.querySelector("[data-try]").onclick = () => {
+          const ok = cur.filter((id, i) => id === p.answer[i]).length;
+          if (ok === cur.length) { solve(pid); renderCase(); } else msg(`${ok} / ${cur.length} esemény van a helyén.`);
+        };
+      }
+    },
+    /* kulcsszavas (Vigenère) titkosírás: a kulcsot máshol kell megtalálni */
+    keyword: {
+      render(pid, p) {
+        const done = S.solved[pid], key = done ? p.key : (S.inputs[pid] || ""), cipher = vig(p.plain, p.key, 1);
+        return `${p.body}<div class="typed cipher">${esc(cipher)}</div>
+          <div class="row"><input type="text" class="textin" id="${pid}-key" autocomplete="off" placeholder="Kulcsszó" aria-label="Kulcsszó" value="${esc(key)}" ${done ? "disabled" : ""}>${done ? "" : `<button class="btn" data-try>Ellenőrzöm</button>`}</div>
+          <div class="typed cipher" data-out>${esc(norm(key) ? vig(cipher, key, -1) : "Írd be a kulcsszót, és a szöveg itt rögtön visszafejtődik.")}</div>
+          ${done ? solvedBlock(pid, "Megfejtve") : `<p class="msg" data-msg></p>${hintBlock(pid)}`}`;
+      },
+      bind(pid, p, root, msg) {
+        const cipher = vig(p.plain, p.key, 1), inp = root.querySelector("input"), out = root.querySelector("[data-out]");
+        inp.oninput = () => { S.inputs[pid] = inp.value; save(); out.textContent = norm(inp.value) ? vig(cipher, inp.value, -1) : "Írd be a kulcsszót, és a szöveg itt rögtön visszafejtődik."; };
+        inp.onkeydown = e => { if (e.key === "Enter") root.querySelector("[data-try]").click(); };
+        root.querySelector("[data-try]").onclick = () => {
+          if (norm(inp.value).replace(/ /g, "") === norm(p.key)) { solve(pid); renderCase(); } else msg("A szöveg még mindig értelmetlen. Rossz a kulcs.");
+        };
       }
     }
   };
