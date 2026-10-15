@@ -32,14 +32,14 @@
   const FX = () => window.MM_FX && window.MM_FX.scan(app);
   const list = a => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " és " + a[a.length - 1];
   const LEVELS = [
-    ["Könnyű", "Rövid ügy, öt gyanúsított, egyértelmű nyomok. Háromlépcsős súgó minden rejtvényhez."],
-    ["Közepes", "Trükkös tetthelyek, több hamis nyom, új rejtvénytípusok. Kétlépcsős súgó."],
+    ["Könnyű", "Öt gyanúsított, egy elültetett hamis nyom. Kétlépcsős súgó rejtvényenként."],
+    ["Közepes", "Trükkös tetthelyek, több hazug, új rejtvénytípusok. Kétlépcsős súgó."],
     ["Nehéz", "Hat gyanúsított, egymásra épülő rejtvények, és egynél több embert kell leleplezned. Csak egy súgó rejtvényenként."]
   ];
 
   /* ---------- mentés ---------- */
-  const KEY = id => "mm:" + id;
-  const fresh = () => ({ tab: "ugy", loc: null, clues: [], solved: {}, hints: {}, inputs: {}, tries: 0, ended: null });
+  const KEY = id => "mm2:" + id;
+  const fresh = () => ({ tab: "ugy", loc: null, clues: [], solved: {}, hints: {}, inputs: {}, tries: 0, ended: null, conf: [], wrongConf: 0, acc: {} });
   function loadState(id) {
     try { const v = JSON.parse(localStorage.getItem(KEY(id))); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {}
     return fresh();
@@ -50,6 +50,12 @@
   function solve(pid) { S.solved[pid] = true; gain(C.puzzles[pid].reward); save(); SND("success"); }
   const hintsUsed = st => Object.values(st.hints).reduce((a, b) => a + b, 0);
   const pids = c => Object.keys(c.puzzles);
+  const MAXTRIES = c => c.maxTries || 3;
+  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0));
+  const rank = n => n >= 90 ? "Hercule Poirot is megsüvegelné" : n >= 70 ? "A kapitányság dicséretét kapod" : n >= 45 ? "Megbízható nyomozó" : "Szerencsés kezdő";
+  const contra = (c, sid) => (c.contradictions || []).filter(k => !sid || k.suspect === sid);
+  const has = (list, v) => [].concat(list).includes(v);
+  const REBUFF = ["vállat von: »Ez semmit sem bizonyít.«", "rezzenéstelen arccal néz rád.", "felhúzza a szemöldökét: »Ehhez nekem semmi közöm.«", "elneveti magát: »Ezzel akar sarokba szorítani?«"];
 
   /* ---------- útvonal ---------- */
   function route() {
@@ -68,14 +74,15 @@
       const st = loadState(c.id);
       const done = pids(c).filter(p => st.solved[p]).length, total = pids(c).length;
       const started = st.clues.length > 0 || st.tries > 0;
-      const status = st.ended === "win" ? `<span class="stamp">Megoldva</span>` : "";
-      const label = st.ended === "win" ? "Újraolvasom" : started ? "Folytatom" : "Nyomozás indítása";
+      const status = st.ended === "win" ? `<span class="stamp">Megoldva</span>` : st.ended ? `<span class="stamp">Elszalasztva</span>` : "";
+      const label = st.ended === "win" ? "Újraolvasom" : st.ended ? "Megnézem" : started ? "Folytatom" : "Nyomozás indítása";
       return `<article class="casecard">${coverOf(c)}${status}
         <span class="eyebrow">${c.number}. ügy · ${pids(c).length} rejtvény · ${c.suspects.length} gyanúsított</span>
         <h2>${esc(c.title)}</h2>
         <span class="meta">${esc(c.meta)}</span>
         <p>${esc(c.teaser)}</p>
-        ${started && st.ended !== "win" ? `<span class="meta">${done}/${total} rejtvény · ${st.clues.length}/${Object.keys(c.clues).length} nyom</span>` : ""}
+        ${st.ended === "win" ? `<span class="meta">${score(st)} pont · ${rank(score(st))}</span>` : ""}
+        ${started && !st.ended ? `<span class="meta">${done}/${total} rejtvény · ${st.clues.length}/${Object.keys(c.clues).length} nyom</span>` : ""}
         <div class="row"><a class="btn" href="#${c.id}">${label} →</a></div>
       </article>`;
     };
@@ -96,8 +103,8 @@
         <ol>
           <li>Kutasd át a helyszíneket, és gyűjtsd a nyomokat a jegyzetfüzetbe.</li>
           <li>Oldd meg a rejtvényeket. Ha elakadsz, kérj súgót, de az a végén látszani fog.</li>
-          <li>Olvasd el a gyanúsítottak vallomásait, és keresd az ellentmondásokat.</li>
-          <li>Nevezd meg a tettest, az eszközt és az indítékot.</li>
+          <li>Olvasd el a vallomásokat, és szembesítsd a gyanúsítottakat a nyomokkal. Mindenki elhallgat valamit, de csak egyikük gyilkos.</li>
+          <li>Emelj vádat, és minden állításodhoz jelöld meg a döntő bizonyítékot. Három próbálkozásod van.</li>
         </ol>
         <p>A játékállás ebben a böngészőben mentődik, bármikor folytathatod.</p>
       </section>
@@ -113,7 +120,7 @@
       <div class="topnav"><a class="link" href="#">← Összes ügy</a></div>
       <header class="case">
         <div class="stack" style="gap:6px"><span class="meta">${esc(C.meta)}</span><h1>${esc(C.title)}</h1></div>
-        <span class="stamp">${S.ended === "win" ? "Ügy lezárva" : "Nyomozás folyamatban"}</span>
+        <span class="stamp">${S.ended === "win" ? "Ügy lezárva" : S.ended ? "Elszalasztva" : "Nyomozás folyamatban"}</span>
       </header>
       <nav class="tabs" role="tablist">${TABS.map(([id, l]) => `<button role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${l}${id === "jegy" && S.clues.length ? `<span class="count">${S.clues.length}</span>` : ""}</button>`).join("")}</nav>
       <main class="sheet" aria-live="polite">${VIEWS[S.tab]()}</main>
@@ -142,8 +149,8 @@
       <div class="typed">TEENDŐ:
 1. Járd végig a helyszíneket, gyűjts nyomokat.
 2. Oldd meg a(z) ${pids(C).length} rejtvényt, mindegyik döntő bizonyítékot ad.
-3. Hallgasd meg a gyanúsítottakat.
-4. Nevezd meg a tettest, az eszközt és az indítékot.</div>
+3. Szembesítsd a gyanúsítottakat a nyomokkal. Aki hazudik, nem feltétlenül gyilkos.
+4. Emelj vádat, és támaszd alá bizonyítékkal. Három próbálkozásod van, utána a tettes kicsúszik a kezeid közül.</div>
       ${pips()}
       <div class="row"><button class="btn" data-go>Helyszínelés indítása →</button></div>
     </div>`,
@@ -162,32 +169,54 @@
         }).join("")}</div></div>`;
     },
 
-    gyan: () => `<div class="stack"><span class="eyebrow">Kihallgatási jegyzőkönyvek</span><h2>Gyanúsítottak</h2>
-      <p>Mindenki mond valamit, és mindenki elhallgat valamit. Újabb nyomok után a jegyzetek bővülnek.</p>
+    gyan: () => {
+      const legacy = !C.contradictions;
+      const opts = S.clues.map(k => `<option value="${k}">${esc(C.clues[k].t)}</option>`).join("");
+      return `<div class="stack"><span class="eyebrow">Kihallgatási jegyzőkönyvek</span><h2>Gyanúsítottak</h2>
+      <p>${legacy ? "Mindenki mond valamit, és mindenki elhallgat valamit." : "Válassz egy nyomot a jegyzetfüzetből, és szembesítsd vele azt, akinek a vallomásával ütközik. A téves szembesítés pontlevonással jár."}</p>
       <div class="grid2">${C.suspects.map(s => {
-        const ex = s.extra && (S.solved[s.extra.after] || S.clues.includes(s.extra.after));
-        return `<div class="suspect">${ex && s.extra.lie ? `<span class="stamp anim">Hazudott</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${esc(s.stmt)}</p>${ex ? `<p class="note">${esc(s.extra.text)}</p>` : ""}</div>`;
-      }).join("")}</div></div>`,
+        let notes = "", liar = false;
+        if (legacy) {
+          const ex = s.extra && (S.solved[s.extra.after] || S.clues.includes(s.extra.after));
+          if (ex) { notes = `<p class="note">${esc(s.extra.text)}</p>`; liar = s.extra.lie; }
+        } else {
+          const found = contra(C, s.id).filter(k => S.conf.includes(k.id));
+          liar = found.some(k => k.lie !== false);
+          notes = found.map(k => `<p class="note">${esc(k.reveal)}</p>`).join("");
+        }
+        const tool = legacy || S.ended ? "" : S.clues.length
+          ? `<div class="confront"><select id="cf-${s.id}" aria-label="Nyom a szembesítéshez"><option value="">Szembesítés nyommal…</option>${opts}</select><button class="btn ghost small" data-cf="${s.id}">Szembesítem</button></div><p class="msg" data-cfmsg="${s.id}"></p>`
+          : `<p class="meta">Még nincs nyomod, amivel szembesíthetnéd.</p>`;
+        return `<div class="suspect">${liar ? `<span class="stamp anim">Hazudott</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${esc(s.stmt)}</p>${notes}${tool}</div>`;
+      }).join("")}</div></div>`;
+    },
 
     jegy: () => {
       const ids = Object.keys(C.clues).filter(k => S.clues.includes(k));
       return `<div class="stack"><span class="eyebrow">Saját jegyzeteid</span><h2>Jegyzetfüzet</h2>${pips()}
         ${ids.length ? `<div class="stack">${ids.map(k => `<div class="clue"><span class="src">${esc(C.clues[k].src)}</span><h3>${esc(C.clues[k].t)}</h3><p>${esc(C.clues[k].x)}</p></div>`).join("")}</div>`
           : `<p class="typed">Még üres a füzet. Kezdd ott, ahol a holttestet megtalálták.</p>`}
+        ${S.conf.length ? `<span class="eyebrow">Feltárt ellentmondások</span><div class="stack">${contra(C).filter(k => S.conf.includes(k.id)).map(k => `<div class="clue"><span class="src">${esc(C.suspects.find(x => x.id === k.suspect).name)}</span><p>${esc(k.reveal)}</p></div>`).join("")}</div>` : ""}
         <p class="eyebrow">${ids.length} / ${Object.keys(C.clues).length} nyom</p></div>`;
     },
 
     vad: () => {
       if (S.ended === "win") return viewEnding();
-      const left = pids(C).filter(p => !S.solved[p]).length;
+      if (S.ended === "lose") return viewLose();
+      if (S.ended === "reveal") return viewEnding(true);
+      const left = pids(C).filter(p => !S.solved[p]).length, triesLeft = MAXTRIES(C) - S.tries;
+      const clueOpts = S.clues.map(k => ({ v: k, label: C.clues[k].t }));
+      const A = S.acc || {};
       return `<div class="stack"><span class="eyebrow">Mindenki rád vár</span><h2>Vádemelés</h2>
-        <p>Ahogy a nagy detektívek szokták: összehívod a ház lakóit, és elmondod, mi történt. Nevezd meg a tettest, az eszközt és az indítékot.</p>
-        ${left ? `<p class="msg bad">Még ${left} rejtvény megoldatlan. Vádolhatsz most is, de kockázatos.</p>` : ""}
+        <p>Összehívod a ház lakóit, és elmondod, mi történt. Minden állításodhoz jelöld meg a döntő bizonyítékot a jegyzetfüzetből: egy jó ügyvéd csak a bizonyítéknak hisz.</p>
+        <p class="meta">Még ${triesLeft} próbálkozásod van.${left ? ` ${left} rejtvény megoldatlan.` : ""}</p>
         ${C.accusation.questions.map(q => {
-          const opts = q.from === "suspects" ? C.suspects.map(s => ({ v: s.id, label: s.name })).concat(q.extra || []) : q.options;
-          return `<fieldset><legend>${esc(q.legend)}</legend>${opts.map(o => `<label class="opt"><input type="radio" name="q-${q.id}" value="${o.v}"> ${esc(o.label)}</label>`).join("")}</fieldset>`;
+          const opts = q.from === "suspects" ? C.suspects.map(s => ({ v: s.id, label: s.name })).concat(q.extra || []) : q.from === "clues" ? clueOpts : q.options;
+          const radios = opts.length ? opts.map(o => `<label class="opt"><input type="radio" name="q-${q.id}" value="${o.v}" ${A[q.id] === o.v ? "checked" : ""}> ${esc(o.label)}</label>`).join("") : `<p class="meta">Még nincs egyetlen nyomod sem.</p>`;
+          const proof = q.proof ? `<label class="proof"><span>Döntő bizonyíték:</span><select id="p-${q.id}" data-proof="${q.id}"><option value="">— válassz a jegyzetfüzetből —</option>${clueOpts.map(o => `<option value="${o.v}" ${A["p-" + q.id] === o.v ? "selected" : ""}>${esc(o.label)}</option>`).join("")}</select></label>` : "";
+          return `<fieldset><legend>${esc(q.legend)}</legend>${radios}${proof}</fieldset>`;
         }).join("")}
-        <div class="row"><button class="btn" data-accuse>Kimondom a nevet</button></div><p class="msg" data-accmsg></p></div>`;
+        <div class="row"><button class="btn" data-accuse>Kimondom a vádat</button></div><p class="msg" data-accmsg></p></div>`;
     }
   };
 
@@ -205,14 +234,23 @@
     return h + `</div>`;
   }
 
-  function viewEnding() {
-    const hu = hintsUsed(S);
-    const culprit = C.suspects.find(s => s.id === C.accusation.questions[0].answer);
-    return `<div class="stack"><div class="ending"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit) : ""}</div><span class="stamp anim">Ügy lezárva</span></div>
+  function viewEnding(revealOnly) {
+    const hu = hintsUsed(S), sc = score(S);
+    const culprit = C.suspects.find(s => s.id === [].concat(C.accusation.questions[0].answer)[0]);
+    const stats = revealOnly ? `<p class="eyebrow">A megoldás, amit nem sikerült bizonyítanod</p>`
+      : `<p class="rank">${sc} pont · ${rank(sc)}</p><p class="eyebrow">${S.tries}. vádra · ${hu ? hu + " súgó" : "súgó nélkül"} · ${S.wrongConf || 0} téves szembesítés · ${S.conf.length}/${contra(C).length} ellentmondás · ${S.clues.length}/${Object.keys(C.clues).length} nyom</p>`;
+    return `<div class="stack"><div class="ending ${revealOnly ? "lost" : ""}"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit) : ""}</div><span class="stamp anim">${revealOnly ? "Megoldás" : "Ügy lezárva"}</span></div>
       <h2>${esc(C.ending.heading)}</h2>
       ${C.ending.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}
-      <p class="eyebrow">${S.tries}. vádra megoldva · ${hu ? hu + " súgó" : "súgó nélkül"} · ${S.clues.length}/${Object.keys(C.clues).length} nyom</p></div>
-      <div class="row"><a class="btn" href="#">Vissza az ügyekhez</a></div></div>`;
+      ${stats}</div>
+      <div class="row"><a class="btn" href="#">Vissza az ügyekhez</a>${revealOnly ? `<button class="btn ghost" data-restart>Újrakezdem az ügyet</button>` : ""}</div></div>`;
+  }
+  function viewLose() {
+    return `<div class="stack"><div class="ending lost"><span class="stamp" style="align-self:flex-start">Elszalasztva</span>
+      <h2>A tettes kicsúszott a kezeid közül.</h2>
+      <p>Harmadszor sem állt meg a vád. Reggel megérkeztek a csendőrök, de a bizonyítékok addigra összekuszálódtak, és a gyilkos szabadon távozott. Ilyen is előfordul a legjobbakkal.</p>
+      <p>Újrakezdheted az ügyet tiszta lappal, vagy megnézheted, mi történt valójában.</p></div>
+      <div class="row"><button class="btn" data-restart>Újrakezdem az ügyet</button><button class="btn ghost" data-reveal>Megmutatom a megoldást</button></div></div>`;
   }
 
   /* ---------- rejtvények ---------- */
@@ -258,7 +296,7 @@
         root.querySelector("[data-try]").onclick = () => {
           const v = (root.querySelector(`input[name="${pid}"]:checked`) || {}).value;
           if (!v) return msg("Előbb válassz egyet.");
-          if (v === p.answer) { solve(pid); renderCase(); } else msg((p.wrong && p.wrong[v]) || "Nem ez az. Nézd meg újra.");
+          if (v === p.answer) { solve(pid); renderCase(); } else msg((typeof p.wrong === "string" ? p.wrong : p.wrong && p.wrong[v]) || "Nem ez az. Nézd meg újra.");
         };
       }
     },
@@ -392,18 +430,38 @@
         PUZ[p.type].bind(pid, p, box, t => { SND("wrong"); m.className = "msg bad"; m.textContent = t; });
       }
     },
+    gyan() {
+      $$("[data-cf]").forEach(b => b.onclick = () => {
+        const sid = b.dataset.cf, sel = $("#cf-" + sid), m = app.querySelector(`[data-cfmsg="${sid}"]`), clue = sel.value;
+        const s = C.suspects.find(x => x.id === sid), first = s.name.split(" ").slice(-1)[0];
+        if (!clue) { m.className = "msg bad"; m.textContent = "Előbb válassz egy nyomot."; return; }
+        const hit = contra(C, sid).find(k => !S.conf.includes(k.id) && has(k.clue, clue));
+        if (hit) { S.conf.push(hit.id); if (hit.gives) gain(hit.gives); save(); SND(hit.lie === false ? "success" : "stamp"); renderCase(); return; }
+        if (contra(C, sid).some(k => S.conf.includes(k.id) && has(k.clue, clue))) { m.className = "msg"; m.textContent = "Ezt már tisztáztátok."; return; }
+        S.wrongConf = (S.wrongConf || 0) + 1; save(); SND("wrong");
+        m.className = "msg bad"; m.textContent = `${first} ${REBUFF[(S.wrongConf + sid.length) % REBUFF.length]}`;
+      });
+    },
     vad() {
+      $$("[data-restart]").forEach(b => b.onclick = () => { S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 }); });
+      $$("[data-reveal]").forEach(b => b.onclick = () => { S.ended = "reveal"; save(); renderCase(); window.scrollTo({ top: 0 }); });
       const btn = $("[data-accuse]"); if (!btn) return;
+      const qs = C.accusation.questions, m = $("[data-accmsg]");
+      const remember = () => { S.acc = {}; qs.forEach(q => { const r = app.querySelector(`input[name="q-${q.id}"]:checked`); if (r) S.acc[q.id] = r.value; const p = $("#p-" + q.id); if (p && p.value) S.acc["p-" + q.id] = p.value; }); save(); };
+      $$("input[name^=q-], [data-proof]").forEach(el => el.onchange = remember);
       btn.onclick = () => {
-        const qs = C.accusation.questions, m = $("[data-accmsg]");
-        const ans = qs.map(q => (app.querySelector(`input[name="q-${q.id}"]:checked`) || {}).value);
-        if (ans.some(a => a === undefined)) { m.className = "msg bad"; m.textContent = "Mindegyik kérdésre válaszolnod kell."; return; }
+        remember();
+        const A = S.acc;
+        if (qs.some(q => !A[q.id] || (q.proof && !A["p-" + q.id]))) { m.className = "msg bad"; m.textContent = "Minden kérdésre válaszolj, és mindenhol jelöld meg a bizonyítékot."; return; }
         S.tries++;
-        const wrong = qs.filter((q, i) => ans[i] !== q.answer).map(q => q.name);
-        if (!wrong.length) { S.ended = "win"; save(); SND("stamp"); renderCase(); window.scrollTo({ top: 0 }); return; }
-        save(); SND("wrong"); m.className = "msg bad";
-        m.textContent = wrong.length === qs.length ? "Néma csend. A vádlott felnevet. Semmi sem stimmel."
-          : `A vádlott ügyvédje közbevág: ${list(wrong)} nem áll meg. Gondold át újra.`;
+        const wrong = qs.filter(q => !has(q.answer, A[q.id]) || (q.proof && !has(q.proof, A["p-" + q.id]))).length;
+        if (!wrong) { S.ended = "win"; save(); SND("stamp"); renderCase(); window.scrollTo({ top: 0 }); return; }
+        SND("wrong");
+        if (S.tries >= MAXTRIES(C)) { S.ended = "lose"; save(); renderCase(); window.scrollTo({ top: 0 }); return; }
+        save(); m.className = "msg bad";
+        const left = MAXTRIES(C) - S.tries;
+        m.textContent = wrong === qs.length ? `Néma csend. A vádlott felnevet: semmi sem stimmel. Még ${left} próbálkozásod van.`
+          : `Az ügyvéd közbevág: a vádból ${wrong} pont nem áll meg. Hogy melyik, azt neked kell kitalálnod. Még ${left} próbálkozásod van.`;
       };
     }
   };

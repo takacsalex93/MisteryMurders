@@ -20,40 +20,46 @@
 
   suspects: [
     { id: "agnes", look: { hair: "bun", clothes: "coat", acc: ["pearls"], lips: true }, name: "Ráday Ágnes", role: "Az áldozat húga, 50 éves. Egyedüli örököse.",
-      stmt: "„Fél kettő körül veszekedést hallottam a falon át, Kristóf hangját és egy másik férfiét. Nem értettem a szavakat. Aztán csend lett, és nagyon hideg.”",
-      extra: { after: "vegrendelet", text: "Mindent ő örököl, és ezt nem is titkolja. De ő jelentette a veszekedést, és a fülkéjéből nincs átjárás a bátyjához." } },
+      stmt: "„Fél kettő körül veszekedést hallottam a falon át, Kristóf hangját és egy másik férfiét. Nem értettem a szavakat. Aztán csend lett, és nagyon hideg.”" },
     { id: "wolf", look: { hair: "short", hat: "bowler", clothes: "suit", acc: ["mustache"] }, name: "Herbert Wolf", role: "Osztrák óraügynök, 44 éves. Gyakran utazik ezen a vonalon.",
-      stmt: "„Egy óra körül átmentem az étkezőkocsiba, mert nem tudtam aludni. Énekeltek, kártyáztunk. Ezt a bankárt nem ismertem.”",
-      extra: { after: "orak", text: "Svájci órákat csempész egy kettős fenekű bőröndben, ezért ideges. 01:00-tól 02:30-ig az étkezőkocsiban ült, a pincér igazolja." } },
+      stmt: "„Egy óra körül átmentem az étkezőkocsiba, mert nem tudtam aludni. Énekeltek, kártyáztunk. Ezt a bankárt nem ismertem.”" },
     { id: "iren", look: { hair: "bob", clothes: "blouse", acc: ["glasses"], lips: true }, name: "Csermák Irén", role: "Nevelőnő, 35 éves. Egyedül utazik Kassára.",
-      stmt: "„Nem ismertem Ráday urat. Egész éjjel a fülkémben voltam, rosszul aludtam.”",
-      extra: { after: "level", text: "Hazudott: Ráday törvénytelen lánya, és az ő kedvéért szállt fel erre a vonatra. De a mosdótársa, Ágnes egész éjjel hallotta köhögni." } },
+      stmt: "„Nem ismertem Ráday urat. Egész éjjel a fülkémben voltam, rosszul aludtam.”" },
     { id: "kornelia", look: { hair: "bob", hat: "cloche", clothes: "coat", acc: ["earrings"], lips: true }, name: "Vay Kornélia", role: "Operaénekesnő, 29 éves. Vendégszereplésre utazik a kassai színházba.",
-      stmt: "„Ráday úr kedves öregúr volt. Egy óra után az étkezőkocsiban énekeltem, mert a hidegben nem lehetett aludni.”",
-      extra: { after: "valtok", text: "Ráday kezében voltak a váltói, tönkretehette volna. De 01:00 után végig az étkezőkocsiban volt, a pincér igazolja." } },
+      stmt: "„Ráday úr kedves öregúr volt. Egy óra után az étkezőkocsiban énekeltem, mert a hidegben nem lehetett aludni.”" },
     { id: "somlo", look: { hair: "slick", clothes: "suit", acc: ["glasses"] }, name: "Somló Dezső", role: "Ráday cégvezetője, 39 éves. Tizenkét éve dolgozik a banknak.",
-      stmt: "„Éjfélkor láttam utoljára a főnökömet, átnéztük a számokat. Aztán aludtam, majd kettő előtt átmentem kártyázni. A kalauz úr is mondta, hogy kettő után még élt.”",
-      extra: { after: "ido", text: "Az alibije egyetlen dolgon áll: a kalauz 02:10-es történetén. Az pedig nem igaz.", lie: true } },
+      stmt: "„Éjfélkor láttam utoljára a főnökömet, átnéztük a számokat. Aztán aludtam, majd kettő előtt átmentem kártyázni. A kalauz úr is mondta, hogy kettő után még élt.”" },
     { id: "bodnar", look: { hair: "short", hat: "cap", clothes: "uniform", acc: ["mustache"] }, name: "Bodnár Lajos", role: "Hálókocsi-kalauz, 50 éves. Tizennyolc éve szolgál a vonalon.",
-      stmt: "„02:10-kor bevittem a vezérigazgató úrnak egy takarót, mert elment a fűtés. Élt, morgott, hogy ne zavarjam többet. Reggel hatkor találtam meg.”",
-      extra: { after: "boritek", text: "Somló fizette le. Ő zárta el a fűtést, és ő találta ki a 02:10-es takarót.", lie: true } }
+      stmt: "„02:10-kor bevittem a vezérigazgató úrnak egy takarót, mert elment a fűtés. Élt, morgott, hogy ne zavarjam többet. Reggel hatkor találtam meg.”" }
   ],
 
   clues: {
     holttest: { t: "A holttest", src: "3-as fülke", x: "Rádayt a saját ezüst levélbontó késével szúrták szíven. A test teljesen kihűlt, de a fülke is jéghideg volt. A folyosói ajtón belülről beakasztott lánc, a kalauz reggel feszítette le. A takaró összehajtva a csomagtartón, érintetlenül." },
     medal: { t: "Az ezüst medál", src: "3-as fülke", x: "Ráday mellényzsebében, a szíve fölött egy ezüst medál. Benne egy fiatal nő fényképe, a hátoldalán vésve: „Klára, 1912.” Ágnes szerint Klára a bátyja első felesége volt, aki fiatalon meghalt." },
     naplo: { t: "Ráday titkos bejegyzése", src: "3-as fülke · napló", x: "„Somló hamis váltókkal lopja a bankot. Kassán feljelentem. A kalauzban sem bízom, túl sokat sugdolóznak.” Ráday tudta, hogy a cégvezetője csal, és az utat a rendőrségre szánta." },
-    ido: { t: "Az éjszaka időrendje", src: "Étkezőkocsi", x: "A veszekedés 01:30 körül volt, közvetlenül Ráday utolsó bejegyzése után. Utána valaki elzárta a kocsi fűtését a kalauzfülkéből, hogy a holttest gyorsan kihűljön. Somló 01:50-kor dideregve érkezett kártyázni. A kalauz 02:10-es takarója csak arra kell, hogy Rádayt élve mutassa, miközben Somló már a kártyaasztalnál ült. A takarót senki sem használta." },
+    ido: { t: "Az éjszaka időrendje", src: "Étkezőkocsi", x: "Az éjszaka sorrendje: 01:20 megállás, Ráday utolsó bejegyzése, veszekedés a fülkében, a fűtés elzárása, Somló dideregve leül kártyázni (01:50), a kalauz szerinti takaró (02:10), 03:00 indulás." },
     fulkek: { t: "Ki melyik fülkében utazott?", src: "Folyosó · utaslista", x: "1: Csermák Irén · 2: Ráday Ágnes · 3: Ráday Kristóf · 4: Somló Dezső · 5: Vay Kornélia · 6: üres · 7: Herbert Wolf · kalauzfülke: Bodnár Lajos. Somló fülkéjének közös mosdója van Ráday fülkéjével." },
     bejarat: { t: "Az út a mosdón át", src: "Közös mosdó (3–4)", x: "A folyosói ajtó láncát belülről akasztották be, az ablakot a fagy zárta le. A gyilkos a 4-es fülke felől, a közös mosdón át jött be, és ugyanarra távozott. A 3-as oldali retesz nyitva, a szappantartó leverve, a padlón a 4-es felé tartó nedves lábnyom." },
     utlevel: { t: "Somló útlevele", src: "Somló fülkéje", x: "Somló Dezső, cégvezető. Születési hely és idő: Szeged, 1897. február 9. Az útlevélben egy kassai szálloda névjegye, két éjszakára foglalva." },
     boritek: { t: "A boríték a kalauznak", src: "Somló fülkéje · aktatáska", x: "Az aktatáskában hamisított váltók kötege Ráday aláírásával, és egy lezárt boríték 500 pengővel. Rajta Somló kézírásával: „B. L. — a második fele Kassán.” Bodnár Lajos, a kalauz." },
     futes: { t: "A fűtésszelep", src: "Kalauzfülke", x: "A hálókocsi fűtését csak a kalauzfülkében lévő szelepen lehet elzárni, a kalauz négyszögkulcsával. A szelepen friss olajos ujjnyom, a kulcs Bodnár zsebében van." },
-    vegrendelet: { t: "A végrendelet", src: "Utasok csomagjai", x: "Ágnes táskájában a bátyja végrendeletének másolata: mindent ő örököl. Nem titkolja, sőt büszkén mutatja." },
-    orak: { t: "A kettős fenekű bőrönd", src: "Utasok csomagjai", x: "Wolf mintakollekciója alatt egy rejtett rekeszben harminc vámolatlan svájci karóra. Csempész, nem gyilkos: 01:00 és 02:30 között az étkezőkocsiban ült." },
-    valtok: { t: "Kornélia váltói", src: "Utasok csomagjai", x: "Kornélia kézitáskájában egy levél Rádaytól: „A váltói lejártak. Kassán beszélünk.” Hatezer pengő tartozás. Komoly indíték, de a pincér szerint 01:00 után végig az étkezőkocsiban énekelt." },
-    level: { t: "Egy soha el nem küldött levél", src: "Utasok csomagjai", x: "Irén bőröndjében egy levél „Kedves Apám” megszólítással, alá Ráday neve. Irén a bankár törvénytelen lánya. Ezen az úton akart először beszélni vele, de a levél még a borítékban van." }
+    vegrendelet: { t: "A végrendelet", src: "Utasok csomagjai", x: "Ágnes táskájában a bátyja végrendeletének másolata: mindent ő örököl." },
+    orak: { t: "A kettős fenekű bőrönd", src: "Utasok csomagjai", x: "Wolf mintakollekciója alatt egy rejtett rekeszben harminc vámolatlan svájci karóra." },
+    valtok: { t: "Kornélia váltói", src: "Utasok csomagjai", x: "Kornélia kézitáskájában egy levél Rádaytól: „A váltói lejártak. Kassán beszélünk.” Hatezer pengő tartozás." },
+    level: { t: "Egy soha el nem küldött levél", src: "Utasok csomagjai", x: "Irén bőröndjében egy levél „Kedves Apám” megszólítással, a címzett Ráday Kristóf. A levél még a borítékban van, lezáratlanul." }
   },
+
+  contradictions: [
+    {"id": "c-bodnar", "suspect": "bodnar", "clue": ["holttest"], "reveal": "Bodnár a takaróra néz, és elsápad: „Talán… nem is vittem be. Fáradt voltam, összekeverem.”"},
+    {"id": "c-bodnar2", "suspect": "bodnar", "clue": ["boritek"], "reveal": "Bodnár összeomlik: „Somló úr adta. Azt mondta, csak annyit mondjak, hogy kettő után még élt. És hogy zárjam el a fűtést. Nem tudtam, mire kell!”"},
+    {"id": "c-bodnar3", "suspect": "bodnar", "clue": ["futes"], "reveal": "Bodnár keze remeg: „A szelep… magától akadt el. Néha megesik.” A szelephez csak az ő kulcsa illik."},
+    {"id": "c-somlo", "suspect": "somlo", "clue": ["boritek"], "reveal": "Somló mosolya megfagy: „Borravaló. Az éjszakai szolgálatért.” Ötszáz pengő borravaló, a másik fele Kassán."},
+    {"id": "c-somlo2", "suspect": "somlo", "clue": ["naplo"], "reveal": "Somló sokáig hallgat. „Egy öregember rögeszméi” mondja végül, de a keze reszket."},
+    {"id": "c-iren", "suspect": "iren", "clue": ["level"], "reveal": "Irén lehajtja a fejét: „Az apám volt. Ezen az úton akartam először beszélni vele. Nem mertem bekopogni. Ágnes asszony hallotta, hogy egész éjjel köhögtem a fülkémben.”"},
+    {"id": "c-kornelia", "suspect": "kornelia", "clue": ["valtok"], "reveal": "Kornélia arca megkeményedik: „Tartoztam neki, igen. Kedves öregúr volt a váltóival együtt. De egy óra után az étkezőkocsiban énekeltem, az egész kocsi hallotta.”"},
+    {"id": "c-wolf", "suspect": "wolf", "clue": ["orak"], "lie": false, "reveal": "Wolf lehalkítja a hangját: „Jó, csempészek. De egytől fél háromig a pincér szeme előtt kártyáztam.”"},
+    {"id": "c-agnes", "suspect": "agnes", "clue": ["vegrendelet"], "lie": false, "reveal": "Ágnes nem jön zavarba: „Mindent én örökölök, ezt mindenki tudja. És én jelentettem a veszekedést. A fülkémből nincs átjárás hozzá.”"}
+  ],
 
   locations: [
     { id: "fulke3", name: "A 3-as fülke", desc: "Mahagóni burkolat, rézlámpa, befagyott ablak. Ráday Kristóf az alsó ágyon fekszik.",
@@ -152,12 +158,12 @@
 
   accusation: {
     questions: [
-      { id: "who", legend: "Ki szúrta le Rádayt?", name: "a tettes", from: "suspects", answer: "somlo" },
-      { id: "help", legend: "Ki segített neki?", name: "a bűntárs", from: "suspects", answer: "bodnar",
+      { id: "who", legend: "Ki szúrta le Rádayt?", name: "a tettes", from: "suspects", answer: "somlo", proof: ["bejarat", "fulkek", "naplo"] },
+      { id: "help", legend: "Ki segített neki?", name: "a bűntárs", from: "suspects", answer: "bodnar", proof: ["boritek", "futes", "holttest"],
         extra: [{ v: "senki", label: "Nem volt bűntársa" }] },
-      { id: "how", legend: "Hogyan jutott be a fülkébe?", name: "a behatolás útja", answer: "mosdo",
+      { id: "how", legend: "Hogyan jutott be a fülkébe?", name: "a behatolás útja", answer: "mosdo", proof: ["bejarat"],
         options: [{ v: "folyoso", label: "A folyosói ajtón, a kalauz kulcsával" }, { v: "mosdo", label: "A közös mosdón át, a szomszéd fülkéből" }, { v: "ablak", label: "Az ablakon át, a megállás alatt" }] },
-      { id: "why", legend: "Miért ölt?", name: "az indíték", answer: "csalas",
+      { id: "why", legend: "Miért ölt?", name: "az indíték", answer: "csalas", proof: ["naplo"],
         options: [{ v: "orokseg", label: "Az örökség megszerzése" }, { v: "valto", label: "A lejárt váltók elengedése" }, { v: "csalas", label: "Ráday Kassán le akarta leplezni a sikkasztását" }, { v: "csalad", label: "Régi családi sérelem" }] }
     ]
   },

@@ -195,3 +195,12 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .phrase:not([role]){cursor:default}
 .typed.mirror{display:inline-block;align-self:flex-start;transform:scaleX(-1);font-size:clamp(30px,8vw,44px);font-weight:700;letter-spacing:.25em;padding:14px 26px;
   background:var(--paper);border:2px solid var(--line);border-radius:6px;color:var(--muted)}
+
+/* szembesítés, bizonyíték, rang */
+.confront{display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px dashed var(--line);padding-top:10px;margin-top:2px}
+.confront select{flex:1 1 180px;min-width:0;font-size:14px}
+.proof{display:flex;flex-direction:column;gap:4px;margin-top:6px;padding-top:8px;border-top:1px dashed var(--line);font-family:var(--type);font-size:13px;color:var(--muted)}
+.proof select{color:var(--ink)}
+.rank{font-family:var(--display);font-style:italic;font-size:22px;color:var(--good)}
+.ending.lost{border-color:var(--stamp)}
+.ending .stamp{position:static;transform:rotate(-4deg)}

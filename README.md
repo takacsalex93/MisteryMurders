@@ -15,6 +15,13 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 | 5 | Utolsó felvonás | Közepes |
 | 6 | Köd a Hegyalján | Nehéz |
 
+## Játékmenet
+
+- **Szembesítés:** a gyanúsítottakat a jegyzetfüzet nyomaival kell szembesíteni. A talált ellentmondás feltárja a hazugságot, a téves szembesítés pontlevonással jár. Ártatlanok is hazudnak.
+- **Bizonyítékkal alátámasztott vád:** minden állításhoz meg kell jelölni a döntő bizonyítékot. Három próbálkozás van, utána a tettes megszökik.
+- **Elültetett nyomok:** minden ügyben van legalább egy félrevezető nyom.
+- **Rang:** a végén pontszám és nyomozói rang a próbálkozások, a súgók és a téves szembesítések alapján.
+
 ## Felépítés
 
 - `index.html` — az oldal váza, itt kell felvenni az új ügyeket
@@ -34,6 +41,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 
 1. Másold le valamelyik `cases/*.js` fájlt, és írd át a tartalmát.
 2. Állítsd be a `difficulty` mezőt: `Könnyű`, `Közepes` vagy `Nehéz`, és ha kell, a `sound` (háttérhang) és `fx` (borító-animáció) mezőt.
-3. Vedd fel a fájlt az `index.html`-be a többi ügy mellé.
+3. Írd meg a `contradictions` listát (melyik nyom melyik vallomással ütközik) és a vádpontokhoz a `proof` bizonyítékokat.
+4. Vedd fel a fájlt az `index.html`-be a többi ügy mellé.
 
 Szerver és telepítés nem kell, a játékállás a böngészőben mentődik.

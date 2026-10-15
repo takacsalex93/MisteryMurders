@@ -21,23 +21,17 @@
 
   suspects: [
     { id: "ilona", look: { hair: "bun", clothes: "dress", acc: ["pearls"], lips: true }, name: "Récsey Ilona", role: "Az özvegy, 45 éves. Húsz éve él a birtokon.",
-      stmt: "„Tizenegykor lefeküdtem. Lőrinc még lement kóstolni, mint minden szüretkor. Mindig mondtam neki, hogy az a lépcső egyszer a halála lesz.”",
-      extra: { after: "hazugsag", text: "Hazudott: éjjel lent járt a pincében. Fél kettőkor megtalálta a férjét az erjesztőpincében, azt hitte, a fia tette, és Bárány segítségével a lépcső aljára vitték, hogy balesetnek tűnjön.", lie: true } },
+      stmt: "„Tizenegykor lefeküdtem. Lőrinc még lement kóstolni, mint minden szüretkor. Mindig mondtam neki, hogy az a lépcső egyszer a halála lesz.”" },
     { id: "andras", look: { hair: "slick", clothes: "suit" }, name: "Récsey András", role: "A fiú, 24 éves. Pesten tanul, ha éppen nem kártyázik.",
-      stmt: "„Igen, összevesztünk délután. Apám nem volt hajlandó kifizetni a váltóimat. De egész este a szalonban kártyáztam Lorenz úrral, ő is megmondhatja.”",
-      extra: { after: "andras", text: "Hatezer pengő adóssága van, és délután veszekedett az apjával. Az anyja ezért hitte, hogy ő tette. De tizenegy és fél tizenkettő között Lorenz úrral kártyázott." } },
+      stmt: "„Igen, összevesztünk délután. Apám nem volt hajlandó kifizetni a váltóimat. De egész este a szalonban kártyáztam Lorenz úrral, ő is megmondhatja.”" },
     { id: "gaspar", look: { hair: "bald", clothes: "uniform", acc: ["mustache"] }, name: "Fazekas Gáspár", role: "Pincemester, 61 éves. Negyven éve dolgozik a pincében. Fiatalon leesett egy hordóról, azóta biceg.",
-      stmt: "„A gazda tizenegykor lement kóstolni, mint mindig. Én a présházban voltam, a mustot figyeltem. Ez a pince veszélyes, uram. Az erjedő must gáza már nem egy embert megölt.”",
-      extra: { after: "hol", text: "Azt állította, a présházban volt. A présház ajtaját reggel érintetlenül találták: ő a szellőzőkürtőnél járt.", lie: true } },
+      stmt: "„A gazda tizenegykor lement kóstolni, mint mindig. Én a présházban voltam, a mustot figyeltem. Ez a pince veszélyes, uram. Az erjedő must gáza már nem egy embert megölt.”" },
     { id: "lorenz", look: { hair: "short", hat: "bowler", clothes: "suit", acc: ["monocle"] }, name: "Anton Lorenz", role: "Bécsi borkereskedő, 50 éves. Minden szüretkor itt vásárol.",
-      stmt: "„Tizenegytől éjfélig kártyáztam a fiatalúrral. Négyszáz pengőt nyertem, nem büszkélkedem vele. A gazdával kitűnő viszonyban voltam.”",
-      extra: { after: "lorenz", text: "Ötven palack hatputtonyos aszút vett készpénzért, egyenesen a pincemestertől. Azt hitte, a gazda tudtával." } },
+      stmt: "„Tizenegytől éjfélig kártyáztam a fiatalúrral. Négyszáz pengőt nyertem, nem büszkélkedem vele. A gazdával kitűnő viszonyban voltam.”" },
     { id: "rozalia", look: { hair: "bob", hat: "maid", clothes: "maid", lips: true }, name: "Kiss Rozália", role: "Szakácsné, 22 éves. Mádi lány, három éve szolgál a házban.",
-      stmt: "„Én a konyhában mosogattam éjfélig. Nem láttam semmit. Semmit, kérem.”",
-      extra: { after: "rozalia", text: "Titokban szerelmes Andrásba, ezért nem akart beszélni. De a konyhaablakból lámpást látott a szellőzőkürtőnél." } },
+      stmt: "„Én a konyhában mosogattam éjfélig. Nem láttam semmit. Semmit, kérem. Az ablakon sem néztem ki.”" },
     { id: "barany", look: { hair: "short", clothes: "trench" }, name: "Bárány Péter", role: "A birtok intézője, 40 éves. Tizenkét éve vezeti a gazdaságot.",
-      stmt: "„A beteg lóval virrasztottam az istállóban. A pincébe aznap este be sem tettem a lábam.”",
-      extra: { after: "barany", text: "Hazudott: a zsebkendőjén pincepenész, a kabátján must. Éjjel lent járt.", lie: true } }
+      stmt: "„A beteg lóval virrasztottam az istállóban. A pincébe aznap este be sem tettem a lábam.”" }
   ],
 
   clues: {
@@ -51,11 +45,21 @@
     fuzet: { t: "A titkos füzet", src: "A pincemester ládája", x: "„Lorenz ötven palack hamis aszút kapott. A gazda ma este a hetes hordóból akar kóstolni. Ha rájön, végem. A kürtőt be kell zárni.”" },
     penesz: { t: "Pincepenész", src: "Ilona szobája", x: "Ilona papucsán és pongyoláján fekete, bolyhos penész. A tokaji pincék falát borító nemes penész csak akkor tapad meg, ha valaki odalent a falhoz ér." },
     hazugsag: { t: "Ilona éjjel lent járt", src: "Ilona szobája · vallomás", x: "Ilona azt mondta, reggelig ki sem mozdult a szobájából. A papucsán lévő pincepenész szerint éjjel lent járt a pincében." },
-    lorenz: { t: "Lorenz számlái", src: "Szalon", x: "Lorenz jegyzéke: ötven palack 1935-ös hatputtonyos aszú, készpénzért, Fazekas Gáspártól személyesen. Lorenz azt hitte, a gazda tudtával vásárol." },
-    andras: { t: "András váltói", src: "Szalon", x: "András zsebében hatezer pengőről szóló váltók. A cselédek hallották, hogy délután az apja kitagadással fenyegette. Ezért gondolta Ilona, hogy a fia tette." },
-    rozalia: { t: "Rozália levelei", src: "Konyha", x: "Rozália kötényében András levelei: titkos szerelem. Ezért hallgatott. De a konyhaablakból egy bicegő alakot látott lámpással a szellőzőkürtőnél." },
+    lorenz: { t: "Lorenz számlái", src: "Szalon", x: "Lorenz jegyzéke: ötven palack 1935-ös hatputtonyos aszú, készpénzért, Fazekas Gáspártól személyesen." },
+    andras: { t: "András váltói", src: "Szalon", x: "András zsebében hatezer pengőről szóló váltók. A cselédek hallották, hogy délután az apja kitagadással fenyegette." },
+    rozalia: { t: "Rozália levelei", src: "Konyha", x: "Rozália kötényében András levelei. Gyengéd, titkolt szerelem." },
     barany: { t: "Bárány zsebkendője", src: "Istálló", x: "Bárány intéző zsebkendőjén fekete pincepenész, a kabátja ujján must. Azt állítja, aznap este be sem tette a lábát a pincébe." }
   },
+
+  contradictions: [
+    {"id": "c-ilona", "suspect": "ilona", "clue": ["penesz", "hazugsag"], "reveal": "Ilona összeomlik: „Lementem érte fél kettőkor. Ott feküdt a hordók között. Azt hittem, András tette a veszekedés után… Felkeltettem Bárányt, és felvittük a lépcső aljára, hogy baleset legyen.”"},
+    {"id": "c-barany", "suspect": "barany", "clue": ["barany"], "reveal": "Bárány lesüti a szemét: „Az asszony kért meg. A gazda már halott volt, amikor odaértem. Nem nyúltam semmihez, csak cipeltem.”"},
+    {"id": "c-gaspar", "suspect": "gaspar", "clue": ["hol"], "reveal": "Gáspár bicegve hátrál egy lépést: „A kürtőt… a kürtőt csak megnéztem. Ez a dolgom.” A présház ajtaja reggel érintetlen volt."},
+    {"id": "c-gaspar2", "suspect": "gaspar", "clue": ["fuzet", "lada"], "reveal": "Gáspár sokáig hallgat. „A gazda sosem értett a borhoz” mondja végül. „Csak a címkéhez.”"},
+    {"id": "c-rozalia", "suspect": "rozalia", "clue": ["rozalia"], "reveal": "Rozália elpirul, aztán suttogva mondja: „Kinéztem az ablakon. Egy lámpást láttam a kürtőnél, és valaki bicegett. Nem mertem szólni, féltem, hogy Andrást gyanúsítják.”"},
+    {"id": "c-lorenz", "suspect": "lorenz", "clue": ["lorenz"], "lie": false, "reveal": "Lorenz felhúzza a szemöldökét: „Gáspártól vettem, a gazda tudtával. Legalábbis ő ezt mondta.”"},
+    {"id": "c-andras", "suspect": "andras", "clue": ["andras"], "lie": false, "reveal": "András dacosan néz: „Igen, tartozom, és apám kitagadással fenyegetett. De tizenegytől éjfélig Lorenz úrral kártyáztam, és négyszáz pengőt vesztettem.”"}
+  ],
 
   locations: [
     { id: "lepcso", name: "Pincelépcső", desc: "Meredek, nyirkos kőlépcső a mélybe, a falon fekete, bolyhos penész. Lent a gazda.",
@@ -173,12 +177,12 @@
 
   accusation: {
     questions: [
-      { id: "who", legend: "Ki ölte meg a gazdát?", name: "a gyilkos", from: "suspects", answer: "gaspar" },
-      { id: "moved", legend: "Ki rendezte át a helyszínt?", name: "a helyszín átrendezője", from: "suspects", answer: "ilona",
+      { id: "who", legend: "Ki ölte meg a gazdát?", name: "a gyilkos", from: "suspects", answer: "gaspar", proof: ["fuzet", "hol"] },
+      { id: "moved", legend: "Ki rendezte át a helyszínt?", name: "a helyszín átrendezője", from: "suspects", answer: "ilona", proof: ["penesz", "hazugsag", "barany"],
         extra: [{ v: "senki", label: "Senki, a gazda tényleg a lépcsőn halt meg" }] },
-      { id: "how", legend: "Hogyan halt meg a gazda?", name: "a halál módja", answer: "gaz",
+      { id: "how", legend: "Hogyan halt meg a gazda?", name: "a halál módja", answer: "gaz", proof: ["erjeszto", "vasrud", "ejszaka"],
         options: [{ v: "lepcso", label: "Leesett a pincelépcsőn" }, { v: "gaz", label: "Megfulladt az erjedő must gázától a bezárt pincében" }, { v: "mereg", label: "Megmérgezték a kóstolóborral" }] },
-      { id: "why", legend: "Miért ölt a gyilkos?", name: "az indíték", answer: "hamis",
+      { id: "why", legend: "Miért ölt a gyilkos?", name: "az indíték", answer: "hamis", proof: ["fuzet", "lada", "lorenz"],
         options: [{ v: "orokseg", label: "Az örökségért" }, { v: "valto", label: "A kifizetetlen váltók miatt" }, { v: "hamis", label: "A gazda leleplezte volna a hamis aszú eladását" }, { v: "szerelem", label: "Szerelemféltésből" }] }
     ]
   },
