@@ -1,0 +1,138 @@
+/* Layout: rendőrségi ügyirat-mappa — füles navigáció, gépelt lapok, piros bélyegzők */
+:root{
+  --bg:#ddcfa6; --paper:#f4ecd6; --paper2:#ebe0c1; --ink:#1e2740; --muted:#5f6378;
+  --line:#c5b386; --stamp:#a3262c; --accent:#22534a; --accent-fg:#f4ecd6; --good:#2d6a3e;
+  --display:"Bodoni Moda", Didot, "Times New Roman", serif;
+  --type:"Courier Prime", "Courier New", monospace;
+  --body:"Crimson Pro", Georgia, serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12151c; --paper:#1c212b; --paper2:#232935; --ink:#e8e0c9; --muted:#9ba1b3;
+  --line:#323a49; --stamp:#e2595e; --accent:#74b6a1; --accent-fg:#12151c; --good:#7cc68e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151c; --paper:#1c212b; --paper2:#232935; --ink:#e8e0c9; --muted:#9ba1b3;
+  --line:#323a49; --stamp:#e2595e; --accent:#74b6a1; --accent-fg:#12151c; --good:#7cc68e; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:max(20px,env(safe-area-inset-top,0px));padding-bottom:max(48px,env(safe-area-inset-bottom,0px))}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column}
+
+/* fejléc */
+header.case{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-block:8px 18px}
+header.case h1{font-family:var(--display);font-style:italic;font-weight:700;font-size:clamp(30px,6vw,52px);line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.meta{font-family:var(--type);font-size:13px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stamp{font-family:var(--type);font-weight:700;color:var(--stamp);border:2.5px solid var(--stamp);border-radius:4px;padding:3px 10px;
+  letter-spacing:.14em;text-transform:uppercase;display:inline-block;transform:rotate(-4deg);font-size:14px;white-space:nowrap}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:12px}
+
+/* fülek */
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{font-family:var(--type);font-size:14px;letter-spacing:.04em;background:var(--paper2);color:var(--muted);border:1px solid var(--line);
+  border-bottom:none;border-radius:10px 10px 0 0;padding:9px 16px 8px;cursor:pointer;white-space:nowrap;position:relative;top:1px}
+nav.tabs button[aria-selected="true"]{background:var(--paper);color:var(--ink);font-weight:700;z-index:1}
+nav.tabs .count{display:inline-block;min-width:20px;margin-left:6px;padding:0 5px;border-radius:9px;background:var(--stamp);color:var(--paper);font-size:12px;text-align:center}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+main.sheet{background:var(--paper);border:1px solid var(--line);border-radius:0 6px 6px 6px;padding:clamp(18px,4vw,36px);min-height:420px;
+  box-shadow:0 1px 0 var(--line),0 14px 30px -18px rgba(0,0,0,.35)}
+
+/* tipográfia */
+h2{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.15;margin:0;text-wrap:balance}
+h3{font-family:var(--display);font-weight:700;font-size:21px;margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--type);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+p{margin:0;max-width:65ch}
+.lead{font-size:20px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.typed{font-family:var(--type);font-size:15.5px;line-height:1.6;background:var(--paper2);border:1px solid var(--line);padding:16px 18px;white-space:pre-wrap;border-radius:2px;max-width:none}
+
+/* gombok */
+.btn{font-family:var(--type);font-weight:700;font-size:15px;background:var(--accent);color:var(--accent-fg);border:none;border-radius:3px;padding:10px 18px;cursor:pointer;letter-spacing:.03em}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.small{font-size:13px;padding:7px 12px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{font-family:var(--type);background:none;border:none;color:var(--accent);cursor:pointer;padding:0;font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+
+/* címoldal */
+.home-head{display:flex;flex-direction:column;gap:10px;padding-block:24px 28px}
+.home-head h1{font-family:var(--display);font-style:italic;font-weight:700;font-size:clamp(40px,9vw,76px);line-height:.95;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.home-head p{font-size:20px}
+.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.casecard{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:22px;display:flex;flex-direction:column;gap:12px;position:relative;
+  box-shadow:0 14px 30px -20px rgba(0,0,0,.4);min-width:0}
+.casecard h2{font-size:26px;font-style:italic}
+.casecard .stamp{position:absolute;top:16px;right:16px;font-size:12px}
+.casecard .row{margin-top:auto}
+.howto{margin-top:28px;display:flex;flex-direction:column;gap:10px;color:var(--muted)}
+.howto ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;max-width:65ch}
+
+/* helyszínek */
+.loc{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--paper2);border:1px solid var(--line);padding:16px;border-radius:3px;cursor:pointer;color:var(--ink);font:inherit}
+.loc:hover:not([disabled]){border-color:var(--ink)}
+.loc .status{font-family:var(--type);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.loc .status.done{color:var(--good)}
+.loc .status.locked{color:var(--stamp)}
+.loc[disabled]{cursor:not-allowed;opacity:.6}
+.item{border-top:1px dashed var(--line);padding-top:16px;display:flex;flex-direction:column;gap:10px}
+.found{font-family:var(--type);font-size:12px;color:var(--good);letter-spacing:.1em;text-transform:uppercase}
+.msg{font-family:var(--type);font-size:14px;min-height:1.4em}
+.msg.bad{color:var(--stamp)} .msg.ok{color:var(--good)}
+
+/* súgó */
+.hints{display:flex;flex-direction:column;gap:6px}
+.hint{font-family:var(--type);font-size:14px;border-left:3px solid var(--accent);padding:2px 0 2px 10px;max-width:65ch}
+
+/* rejtvények */
+.digits{display:flex;gap:8px;flex-wrap:wrap}
+.digits input{width:52px;height:64px;text-align:center;font-family:var(--type);font-size:30px;font-weight:700;background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:4px}
+.samples{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.sample{display:flex;flex-direction:column;gap:8px;border:1.5px solid var(--line);padding:12px;border-radius:3px;cursor:pointer;background:var(--paper2);min-width:0}
+.sample:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.sample .typed{background:var(--paper);padding:10px 12px;font-size:15px}
+.r{position:relative;top:-.28em}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:420px}
+td,th{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:middle}
+th{font-family:var(--type);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400}
+select{font-family:var(--type);font-size:15px;padding:7px 8px;background:var(--paper);color:var(--ink);border:1.5px solid var(--ink);border-radius:3px;max-width:100%}
+ol.facts{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:6px;max-width:65ch}
+.dial{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.dial .num{font-family:var(--type);font-size:34px;font-weight:700;width:2.2ch;text-align:center;font-variant-numeric:tabular-nums}
+.dial input[type=range]{flex:1;min-width:180px;accent-color:var(--accent)}
+.cipher{font-family:var(--type);font-size:18px;letter-spacing:.12em;line-height:1.7;word-break:break-word}
+
+/* gyanúsítottak, jegyzetek */
+.suspect{display:flex;flex-direction:column;gap:8px;background:var(--paper2);border:1px solid var(--line);padding:16px;border-radius:3px;position:relative;min-width:0}
+.suspect .role{font-family:var(--type);font-size:13px;color:var(--muted);padding-right:90px}
+.suspect .note{font-family:var(--type);font-size:14px;border-left:3px solid var(--stamp);padding-left:10px}
+.suspect .stamp{position:absolute;top:12px;right:12px;font-size:12px}
+.clue{display:flex;flex-direction:column;gap:6px;border-bottom:1px dashed var(--line);padding-bottom:14px}
+.clue:last-child{border-bottom:none}
+.clue h3{font-size:18px}
+.clue .src{font-family:var(--type);font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.progress{display:flex;gap:6px;flex-wrap:wrap}
+.pip{font-family:var(--type);font-size:12px;padding:3px 9px;border:1px solid var(--line);border-radius:12px;color:var(--muted)}
+.pip.done{border-color:var(--good);color:var(--good)}
+
+/* vádemelés */
+fieldset{border:1px solid var(--line);border-radius:3px;padding:12px 14px;margin:0;display:flex;flex-direction:column;gap:8px}
+legend{font-family:var(--type);font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:0 6px;color:var(--muted)}
+label.opt{display:flex;gap:8px;align-items:baseline;cursor:pointer}
+.ending{border:2px solid var(--good);padding:20px;display:flex;flex-direction:column;gap:12px}
+.confirm{display:flex;flex-direction:column;gap:10px;border:1.5px solid var(--stamp);padding:14px;border-radius:3px}
+
+footer{font-family:var(--type);font-size:12px;color:var(--muted);text-align:center;padding-top:16px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+footer button{font:inherit;background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer}
+
+@media (prefers-reduced-motion: no-preference){
+  .stamp.anim{animation:thump .35s ease-out}
+  @keyframes thump{0%{transform:rotate(-4deg) scale(1.6);opacity:0}100%{transform:rotate(-4deg) scale(1);opacity:1}}
+}
+a.btn,a.link{text-decoration:none;display:inline-block}
+.stack > .link{align-self:flex-start}
