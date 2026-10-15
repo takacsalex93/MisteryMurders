@@ -76,8 +76,11 @@ window.MM_IMAGES = [
   "tokaji-pince/portrait-rozalia.webp",
   "tokaji-pince/scene-erjeszto.webp",
   "tokaji-pince/scene-haloszoba.webp",
+  "tokaji-pince/scene-istallo.webp",
+  "tokaji-pince/scene-konyha.webp",
   "tokaji-pince/scene-lada.webp",
   "tokaji-pince/scene-lepcso.webp",
   "tokaji-pince/scene-mester.webp",
+  "tokaji-pince/scene-szalon.webp",
   "tokaji-pince/scene-udvar.webp"
 ];
