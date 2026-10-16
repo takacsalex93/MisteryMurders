@@ -4,7 +4,7 @@
 import sys, re, os
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TOPS = {"szegfu-villa": .12, "arany-griff": .18, "ejszakai-gyors": .24, "tokaji-pince": .07, "hollos-cukraszda": .2, "corvin-szinhaz": .2}
+TOPS = {"szegfu-villa": .12, "arany-griff": .18, "ejszakai-gyors": .24, "tokaji-pince": .07, "hollos-cukraszda": .2, "corvin-szinhaz": .2, "fekete-szegfu": .33}
 new = []
 for arg in sys.argv[1:]:
     src, dst = arg.split("=")
