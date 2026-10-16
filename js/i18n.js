@@ -176,6 +176,16 @@
     "Ügy lezárva": "Case closed",
     "Ügy újrakezdése": "Restart case",
     "Ügyirat": "Case file",
+    "Zárás": "Finale",
+    "A titkos szál": "The secret thread",
+    "Hat gyilkosság, hat cédula, egy aláírás: F. Sz.": "Six murders, six notes, one signature: F. Sz.",
+    "Lezárt ügy": "Sealed case",
+    "Mind a hat ügy végén egy préselt fekete szegfű és egy cédula vár. Ha mindet megtalálod, kiderül, ki áll mögöttük.": "At the end of each of the six cases a pressed black carnation and a note are waiting. Find them all and you will learn who is behind them.",
+    "{0} / {1} cédula": "{0} of {1} notes",
+    "Még megoldatlan": "Not solved yet",
+    "Bekarikázott betű": "Circled letter",
+    "Megvan mind a hat cédula. A címoldalon megnyílt a záró ügy.": "You have all six notes. The final case is now open on the home page.",
+    "{0} / {1} cédula a címoldalon, A titkos szál alatt.": "{0} of {1} notes, under The secret thread on the home page.",
     "♪ Hang: be": "♪ Sound: on",
     "♪ Hang: ki": "♪ Sound: off"
   };
@@ -190,6 +200,8 @@
     ["title", "meta", "teaser", "confession"].forEach(k => set(c, k, X[k]));
     if (X.intro) Object.assign(c.intro, X.intro);
     if (X.ending) Object.assign(c.ending, X.ending);
+    if (X.carnation && c.carnation) Object.assign(c.carnation, X.carnation);
+    if (X.dossier && c.dossier) Object.assign(c.dossier, X.dossier);
     c.suspects.forEach(s => Object.assign(s, (X.suspects || {})[s.id] || {}));
     Object.entries(X.clues || {}).forEach(([k, v]) => c.clues[k] && Object.assign(c.clues[k], v));
     (c.contradictions || []).forEach(k => Object.assign(k, (X.contradictions || {})[k.id] || {}));

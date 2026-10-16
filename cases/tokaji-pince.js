@@ -187,6 +187,8 @@
     ]
   },
 
+  carnation: { letter: "U", found: "Gáspár ládájában, a hamis címkék alatt egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„A gazda ma este a hetes hordóból kóstol. Lorenz többet nem vesz tőled. A kürtő fedele csavarral zárható. — F. Sz.”" },
+
   ending: {
     heading: "Fazekas Gáspár, és az özvegy eltakarta a nyomokat.",
     paragraphs: [

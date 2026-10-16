@@ -126,6 +126,7 @@
     how: { legend: "How did the rope part?", name: "the method", options: { vagas: "It was cut during the closing duet", gyertya: "A candle was wired beneath it in the first interval and burned through the rope", kopas: "It was worn and parted by itself" } },
     why: { legend: "Why did she do it?", name: "the motive", options: { feltekenyseg: "Sárközy was to announce his engagement to someone else the next day", turne: "To get the Vienna tour", adossag: "To avoid repaying a debt", gazsi: "Because of the demand for double pay" } }
   },
+  carnation: { found: "In Mimi's powder compact, a pressed black carnation and a typed note. In its bottom right corner, a letter circled in red.", note: "“Tomorrow the engagement will be announced. In the interval the fly loft is empty, and there are church candles in the prop room. — F. Sz.”" },
   ending: {
     heading: "It was Mimi Rácz.",
     paragraphs: [

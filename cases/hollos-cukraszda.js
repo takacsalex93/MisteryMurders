@@ -155,6 +155,8 @@ Máz:     5 dkg csokoládé, 1 dl tejszín, 8 dkg cukor, 4 dkg vaj</div>`,
     ]
   },
 
+  carnation: { letter: "Z", found: "Szendrei kötényzsebében egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„Hollós holnap eladja a boltot a Lánchíd Rt.-nek, és téged kihagy. A jégkamra retesze kívül van. — F. Sz.”" },
+
   ending: {
     heading: "Szendrei Béla volt az.",
     paragraphs: [

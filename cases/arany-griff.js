@@ -161,6 +161,8 @@ AZ UTOLSÓ TÁNC — Anno MCMXXXIII
     ]
   },
 
+  carnation: { letter: "E", found: "A 414-es szoba szekrényében, a nedves irattartóban egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„Vándor szombaton a 412-ben száll meg. A 414 szabad, és összekötő ajtó van köztük. A darabod jogait jó áron megveszem. — F. Sz.”" },
+
   ending: {
     heading: "Kardos Endre volt az.",
     paragraphs: [

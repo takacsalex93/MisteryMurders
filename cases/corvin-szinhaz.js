@@ -152,6 +152,8 @@
     ]
   },
 
+  carnation: { letter: "F", found: "Mimi púderdobozában egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„Holnap bejelentik az eljegyzést. A szünetben a zsinórpadlás üres, a kellektárban templomi gyertya van. — F. Sz.”" },
+
   ending: {
     heading: "Rácz Mimi volt az.",
     paragraphs: [

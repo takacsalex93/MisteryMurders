@@ -123,6 +123,7 @@ Glaze:   5 dkg chocolate, 1 dl cream, 8 dkg sugar, 4 dkg butter</div>`,
     why: { legend: "Why did they do it?", name: "the motive", options: { orokseg: "To inherit the patisserie", eladas: "The secret sale and a promise broken for fifteen years", kassza: "To hide the money taken from the till", adossag: "Because of gambling debts" } },
     plant: { legend: "Which clue was meant to throw suspicion on the other Béla?", name: "the planted clue" }
   },
+  carnation: { found: "In Szendrei's apron pocket, a pressed black carnation and a typed note. In its bottom right corner, a letter circled in red.", note: "“Tomorrow Hollós sells the shop to Lánchíd Ltd., and leaves you out. The ice-room bolt is on the outside. — F. Sz.”" },
   ending: {
     heading: "It was Béla Szendrei.",
     paragraphs: [

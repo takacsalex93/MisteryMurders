@@ -49,7 +49,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => k.startsWith("mm:") && k !== "mm:sound").forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => k.startsWith("mm:") && !["mm:sound", "mm:lang"].includes(k)).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false;
   function save() { try { localStorage.setItem(KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   function gain(id) { if (id && !S.clues.includes(id)) S.clues.push(id); }
@@ -72,12 +72,19 @@
     save(); return false;
   }
   const updateClock = () => { const ck = app.querySelector(".clock"); if (ck && S.timed) { const l = budget(C) - S.used; ck.textContent = "⏱ " + T("Még {0} a csendőrök érkezéséig", fmtLeft(l)); ck.classList.toggle("low", l < 60); } };
+  // a titkos szál: a záró ügy a hat ügy megoldása után nyílik meg
+  const FINALE = CASES.find(c => c.finale);
+  const THREAD = FINALE ? FINALE.requiresAll.map(id => CASES.find(c => c.id === id)).filter(Boolean) : [];
+  const wonCase = c => loadState(c.id).ended === "win";
+  const unlocked = c => !c.requiresAll || c.requiresAll.every(id => { const x = CASES.find(k => k.id === id); return x && wonCase(x); });
+  const noteCard = (c, open) => `<div class="cnote ${open ? "" : "locked"}"><span class="eyebrow">${esc(c.meta.split("·")[1] || "")}</span><b>${esc(c.title)}</b>${open ? `<p>${esc(c.carnation.note)}</p>` : `<p class="meta">${T("Még megoldatlan")}</p>`}<span class="cletter" aria-label="${T("Bekarikázott betű")}">${open ? esc(c.carnation.letter) : "?"}</span></div>`;
   const REBUFF = ["vállat von: »Ez semmit sem bizonyít.«", "rezzenéstelen arccal néz rád.", "felhúzza a szemöldökét: »Ehhez nekem semmi közöm.«", "elneveti magát: »Ezzel akar sarokba szorítani?«"].map(x => T(x));
 
   /* ---------- útvonal ---------- */
   function route() {
     const id = (location.hash || "").slice(1);
     const c = CASES.find(x => x.id === id);
+    if (c && !unlocked(c)) { location.hash = ""; return; }
     if (c) { C = c; S = loadState(c.id); renderCase(); }
     else { C = null; S = null; renderHome(); }
     window.scrollTo({ top: 0 });
@@ -115,6 +122,7 @@
         <p>${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
       </header>
       ${sections}
+      ${FINALE ? threadSection() : ""}
       <section class="howto">
         <span class="eyebrow">${T("Hogyan játssz?")}</span>
         <ol>
@@ -127,6 +135,22 @@
       </section>
     </div>`;
     bindLang(); SCENE("home"); FX();
+  }
+
+  function threadSection() {
+    const n = THREAD.filter(wonCase).length, open = n === THREAD.length;
+    const st = loadState(FINALE.id);
+    const finaleCard = open
+      ? `<article class="casecard finale">${coverOf(FINALE)}${st.ended === "win" ? `<span class="stamp">${T("Megoldva")}</span>` : ""}
+          <span class="eyebrow">${T("{0}. ügy", FINALE.number)} · ${T("Zárás")}</span><h2>${esc(FINALE.title)}</h2><span class="meta">${esc(FINALE.meta)}</span><p>${esc(FINALE.teaser)}</p>
+          ${st.ended === "win" ? `<span class="meta">${T("{0} pont", score(st))} · ${rank(score(st))}</span>` : ""}
+          <div class="row"><a class="btn" href="#${FINALE.id}">${T(st.ended === "win" ? "Újraolvasom" : st.clues.length ? "Folytatom" : "Nyomozás indítása")} →</a></div></article>`
+      : `<article class="casecard finale locked"><span class="eyebrow">${T("{0}. ügy", FINALE.number)} · ${T("Zárás")}</span><h2>${T("Lezárt ügy")}</h2>
+          <p>${T("Mind a hat ügy végén egy préselt fekete szegfű és egy cédula vár. Ha mindet megtalálod, kiderül, ki áll mögöttük.")}</p>
+          <span class="meta">${T("{0} / {1} cédula", n, THREAD.length)}</span></article>`;
+    return `<section class="level thread"><div class="level-head"><h2>${T("A titkos szál")}</h2><p>${T("Hat gyilkosság, hat cédula, egy aláírás: F. Sz.")}</p></div>
+      <div class="cnotes">${THREAD.map(c => noteCard(c, wonCase(c))).join("")}</div>
+      <div class="cases">${finaleCard}</div></section>`;
   }
 
   /* ---------- ügy nézet ---------- */
@@ -166,6 +190,7 @@
       <p class="lead">${esc(C.intro.lead)}</p>
       <p>${esc(C.intro.body)}</p>
       <div class="typed">${T("TEENDŐ:\n1. Járd végig a helyszíneket, gyűjts nyomokat.\n2. Oldd meg a(z) {0} rejtvényt, mindegyik döntő bizonyítékot ad.\n3. Szembesítsd a gyanúsítottakat a nyomokkal. Aki hazudik, nem feltétlenül gyilkos.\n4. Emelj vádat, és támaszd alá bizonyítékkal. Három próbálkozásod van, utána a tettes kicsúszik a kezeid közül.", pids(C).length)}</div>
+      ${C.dossier ? `<div class="stack dossier"><span class="eyebrow">${esc(C.dossier.heading)}</span><p>${esc(C.dossier.text)}</p><div class="cnotes">${THREAD.map(c => noteCard(c, true)).join("")}</div></div>` : ""}
       ${pips()}
       <div class="row"><button class="btn" data-go>${T("Helyszínelés indítása")} →</button></div>
     </div>`,
@@ -373,6 +398,7 @@
     return `<div class="stack"><div class="ending ${revealOnly ? "lost" : ""}"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit) : ""}</div><span class="stamp anim">${T(revealOnly ? "Megoldás" : "Ügy lezárva")}</span></div>
       <h2>${esc(C.ending.heading)}</h2>
       ${conf}
+      ${!revealOnly && C.carnation ? `<div class="carnation"><span class="eyebrow">${T("A titkos szál")}</span><p>${esc(C.carnation.found)}</p><p class="typed">${esc(C.carnation.note)}</p><span class="cletter big">${esc(C.carnation.letter)}</span><p class="meta">${FINALE && unlocked(FINALE) ? T("Megvan mind a hat cédula. A címoldalon megnyílt a záró ügy.") : T("{0} / {1} cédula a címoldalon, A titkos szál alatt.", THREAD.filter(wonCase).length, THREAD.length)}</p></div>` : ""}
       ${C.ending.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}
       ${stats}</div>
       <div class="row"><a class="btn" href="#">${T("Vissza az ügyekhez")}</a>${revealOnly ? `<button class="btn ghost" data-restart>${T("Újrakezdem az ügyet")}</button>` : `<button class="btn ghost" data-share>${T("Eredménykártya")}</button>`}</div></div>`;
@@ -579,7 +605,7 @@
       $$("[data-ask]").forEach(b => b.onclick = () => { S.asked.push(b.dataset.ask); save(); SND("paper"); spend(COST.ask); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); });
       $$("[data-cf]").forEach(b => b.onclick = () => {
         const sid = b.dataset.cf, sel = $("#cf-" + sid), m = app.querySelector(`[data-cfmsg="${sid}"]`), clue = sel.value;
-        const s = C.suspects.find(x => x.id === sid), first = LANG === "en" ? s.name.split(" ")[0] : s.name.split(" ").slice(-1)[0];
+        const s = C.suspects.find(x => x.id === sid), first = s.short || (LANG === "en" ? s.name.split(" ")[0] : s.name.split(" ").slice(-1)[0]);
         if (!clue) { m.className = "msg bad"; m.textContent = T("Előbb válassz egy nyomot."); return; }
         const hit = contra(C, sid).find(k => !S.conf.includes(k.id) && has(k.clue, clue));
         if (hit) { S.conf.push(hit.id); if (hit.gives) gain(hit.gives); save(); SND(hit.lie === false ? "success" : "stamp"); spend(COST.confront); renderCase(); return; }
@@ -630,7 +656,7 @@
         if (has(st.proof, v)) { S.rstep++; save(); SND(S.rstep >= C.reveal.length ? "stamp" : "success"); renderCase(); app.querySelector(".reveal .rv-say.lead, .ending")?.scrollIntoView({ block: "start" }); return; }
         S.rmiss = (S.rmiss || 0) + 1; save(); SND("wrong");
         const who = C.suspects.find(x => x.id === st.who);
-        m.className = "msg bad"; m.textContent = T("{0} felnevet: „Ez semmit sem bizonyít!” A teremben morajlás támad.", who ? (LANG === "en" ? who.name.split(" ")[0] : who.name.split(" ").slice(-1)[0]) : T("Valaki"));
+        m.className = "msg bad"; m.textContent = T("{0} felnevet: „Ez semmit sem bizonyít!” A teremben morajlás támad.", who ? (who.short || (LANG === "en" ? who.name.split(" ")[0] : who.name.split(" ").slice(-1)[0])) : T("Valaki"));
       };
       $$("[data-share]").forEach(b => b.onclick = shareCard);
       $$("[data-restart]").forEach(b => b.onclick = () => { S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 }); });

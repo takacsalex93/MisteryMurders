@@ -265,5 +265,45 @@ window.MM_EXTRAS = {
         win: "A hetes hordóban már nincs aszú. Ön eladta Lorenz úrnak, hamis címkékkel. Le is írta a füzetébe: ha rájön, végem. A kürtőt be kell zárni." }
     ],
     confession: "„Negyven évig én csináltam a bort, ő a nevét adta rá. Egy kis aszú a nyugdíjamra, ennyi kellett. Amikor a hetes hordót mondta, tudtam, hogy vége. A pince elintézi. A pince mindig elintézi.”"
+  },
+  "fekete-szegfu": {
+    interviews: {
+      fekete: [
+        { id: "f1", q: "Mit tud a Lánchíd Rt.-ről?", a: "„Ügyfelem. Ingatlanokkal, műtárgyakkal kereskedik. Ennél többet az ügyvédi titoktartás miatt nem mondhatok.” Elmosolyodik." },
+        { id: "f2", q: "Miért hord mindig szegfűt a gomblyukában?", a: "„A feleségem első ajándéka volt. Azóta minden reggel veszek egy szálat. A sötétebbeket szeretem.”" },
+        { id: "f3", q: "Mit fényképez a sötétkamrájában?", after: "fenykepek", a: "„Tájakat. Épületeket. Szép helyeket, mielőtt megváltoznak.” Egy pillanatig hallgat. „Minden szép hely megváltozik egyszer.”" }
+      ],
+      irma: [
+        { id: "i1", q: "Milyen volt a férje az utóbbi időben?", a: "„Nyugtalan. Éjjelente a sötétkamrában ült. Egyszer azt mondta, Edit túl sokat iktat.”" },
+        { id: "i2", q: "Mit mondott önnek Edit?", after: "kesztyu", a: "„Azt, hogy nem nő van a dologban. Hogy sokkal rosszabb. Hogy holnap mindenki megtudja.” Elcsuklik a hangja." }
+      ],
+      halmi: [
+        { id: "h1", q: "Ki kezeli a Lánchíd Rt. ügyeit?", a: "„Csak Fekete úr. Engem soha nem engedett a közelébe. Edit iktatta a számláit, ő látott mindent.”" },
+        { id: "h2", q: "Látott ma valami szokatlant?", a: "„Délben Fekete úr egy szál szegfűvel jött be, de este a gomblyuka üres volt. Ezt csak most veszem észre, hogy furcsa.”" }
+      ],
+      pinter: [
+        { id: "p1", q: "Kinek van kulcsa a hátsó lépcsőhöz?", a: "„Nekem, meg Fekete úrnak. Senki másnak. Azt a lépcsőt a kutya sem használja, csak ő, ha a kocsijával jön.”" },
+        { id: "p2", q: "Mikor főzött Edit teát?", a: "„Fél hétkor, minden este. Óramű pontossággal. Ezt az egész iroda tudta.”" }
+      ],
+      rozsa: [
+        { id: "r1", q: "Ki jött be hat után?", a: "„Csak a postás, kérem.” Közben a kötényét gyűri." },
+        { id: "r2", q: "Honnan van ez a boríték?", after: "penz", a: "„Megtakarítás.” Aztán halkan: „Ugye nem kell visszaadnom?”" }
+      ]
+    },
+    reveal: [
+      { say: "Hölgyeim és uraim, Varga Edit nem lett öngyilkos. A búcsúlevelet valaki más írta alá.",
+        who: "fekete", objection: "„Szegény lány ideges volt. A levél egyértelmű.”", proof: ["tinta"],
+        win: "Az aláírás zöldeskék tintával, széles hegyű tollal készült. Edit csak lila tintát használt. Az irodában egyetlen ilyen toll van: az öné." },
+      { say: "A mérget a sötétkamrából hozták, a fényképészeti fixálóból.",
+        who: "fekete", objection: "„Én hatkor eljöttem, és hétig a Gerbeaud-ban ültem!”", proof: ["ido", "hazugsag"],
+        win: "A pincér szerint negyed hétkor felállt, és csak öt perccel hét előtt ült vissza. A kalapja és a konyakja vigyázott a helyére. Hét perc gyalog az iroda hátsó bejáratáig." },
+      { say: "A főkapun nem jött be. A hátsó lépcsőn igen.",
+        who: "rozsa", objection: "„Hat után senki sem jött be, csak a postás!”", proof: ["penz", "galos", "kulcs"],
+        win: "Száz pengő egy borítékban, zöld tintával. A hátsó lépcsőn 44-es angol sárcipő nyoma, a kulcs csak két embernél van, és Pintér a kocsmában ült." },
+      { say: "És hogy miért. Edit rájött arra, amire én csak most: hat ügyem mögött ugyanaz a kéz állt.",
+        who: "fekete", objection: "„Egy titkárnő fantáziálása!”", proof: ["dosszie", "lanchid"],
+        win: "Hat cédula, hat gyilkos, hat vétel, és mindet a Lánchíd Rt. vette meg. A Lánchíd Rt. egyetlen részvényese ön. Ön a fekete szegfű." }
+    ],
+    confession: "„Én soha senkit nem öltem meg. Hat embernek csak megmutattam az ajtót, amelyen már amúgy is ki akartak lépni. Edit volt az egyetlen, akit magamnak kellett… Látja, ez a baj azzal, ha az ember maga csinálja. Elfelejtettem tollat cserélni.”"
   }
 };

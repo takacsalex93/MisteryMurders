@@ -130,6 +130,7 @@
     how: { legend: "How did he get into the compartment?", name: "the way in", options: { folyoso: "Through the corridor door, with the conductor's key", mosdo: "Through the shared washroom, from the next compartment", ablak: "Through the window, while the train was stopped" } },
     why: { legend: "Why did he kill?", name: "the motive", options: { orokseg: "To get the inheritance", valto: "To have overdue bills forgiven", csalas: "Ráday meant to expose his embezzlement in Kassa", csalad: "An old family grievance" } }
   },
+  carnation: { found: "In Somló's briefcase, under the forged bills, a pressed black carnation and a typed note. In its bottom right corner, a letter circled in red.", note: "“Ráday will report you in Kassa. The conductor, Bodnár, will say anything for five hundred. I will take over the Ráday shares. — F. Sz.”" },
   ending: {
     heading: "Dezső Somló, and the conductor helped him.",
     paragraphs: [

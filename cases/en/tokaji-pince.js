@@ -146,6 +146,7 @@
     how: { legend: "How did the master die?", name: "the cause of death", options: { lepcso: "He fell down the cellar stairs", gaz: "He suffocated on the gas from fermenting must in the closed cellar", mereg: "He was poisoned with the tasting wine" } },
     why: { legend: "Why did the killer kill?", name: "the motive", options: { orokseg: "For the inheritance", valto: "Because of the unpaid IOUs", hamis: "The master would have exposed the sale of fake aszú", szerelem: "Out of jealousy" } }
   },
+  carnation: { found: "In Gáspár's chest, under the forged labels, a pressed black carnation and a typed note. In its bottom right corner, a letter circled in red.", note: "“Tonight the master tastes from barrel seven. Lorenz won't buy from you again. The shaft cover closes with a screw. — F. Sz.”" },
   ending: {
     heading: "Gáspár Fazekas, and the widow covered the tracks.",
     paragraphs: [

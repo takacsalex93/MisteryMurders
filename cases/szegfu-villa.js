@@ -161,6 +161,8 @@ Bud<span class="r">a</span>pest, l93l. VI. 2.</div>`,
     ]
   },
 
+  carnation: { letter: "S", found: "Ilona zsebnaptárában, a kulcsszó mellett egy préselt fekete szegfű és egy gépelt cédula lapult. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„A báró tudja. Holnap a rendőrségre megy. A darázsirtó az üvegház harmadik polcán áll. A Munkácsykat továbbra is én veszem. — F. Sz.”" },
+
   ending: {
     heading: "Bakos Ilona volt az.",
     paragraphs: [

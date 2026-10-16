@@ -130,6 +130,7 @@ Bud<span class="r">a</span>pest, l93l. VI. 2.</div>`,
     why: { legend: "Why?", name: "the motive", options: { orokseg: "To get the inheritance", feltekenyseg: "Jealousy, a betrayed marriage", hamisitas: "To stop the art forgery being exposed", adossag: "Mounting gambling debts" } },
     plant: { legend: "Which clue was planted to throw suspicion on someone else?", name: "the planted clue" }
   },
+  carnation: { found: "Folded into Ilona's pocket diary, next to the keyword, lay a pressed black carnation and a typed note. In its bottom right corner, a letter circled in red.", note: "“The baron knows. Tomorrow he goes to the police. The wasp killer is on the third shelf of the greenhouse. I shall go on buying the Munkácsys. — F. Sz.”" },
   ending: {
     heading: "It was Ilona Bakos.",
     paragraphs: [

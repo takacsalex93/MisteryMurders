@@ -168,6 +168,8 @@
     ]
   },
 
+  carnation: { letter: "G", found: "Somló aktatáskájában, a hamis váltók alatt egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„Ráday Kassán feljelent. A kalauz, Bodnár, ötszázért bármit mond. A Ráday-részvényeket átveszem. — F. Sz.”" },
+
   ending: {
     heading: "Somló Dezső, és a kalauz segített neki.",
     paragraphs: [

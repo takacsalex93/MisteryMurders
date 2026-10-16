@@ -14,6 +14,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 | 4 | Fagy a Hollós cukrászdában | Könnyű |
 | 5 | Utolsó felvonás | Közepes |
 | 6 | Köd a Hegyalján | Nehéz |
+| 7 | A fekete szegfű | Zárás (a hat ügy után nyílik meg) |
 
 ## Játékmenet
 
@@ -23,6 +24,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 - **Kihallgatás:** minden gyanúsítottnak feltehetők kérdések, újabb nyomokkal újabb kérdések nyílnak meg.
 - **Leleplezés:** a sikeres vád után lépésről lépésre el kell mondani, mi történt, és minden ellenvetésre a megfelelő bizonyítékkal felelni.
 - **Nyomozótábla, Hajnalig mód, eredménykártya:** parafatábla piros fonallal, időre játszott változat, megosztható eredménykép.
+- **A titkos szál:** minden ügy végén egy fekete szegfűs cédula és egy bekarikázott betű. A hat betű a záró ügy kulcsa.
 - **Rang:** a végén pontszám és nyomozói rang a próbálkozások, a súgók és a téves szembesítések alapján.
 
 ## Felépítés

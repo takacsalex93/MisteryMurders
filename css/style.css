@@ -271,3 +271,18 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .langs{display:flex;gap:6px;align-items:center;font-family:var(--type);font-size:13px;color:var(--muted)}
 .langs .link[aria-pressed="true"]{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .home-head .topnav{flex-wrap:wrap}
+
+/* a titkos szál */
+.cnotes{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px}
+.cnote{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:14px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;
+  box-shadow:0 8px 18px -14px rgba(0,0,0,.5)}
+.cnote b{font-family:var(--display);font-style:italic;font-size:18px;padding-right:44px}
+.cnote p{font-family:var(--type);font-size:13px;line-height:1.5}
+.cnote.locked{opacity:.6;border-style:dashed}
+.cletter{position:absolute;top:10px;right:12px;width:36px;height:36px;border:2.5px solid var(--stamp);border-radius:50%;display:grid;place-items:center;
+  font-family:var(--type);font-weight:700;font-size:18px;color:var(--stamp);transform:rotate(-6deg)}
+.cletter.big{position:static;width:54px;height:54px;font-size:28px;align-self:flex-start}
+.carnation{display:flex;flex-direction:column;gap:10px;border:1.5px dashed var(--stamp);border-radius:4px;padding:14px 16px}
+.casecard.finale{border-color:var(--stamp)}
+.casecard.locked{border-style:dashed;opacity:.85}
+.dossier{border-top:1px dashed var(--line);padding-top:14px}

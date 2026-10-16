@@ -127,6 +127,7 @@ THE LAST DANCE — Anno MCMXXXIII
     how: { legend: "How did they leave the room?", name: "the escape route", options: { ablak: "Through the window and along the ledge", ajto: "Through the connecting door into Room 414", potkulcs: "Through the corridor, with the porter's spare key" } },
     why: { legend: "Why did they kill?", name: "the motive", options: { szerzodes: "The terminated contract and the lawsuit", sikkasztas: "To hide the embezzlement", darab: "Vándor stole their play and staged it as his own", lopas: "They were caught stealing" } }
   },
+  carnation: { found: "In the wet document case in the wardrobe of 414, a pressed black carnation and a typed note. In its bottom right corner, a letter circled in red.", note: "“On Saturday Vándor stays in 412. Room 414 is free, and there is a connecting door between them. I will buy the rights to your play at a good price. — F. Sz.”" },
   ending: {
     heading: "It was Endre Kardos.",
     paragraphs: [
