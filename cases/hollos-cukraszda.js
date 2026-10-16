@@ -36,7 +36,7 @@
     holttest: { t: "A jégkamra", src: "Jégkamra", x: "Hollós a jégtömbök mellett kuporodott össze, kabát nélkül. Az orvos szerint éjfél körül fagyott meg. A tölgyfa ajtót kívülről zárta a retesz, belülről nincs rajta kilincs. A polcon ott a pisztáciás torta, egy szelet hiányzik belőle." },
     der: { t: "A dérbe írt név", src: "Jégkamra · ajtóüveg", x: "Hollós belülről, az ujjával egy keresztnevet írt az ajtó kis ablakára: BÉLA. A cukrászdában két Béla van: Szendrei Béla, a főcukrász, és Hollós Béla, az unokaöcs." },
     kartya: { t: "Kártyalap a jég között", src: "Jégkamra", x: "A jégtömbök között egy kártyalap: kőr ász, száraz és tiszta. A fűrészporban egyetlen nedvességfolt sincs körülötte, pedig a jég egész éjjel olvadt." },
-    retesz: { t: "A krém a reteszen", src: "Cukrászműhely", x: "A retesz fogantyúján megkérgesedett zöld pisztáciakrém, liszttel keverve. Ez a krém egész éjjel száradt: este került rá. A krémet aznap este csak Szendrei Béla főzte, a kötényén ugyanez a liszttel kevert, száraz folt." },
+    retesz: { t: "A krém a reteszen", src: "Cukrászműhely", x: "A retesz fogantyúján megkérgesedett zöld pisztáciakrém, liszttel keverve, egész éjjel száradt. A krémet aznap este csak Szendrei Béla főzte, a kötényén ugyanilyen liszttel kevert, száraz folt." },
     szerzodes: { t: "Az előszerződés", src: "Iroda · páncélszekrény", x: "Előszerződés a Lánchíd Kávéház Rt.-vel: Hollós holnap eladja a cukrászdát, a személyzetet elbocsátják. Mellette egy cetli: „Szendreinek nem szólok. Tizenöt éve ígérem neki, hogy társ lesz. Majd megérti.”" },
     tavozas: { t: "Ki mikor ment haza?", src: "Portásfülke · jelenléti ív", x: "Hollós Béla 21:00, Kertész Anna 21:30, Vilma asszony 21:45, Szendrei Béla 22:30. Fehér György egész éjjel bent maradt. Hollós 22:00-kor indult a jégkamrába." },
     valtok: { t: "Hollós Béla kabátja", src: "Öltöző", x: "Hollós Béla kabátjában háromezer pengőről szóló kártyaváltók. A kabát ujján friss, még nedves zöld krémfolt, liszt nélkül. A kabát este óta a fogason lógott." },
@@ -50,7 +50,7 @@
     { id: "c-szendrei", suspect: "szendrei", clue: ["tavozas"],
       reveal: "Szendrei elsápad: „Jó… később mentem el. Takarítottam, ennyi. Tízkor a mester lement, én nem láttam többet.”" },
     { id: "c-szendrei2", suspect: "szendrei", clue: ["valtok"],
-      reveal: "Szendrei túl gyorsan felel: „Biztos a műhelyben kente össze magát.” Csakhogy a kabát este óta a fogason lógott, a krém rajta még nedves. Valaki reggel kente rá, és azt mondta, reggel még nem járt a műhelyben." },
+      reveal: "Szendrei túl gyorsan felel: „Biztos a műhelyben kente össze magát, az a fiú mindenhez hozzáér.”" },
     { id: "c-hollosbela", suspect: "hollosbela", clue: ["kartya"], lie: false,
       reveal: "Hollós Béla megnézi a lapot: „Az én paklimból való. A paklim tegnap délután óta a műhelyben hevert, mindenki hozzáférhetett. Kilenctől hajnalig a klubban ültem, tíz ember tanúsítja.”" },
     { id: "c-anna", suspect: "anna", clue: ["penzkonyv"],
@@ -61,30 +61,72 @@
       reveal: "Gyuri bácsi a sapkáját gyűri: „Tíz után elbóbiskoltam, na. Csak hajnalban ébredtem. Nem láttam, ki ment a jégkamra felé.”" }
   ],
 
-  locations: [
+    locations: [
     { id: "jegkamra", name: "Jégkamra", desc: "Hideg pára, jégtömbök fűrészporban, a polcokon torták. Az ajtón egy kis, bederesedett üvegablak.",
+      look: "Hideg pára, jégtömbök fűrészporban, csöpög az olvadékvíz. [[Hollós a jégtömbök mellett kuporodik|holttest]], mintha melegedni próbált volna. A polcon [[a pisztáciás torta, egy szelet hiányzik belőle|torta]].\n\n[[A jégtömbök között valami piros-fehér villan a fűrészporban|kartya]]. A sarokban [[egy felborított vödör|vodor]]. Az ajtón egy kis, bederesedett üvegablak.",
+      decoys: { torta: "A hiányzó szeletet a mester maga vágta le kóstolni. Az orvos szerint mérgezésnek nyoma sincs.", vodor: "Jeges víz, egy fakanál. Hollós talán ezzel dörömbölt az ajtón." },
       items: [
-        { clue: "holttest", label: "A mester", text: "Hollós a jégtömbök mellett kuporodik, mintha melegedni próbált volna." },
-        { clue: "kartya", label: "A jégtömbök között", text: "Valami piros-fehér villan a fűrészporban." }],
+        { clue: "holttest", label: "A mester", text: "Letérdelsz a mester mellé." },
+        { clue: "kartya", label: "A jégtömbök között", text: "Kihúzod a fűrészporból." }],
       puzzle: "der" },
     { id: "muhely", name: "Cukrászműhely", desc: "Márványasztalok, rézüstök, a falon kötények sora. Mindenütt liszt és porcukor.",
+      look: "Márványasztalok, rézüstök, mindenütt liszt és porcukor. [[A rézüstben|ust]] zöld krém maradéka. A falon kötények sora, a jégkamra ajtaján kívül [[a nehéz vasretesz|retesz_]]. Az asztalon [[egy sodrófa|sodrofa]].",
+      decoys: { ust: "Pisztáciakrém, liszttel sűrítve. Szendrei titka, mondja az inas: senki más nem főz így.", retesz_: "A fogantyún zöld folt. Hogy kié, ahhoz össze kell vetned a ruhák foltjaival.", sodrofa: "Tiszta, a helyén. Senkit sem ütöttek meg vele." },
       requires: "der", puzzle: "retesz" },
     { id: "iroda", name: "Hollós irodája", desc: "Íróasztal, bekeretezett oklevelek, a sarokban egy zöldre festett páncélszekrény.",
+      look: "Íróasztal, a falon [[bekeretezett oklevelek|oklevel]], a sarokban egy zöldre festett páncélszekrény. Az asztalon a Hollós-torta receptje és [[egy asztali naptár|naptar]].",
+      decoys: { oklevel: "Bécs 1911, Párizs 1925, Budapest 1930. Mindegyiken csak Hollós neve áll, pedig a tortákat évek óta Szendrei készíti.", naptar: "Április 12.: „Lánchíd Rt., 10 óra, aláírás.” Kétszer aláhúzva." },
       puzzle: "szef" },
     { id: "portas", name: "Portásfülke", desc: "Szűk fülke a hátsó kapunál, a falon a jelenléti ív, az asztalon egy üveg.",
-      items: [{ clue: "palinka", label: "Az asztal", text: "Egy üveg, mellette felborult pohár." }],
+      look: "Szűk fülke a hátsó kapunál, a falon az elázott jelenléti ív. [[Az asztalon egy üveg, mellette felborult pohár|palinka]]. A szögön [[Gyuri bácsi lámpása|lampas]].",
+      decoys: { lampas: "Hideg, a bura kormos. Ma éjjel senki sem járt vele körbe a házban." },
+      items: [{ clue: "palinka", label: "Az asztal", text: "Megszagolod a poharat." }],
       puzzle: "tavozas" },
     { id: "kassza", name: "Kassza", desc: "Rézpénztárgép, vastag pénztárkönyv, a fiókban apró.",
-      items: [{ clue: "penzkonyv", label: "A pénztárkönyv", text: "Az utolsó oldalakon mintha valami nem egyezne." }] },
+      look: "Rézpénztárgép, [[a vastag pénztárkönyv|penzkonyv]], a fiókban [[apró|apro]].",
+      decoys: { apro: "Pontosan annyi, amennyi a kasszaszalag szerint kell. Ma éjjel senki sem nyúlt hozzá." },
+      items: [{ clue: "penzkonyv", label: "A pénztárkönyv", text: "Átlapozod az utolsó oldalakat." }] },
     { id: "oltozo", name: "Személyzeti öltöző", desc: "Fogasok, szekrények, egy elegáns férfikabát a kötények között.",
-      items: [{ clue: "valtok", label: "Az elegáns kabát", text: "Hollós Béla kabátja, a zsebéből papírok lógnak ki, az ujján valami zöld." }] },
+      look: "Fogasok, szekrények, keményített kötények. [[Egy elegáns férfikabát a kötények között|valtok]], az ujján valami zöld. [[Szendrei szekrénye|szekreny]] nyitva, a padon [[egy pár csizma|csizma]].",
+      decoys: { szekreny: "Tiszta ing, egy fénykép Hollósról és Szendreiről 1918-ból, karonfogva. A kötény hiányzik a helyéről.", csizma: "Az inasé. Reggel hatkor jött, ő találta meg a mestert." },
+      items: [{ clue: "valtok", label: "Az elegáns kabát", text: "Átnézed Hollós Béla kabátját." }] },
     { id: "uzlet", name: "Üzlettér", desc: "Tükrös falak, üvegvitrinek, márványasztalkák. Holnap itt nyitottak volna újra.",
+      look: "Tükrös falak, üvegvitrinek, márványasztalkák. A pulton [[Vilma asszony táskája|vilmatask]], ott felejtette, amikor reggel berohant. A pult fölött [[az árlap rézkeretben|arlap]], a vitrinben [[egy cukorból öntött hattyú|hattyu]].",
+      decoys: { hattyu: "Szendrei mestermunkája, a párizsi kiállításról. A talapzaton mégis Hollós neve áll." },
       items: [
-        { clue: "vilmatask", label: "Vilma asszony táskája", text: "A pulton felejtette, amikor reggel berohant." },
-        { clue: "arlap", label: "Az árlap", text: "Kalligrafikus betűk egy rézkeretben a pult fölött." }] }
+        { clue: "vilmatask", label: "Vilma asszony táskája", text: "Belenézel a táskába." },
+        { clue: "arlap", label: "Az árlap", text: "Elolvasod a kalligrafikus betűket." }] }
   ],
 
-  puzzles: {
+  deductions: [
+    { id: "d-csel", from: ["kartya", "valtok"], t: "Reggeli nyomok", x: "A kártya száraz az egész éjjel olvadó jég között, a kabát krémje még nedves, pedig a kabát este óta a fogason lóg. Mindkettőt reggel helyezték el, hogy Hollós Bélára terelje a gyanút.",
+      q: "Mi közös a kártyalapban és a kabáton lévő krémben?", ans: 1,
+      opts: ["Mindkettő Hollós Béla ellen szól, tehát ő a tettes.", "Mindkettő friss: valaki reggel helyezte el őket, hogy Hollós Bélára terelje a gyanút.", "Hollós Béla reggel visszajött, és akkor hagyta ott őket."] },
+    { id: "d-egyedul", from: ["tavozas", "palinka"], t: "Egyedül a házban", x: "Hollós tízkor ment le a jégkamrába. Ekkor már csak Szendrei és az éjjeliőr volt a házban, és Gyuri bácsi tíz után a pálinkától elaludt. Szendrei fél tizenegyig ébren, egyedül maradt.",
+      q: "Ki lehetett ébren a házban, amikor Hollós lement a jégkamrába?", ans: 0,
+      opts: ["Csak Szendrei Béla: a többiek elmentek, az éjjeliőr aludt.", "Gyuri bácsi, aki egész éjjel ébren volt a helyén.", "Vilma asszony, aki a villamos előtt visszafordult."] },
+    { id: "d-bela", from: ["der", "retesz"], t: "Melyik Béla?", x: "A mester a BÉLA nevet írta a dérbe. A reteszen este került, egész éjjel száradt, lisztes krém van, és az ilyet csak Szendrei Béla főzte, az ő kötényén van ugyanez.",
+      q: "Melyik Bélára mutat a két nyom együtt?", ans: 2,
+      opts: ["Hollós Bélára, az unokaöcsre, aki örököl.", "Egyikre sem: a név a pékségre utal.", "Szendrei Bélára, a főcukrászra."] },
+    { id: "d-vilma", from: ["vilmatask", "szerzodes"], t: "Vilma tudott róla", x: "Vilma tanúként aláírta az előszerződést. Ő akarta az eladást, a férje halála semmit sem nyert volna neki: az üzlet nélküle is megköttetett volna.",
+      q: "Mit jelent ez Vilmára nézve?", ans: 0,
+      opts: ["Nem volt oka megölni a férjét: ő maga is akarta az eladást.", "Vilma meg akarta akadályozni az eladást.", "Vilma hamisította a férje aláírását."] }
+  ],
+
+  events: [
+    { id: "unokaocs", after: 3, title: "Hollós Béla berobban",
+      text: "Csapódik a hátsó ajtó. Hollós Béla áll ott, kalap nélkül, a nyakkendője félrecsúszva. „Hallottam, mit írt a nagybátyám! Béla? Hát nem tudják, hány Béla van ebben a városban?”\n\nSzendrei a műhely ajtajából figyeli. Nem szól egy szót sem, csak a kezét törli a kötényébe, újra meg újra." },
+    { id: "koteny", afterSolved: "retesz", title: "Füst a műhelyből",
+      text: "Égett szag. A műhely sütőjének ajtaja nyitva, és Szendrei Béla egy piszkavassal tolja be a kötényét a lángok közé.\n\nAz inas kirántja, mielőtt elégne. A zöld folt még ott van rajta, megpörkölődve. Szendrei leteszi a piszkavasat. „A kötényem az enyém” mondja halkan." }
+  ],
+
+  fates: {
+    hollosbela: "A BÉLA felirat, a kőr ász és a krémes kabát tökéletesen összeállt. Az unokaöcsöt elítélik; az örökséget, amelyért a vád szerint ölt, a Lánchíd Rt. veszi meg fillérekért.",
+    anna: "A javított pénztárkönyv elég volt. Kertész Annát elítélik, és a beteg anyja sosem tudja meg, miért nem jön haza többé.",
+    vilma: "Az aláírt előszerződés és az elhallgatott eladás meggyőzte a bíróságot. Vilmát a férje meggyilkolásáért ítélik el, a cukrászdát idegenek nyitják újra.",
+    feher: "Ő volt a házban egész éjjel, és nem tudta megmondani, mit látott. Gyuri bácsit elítélik; a Váci utcában még évekig mesélik, hogy a jó öreg éjjeliőr ölte meg a mestert."
+  },
+puzzles: {
     der: {
       type: "text", title: "Írás a dérben", reward: "der", answers: ["Béla"], placeholder: "Milyen nevet írt?",
       body: `<p>A jégkamra ajtajának kis üvegablakára Hollós belülről, az ujjával írt valamit a dérbe, mielőtt összeesett. Te kívülről nézed:</p>
@@ -146,12 +188,12 @@ Máz:     5 dkg csokoládé, 1 dl tejszín, 8 dkg cukor, 4 dkg vaj</div>`,
 
   accusation: {
     questions: [
-      { id: "who", legend: "Ki zárta be a mestert?", name: "a tettes", from: "suspects", answer: "szendrei", proof: ["tavozas", "retesz"] },
+      { id: "who", legend: "Ki zárta be a mestert?", name: "a tettes", from: "suspects", answer: "szendrei", proof: ["d-bela", "d-egyedul"] },
       { id: "how", legend: "Hogyan halt meg Hollós?", name: "a módszer", answer: "jeg", proof: ["holttest", "retesz"],
         options: [{ v: "jeg", label: "Bezárták a jégkamrába a külső retesszel, és megfagyott" }, { v: "mereg", label: "Megmérgezték a pisztáciás tortával" }, { v: "utes", label: "Leütötték egy sodrófával" }] },
       { id: "why", legend: "Miért tette?", name: "az indíték", answer: "eladas", proof: ["szerzodes"],
         options: [{ v: "orokseg", label: "Hogy megörökölje a cukrászdát" }, { v: "eladas", label: "A titkos eladás és a tizenöt éve megszegett ígéret" }, { v: "kassza", label: "Hogy eltitkolja a kasszából kivett pénzt" }, { v: "adossag", label: "A kártyaadósság miatt" }] },
-      { id: "plant", legend: "Melyik nyommal akarták a gyanút a másik Bélára terelni?", name: "a hamis nyom", from: "clues", answer: ["kartya", "valtok"] }
+      { id: "plant", legend: "Melyik nyommal akarták a gyanút a másik Bélára terelni?", name: "a hamis nyom", from: "clues", answer: ["kartya", "valtok"], proof: ["d-csel"] }
     ]
   },
 

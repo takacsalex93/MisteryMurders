@@ -25,13 +25,14 @@
     eso: { t: "The rain", src: "Front desk", x: "The porter says the rain came down at a quarter to eleven and poured until midnight. Since then the umbrella stand has been full of dripping umbrellas." },
     holttest: { t: "The body and the statuette", src: "Room 412", x: "Vándor was killed by a blow from a bronze statuette of Pallas Athena, an award he received in 1930. The statuette has been wiped. The door was locked from the inside, the key in the lock. On the carpet, wet, muddy footprints, although Vándor never left his room all evening." },
     szerzodes: { t: "The stolen play", src: "Room 412 · safe", x: "In the safe, the manuscript of “The Last Dance”. Vándor's name is on the cover, but underneath, scratched out yet still legible, is the original author: Endre Kardos. The play is running to full houses, and every penny goes to Vándor." },
-    ido: { t: "The evening's timeline", src: "Lift and stairwell", x: "The order of the evening: Vándor orders champagne, the waiter takes it up, the lift carries a man in a wet coat to the fourth floor, a dull thud from 412, a bolt clicks further down the corridor, Lili telephones in vain, the porter opens the door." },
+    ido: { t: "The evening's timeline", src: "Lift and stairwell", x: "The order of the evening: Vándor orders champagne, the waiter takes it up, the lift carries a man in a wet coat to the fourth floor, a dull thud from 412 (Margit says the corridor clock was just striking the quarter, a quarter past eleven), a bolt clicks further down the corridor, Lili telephones in vain, the porter opens the door." },
     liftes: { t: "The lift boy's statement", src: "Lift and stairwell", x: "“His coat was soaking, as if he'd walked the whole embankment. He had his hat pulled down over his eyes and clutched a shabby leather document case. He got out on the fourth, but he didn't go towards 412, he turned right.”" },
     derkes: { t: "Andor Derkes does not exist", src: "Front desk · register", x: "That evening Room 414 was taken for cash by an “Andor Derkes”, who never came back to the desk. The name is made of exactly the letters of Endre Kardos." },
-    kijarat: { t: "The connecting door", src: "Room 414", x: "On the connecting door between 412 and 414, the bolt on the 412 side is open, the one on the 414 side shut. The killer came through from the next room, went back the same way and bolted the door on his own side. In the wardrobe of 414, a shabby, wet leather document case." },
+    kijarat: { t: "The connecting door", src: "Room 414", x: "On the connecting door between 412 and 414, the bolt on the 412 side is open, the one on the 414 side shut, and there is a wet smear of mud on the threshold. In the wardrobe of 414, a shabby, wet leather document case." },
     tavirat: { t: "Vándor's draft telegram", src: "Lili's room", x: "“I hereby terminate Miss Fodor's contract with immediate effect; a claim for damages will follow.” A copy of Vándor's telegram on Lili's bedside table." },
     fokonyv: { t: "The secret ledger", src: "Bar", x: "In Hartmann's briefcase, a second ledger: over two years, forty thousand pengő has vanished from the theatre's till." },
-    mandzsetta: { t: "The gold cufflinks", src: "Staff corridor", x: "In Margit's apron pocket, Vándor's monogrammed gold cufflinks." }
+    mandzsetta: { t: "The gold cufflinks", src: "Staff corridor", x: "In Margit's apron pocket, Vándor's monogrammed gold cufflinks." },
+    kozpont: { t: "The switchboard log", src: "Lili's statement", x: "According to the hotel switchboard, Lili was on the line to Vienna from 23:00 to 23:20, and at 23:25 she rang Room 412, without answer." }
   },
   contradictions: {
     "c-kardos": { reveal: "Kardos is silent for a long time. “Yes, I took the room. I wanted to talk to him through the door. He wouldn't let me in. Then I left.”" },
@@ -41,22 +42,56 @@
     "c-ferenczy": { reveal: "Ferenczy sweats: “He paid cash, tipped well, I didn't ask questions. Said his name was Derkes. I didn't think it would lead to trouble.”" },
     "c-lili": { reveal: "Lili lifts her chin: “Yes, he threatened me with a lawsuit. But the exchange will tell you: from eleven I spent twenty minutes on the line to Vienna.”" }
   },
-  locations: {
+    locations: {
     szoba412: { name: "Room 412", desc: "Burgundy wallpaper, a half-empty champagne bottle, playbills on the mantelpiece. It happened here.",
-      items: { holttest: { label: "The body", text: "Vándor lies in front of the fireplace, the bronze Pallas beside him." } } },
+      look: "Burgundy wallpaper, stuffy heat. [[Vándor lies in front of the fireplace, the bronze Pallas beside him|holttest]]. On the table, [[a half-empty champagne bottle and two glasses|pezsgo]]; on the mantelpiece, framed playbills; in the wall, a safe with a combination lock.\n\nIn front of the window, [[pots of geraniums on the sill|ablak]]. In the far wall, a [[narrow, papered-over door|ajto]], as if it were part of the wall.",
+      decoys: { pezsgo: "Only one glass has been drunk from. The other is clean; the waiter brought it up on the tray, as is customary.", ablak: "The window is locked from inside; the soot on the sill is untouched.", ajto: "A connecting door to the next room. On this side the bolt is open. What is on the other side, you can't see from here." },
+      items: { holttest: { label: "The body", text: "You kneel beside Vándor." } } },
     lift: { name: "Lift and stairwell", desc: "A wrought-iron lift cage, a uniformed lift boy, red carpet on the stairs.",
-      items: { liftes: { label: "The lift boy", text: "Sixteen years old and very eager to help." } } },
+      look: "A wrought-iron lift cage, a brass plate with the floors. [[The uniformed lift boy|liftes]] is sixteen and very eager to help. On the stairs, [[red carpet with dark stains|folt]]; on the landing, [[a pillar ashtray|hamu]].",
+      decoys: { folt: "Red wine. The lift boy says a guest dropped a glass this afternoon.", hamu: "Cigar stubs, a used ticket for the Royal Orfeum. Nothing that belongs here." },
+      items: { liftes: { label: "The lift boy", text: "You question the boy." } } },
     porta: { name: "Front desk", desc: "A mahogany counter, a key board, an open register. Pál Ferenczy nervously straightens his tie.",
-      items: { eso: { label: "The umbrella stand", text: "Full of dripping umbrellas, a puddle beneath." } } },
-    szoba414: { name: "Room 414", desc: "Next door to 412. The bed unslept in, a half-smoked cigarette in the ashtray." },
+      look: "A mahogany counter, the key board behind it, an open register on top. Pál Ferenczy nervously straightens his tie. By the door, [[the umbrella stand with a puddle beneath it|eso]]. On the wall, [[a framed letter|keret]]; at the edge of the counter, [[a telegram pad|blokk]].",
+      decoys: { keret: "In gratitude to Mr Ferenczy for twenty years of loyal service. The hotel management, 1932.", blokk: "On the last sheet, only a pencil impression: a Vienna number. Lili rang Vienna again tonight." },
+      items: { eso: { label: "The umbrella stand", text: "You ask the porter when the rain started." } } },
+    szoba414: { name: "Room 414", desc: "Next door to 412. The bed unslept in, a half-smoked cigarette in the ashtray.",
+      look: "Next door to 412. [[The bed has not been slept in|agy]]; on the table, [[an ashtray with a half-smoked cigarette|cigi]]. Rain streams down the window.",
+      decoys: { agy: "Nobody lay in it. Whoever took this room didn't come to sleep.", cigi: "A cheap Symphonia, bitten at the end. Someone waited here, nervously." } },
     lili: { name: "Lili's room", desc: "Bouquets of flowers, the smell of perfume, papers on the bedside table.",
-      items: { tavirat: { label: "The bedside table", text: "A crumpled copy of a telegram." } } },
+      look: "Bouquets on every table, heavy perfume. [[Crumpled papers on the bedside table|tavirat]]. In front of the mirror, [[a pile of calling cards and love letters|nevjegy]]; on the armchair, [[a sequinned gown|ruha]].",
+      decoys: { nevjegy: "Admirers, bankers, an archduke's secretary. Vándor was not Lili's only patron.", ruha: "Tonight's stage gown. Lili didn't even change when she got back." },
+      items: { tavirat: { label: "The bedside table", text: "You smooth out the crumpled paper." } } },
     bar: { name: "Bar", desc: "A jazz piano, cigarette smoke, Hartmann's briefcase on a bar stool.",
-      items: { fokonyv: { label: "Hartmann's briefcase", text: "Left open, a thick ledger sticking out." } } },
+      look: "A jazz piano, cigarette smoke. On a bar stool, [[Hartmann's briefcase, left open|fokonyv]]. Behind the counter, [[the barman polishes a glass|pultos]]; in the corner, [[an abandoned poker table|poker]].",
+      decoys: { pultos: "“Mr Hartmann sat here from half past ten until midnight, drank three cognacs and never got up once.”", poker: "Scattered chips, a flush laid out. Somebody won big tonight." },
+      items: { fokonyv: { label: "Hartmann's briefcase", text: "You pull the thick ledger out of the case." } } },
     szemelyzet: { name: "Staff corridor", desc: "Laundry baskets, ironing boards, the maids' aprons on the wall.",
-      items: { mandzsetta: { label: "Margit's apron", text: "Something metallic clinks in the pocket." } } }
+      look: "Laundry baskets, ironing boards, steam and the smell of starch. [[The maids' aprons hang on the wall|mandzsetta]]. In the corner, [[the opening of the laundry chute|ledobo]]; in the ironing room, [[Anna, the other maid|anna]] is at work.",
+      decoys: { ledobo: "Down in the laundry, only sheets. If anyone dropped something here, the steam swallowed it long ago.", anna: "“Margit was ironing with me all evening. When it thudded she nearly dropped the iron.”" },
+      items: { mandzsetta: { label: "Margit's apron", text: "Something metallic clinks in Margit's apron pocket." } } }
   },
-  puzzles: {
+  deductions: {
+    "d-kivul": { t: "From outside", x: "Vándor never left his room all evening, yet there are fresh muddy prints on the carpet. The rain started at a quarter to eleven: the killer came in from outside, out of the rain.",
+      q: "What do you conclude from the muddy prints and the rain?", opts: ["Vándor went out on the terrace and came back muddy.", "The maid tracked in the mud while cleaning.", "The killer came in from outside, out of the rain, after a quarter to eleven."] },
+    "d-szomszed": { t: "Through the next room", x: "On the fourth floor the soaked man turned not towards 412 but towards 414. The connecting door is open on the 412 side, bolted on the 414 side, mud on the threshold. The killer came through from 414 and went back there.",
+      q: "How did the killer get in and out?", opts: ["From 414 through the connecting door, and back the same way.", "From the corridor, with the porter's spare key.", "Vándor let him in by the corridor door, and he left by the window."] },
+    "d-tettes": { t: "The guest in 414", x: "The killer came from 414. Room 414 was taken by “Andor Derkes”, a name made of the letters of Endre Kardos.",
+      q: "Who was the guest in 414?", opts: ["Hartmann, who rented a room under a false name to hide the embezzled money.", "Endre Kardos, under the name Andor Derkes.", "An unknown Viennese impresario, a friend of Lili's."] },
+    "d-lili": { t: "Lili's alibi", x: "The thud came at a quarter past eleven. By then Lili had been on the line to Vienna for a quarter of an hour, and stayed on until 23:20.",
+      q: "What does this mean for Lili?", opts: ["Lili cannot have been in 412 when Vándor was killed.", "Lili used the call to build an alibi, so she is the killer.", "The switchboard log is fake; Lili bribed the operator."] }
+  },
+  events: {
+    margit: { title: "A scream from the staff corridor", text: "A sharp scream cuts through the silence. By the time you get there, Margit is standing in front of the laundry chute, white as a sheet, her hand pressed to her apron pocket. When she sees you she drops her broom and runs off towards the ironing room without a word.\n\nAnna, the other maid, just shakes her head: “She's been like this all evening. She's hiding something.”" },
+    kardos: { title: "Kardos heads into the rain", text: "When you get back to the lobby, Endre Kardos is standing at the revolving door in his hat and coat. Ferenczy leaps in front of him: “The captain has forbidden anyone to leave!”\n\nKardos slowly takes off his hat. “I only wanted some air,” he says, but his hand is trembling, and his coat is still wet round the shoulders." }
+  },
+  fates: {
+    lili: "The terminated contract and the lawsuit were motive enough for the jury. Lili's last performance takes place in the dock; her Viennese impresario waits for her in vain.",
+    hartmann: "The forty thousand embezzled pengő convinced everyone. Hartmann is convicted of murder and fraud, and the theatre is closed.",
+    margit: "The cufflinks were in her pocket, and that was enough. Margit is convicted; nobody listens to Anna. At twenty-two she is sent to the women's prison at Márianosztra.",
+    ferenczy: "He let the room, and he had the spare key. After twenty years of service Ferenczy is arrested; the hotel even scrapes his name off the letter of thanks."
+  },
+puzzles: {
     szef: {
       title: "The safe",
       body: `<p>The wall safe opens with a four-digit combination. Hartmann says Vándor set every code to the year an audience first gave him a standing ovation.</p>

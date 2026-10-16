@@ -4,7 +4,11 @@
   const I = window.MM_I18N || { T: s => s, lang: "hu", apply: () => {} };
   const T = I.T, LANG = I.lang;
   const CASES = (window.MM_CASES || []).slice().sort((a, b) => a.number - b.number);
-  CASES.forEach(c => { Object.assign(c, (window.MM_EXTRAS || {})[c.id] || {}); I.apply(c); });
+  CASES.forEach(c => {
+    Object.assign(c, (window.MM_EXTRAS || {})[c.id] || {}); I.apply(c);
+    // a következtetések a nyomok közé kerülnek: bizonyítékként, szembesítéshez is használhatók
+    (c.deductions || []).forEach(d => { c.clues[d.id] = { t: d.t, x: d.x, src: T("Következtetés"), ded: true }; });
+  });
   const app = document.getElementById("app");
   const $ = s => app.querySelector(s);
   const $$ = s => app.querySelectorAll(s);
@@ -43,7 +47,7 @@
 
   /* ---------- mentés ---------- */
   const KEY = id => "mm2:" + id;
-  const fresh = () => ({ tab: "ugy", loc: null, clues: [], solved: {}, hints: {}, inputs: {}, tries: 0, ended: null, conf: [], wrongConf: 0, acc: {}, board: {}, threads: [], introSeen: false, timed: false, used: 0, asked: [], rstep: 0, rmiss: 0 });
+  const fresh = () => ({ tab: "ugy", loc: null, clues: [], solved: {}, hints: {}, inputs: {}, tries: 0, ended: null, conf: [], wrongConf: 0, acc: {}, board: {}, threads: [], introSeen: false, timed: false, used: 0, asked: [], rstep: 0, rmiss: 0, seen: [], wrongDed: 0, events: [], master: false, accused: null });
   function loadState(id) {
     try { const v = JSON.parse(localStorage.getItem(KEY(id))); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {}
     return fresh();
@@ -57,13 +61,16 @@
   const hintsUsed = st => Object.values(st.hints).reduce((a, b) => a + b, 0);
   const pids = c => Object.keys(c.puzzles);
   const MAXTRIES = c => c.maxTries || 3;
-  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0) - 4 * (st.rmiss || 0));
-  const rank = n => T(n >= 90 ? "Hercule Poirot is megsüvegelné" : n >= 70 ? "A kapitányság dicséretét kapod" : n >= 45 ? "Megbízható nyomozó" : "Szerencsés kezdő");
+  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0) - 4 * (st.rmiss || 0) - 3 * (st.wrongDed || 0));
+  const isDed = k => C.clues[k] && C.clues[k].ded;
+  const rawIds = c => Object.keys(c.clues).filter(k => !c.clues[k].ded);
+  const dedsOf = c => c.deductions || [];
+  const rank = (n, st) => (st || S) && (st || S).master && n >= 90 ? T("Mesterdetektív: Poirot is tőled tanulna") : T(n >= 90 ? "Hercule Poirot is megsüvegelné" : n >= 70 ? "A kapitányság dicséretét kapod" : n >= 45 ? "Megbízható nyomozó" : "Szerencsés kezdő");
   const contra = (c, sid) => (c.contradictions || []).filter(k => !sid || k.suspect === sid);
   const has = (list, v) => [].concat(list).includes(v);
   // időre játszott mód: minden lépés perceket visz el a csendőrök érkezéséig
-  const COST = { take: 10, wrong: 5, hint: 20, confront: 15, accuse: 30, ask: 5 };
-  const budget = c => 10 * c.locations.reduce((n, l) => n + (l.items || []).length, 0) + 15 * (c.contradictions || []).length + 15 * pids(c).length + 90;
+  const COST = { take: 10, wrong: 5, hint: 20, confront: 15, accuse: 30, ask: 5, look: 5, deduce: 5 };
+  const budget = c => 10 * c.locations.reduce((n, l) => n + (l.items || []).length + Object.keys(l.decoys || {}).length / 2, 0) + 15 * (c.contradictions || []).length + 15 * pids(c).length + 10 * (c.deductions || []).length + 90;
   const fmtLeft = m => { m = Math.max(0, m); const h = Math.floor(m / 60), mm = m % 60; return h ? T("{0} óra {1} perc", h, mm) : T("{0} perc", mm); };
   function spend(min) {
     if (!S.timed || S.ended) return false;
@@ -105,7 +112,7 @@
         <h2>${esc(c.title)}</h2>
         <span class="meta">${esc(c.meta)}</span>
         <p>${esc(c.teaser)}</p>
-        ${st.ended === "win" ? `<span class="meta">${T("{0} pont", score(st))} · ${rank(score(st))}</span>` : ""}
+        ${st.ended === "win" ? `<span class="meta">${T("{0} pont", score(st))} · ${rank(score(st), st)}</span>` : ""}
         ${started && !st.ended ? `<span class="meta">${T("{0}/{1} rejtvény · {2}/{3} nyom", done, total, st.clues.length, Object.keys(c.clues).length)}</span>` : ""}
         <div class="row"><a class="btn" href="#${c.id}">${label} →</a></div>
       </article>`;
@@ -126,10 +133,11 @@
       <section class="howto">
         <span class="eyebrow">${T("Hogyan játssz?")}</span>
         <ol>
-          <li>${T("Kutasd át a helyszíneket, és gyűjtsd a nyomokat a jegyzetfüzetbe.")}</li>
+          <li>${T("Kutasd át a helyszíneket. A nyomok a leírásban rejtőznek: kattints arra, ami gyanús, de vigyázz, nem minden részlet nyom.")}</li>
           <li>${T("Oldd meg a rejtvényeket. Ha elakadsz, kérj súgót, de az a végén látszani fog.")}</li>
+          <li>${T("Vesd össze a nyomokat, és vond le a következtetéseket. A játék nem mondja meg helyetted, mit jelentenek.")}</li>
           <li>${T("Olvasd el a vallomásokat, és szembesítsd a gyanúsítottakat a nyomokkal. Mindenki elhallgat valamit, de csak egyikük gyilkos.")}</li>
-          <li>${T("Emelj vádat, és minden állításodhoz jelöld meg a döntő bizonyítékot. Három próbálkozásod van.")}</li>
+          <li>${T("Emelj vádat, és minden állításodhoz jelöld meg a döntő bizonyítékot. Ha ártatlant nevezel meg, azt letartóztatják, és az ügy elveszett.")}</li>
         </ol>
         <p>${T("A játékállás ebben a böngészőben mentődik, bármikor folytathatod.")}</p>
       </section>
@@ -143,7 +151,7 @@
     const finaleCard = open
       ? `<article class="casecard finale">${coverOf(FINALE)}${st.ended === "win" ? `<span class="stamp">${T("Megoldva")}</span>` : ""}
           <span class="eyebrow">${T("{0}. ügy", FINALE.number)} · ${T("Zárás")}</span><h2>${esc(FINALE.title)}</h2><span class="meta">${esc(FINALE.meta)}</span><p>${esc(FINALE.teaser)}</p>
-          ${st.ended === "win" ? `<span class="meta">${T("{0} pont", score(st))} · ${rank(score(st))}</span>` : ""}
+          ${st.ended === "win" ? `<span class="meta">${T("{0} pont", score(st))} · ${rank(score(st), st)}</span>` : ""}
           <div class="row"><a class="btn" href="#${FINALE.id}">${T(st.ended === "win" ? "Újraolvasom" : st.clues.length ? "Folytatom" : "Nyomozás indítása")} →</a></div></article>`
       : `<article class="casecard finale locked"><span class="eyebrow">${T("{0}. ügy", FINALE.number)} · ${T("Zárás")}</span><h2>${T("Lezárt ügy")}</h2>
           <p>${T("Mind a hat ügy végén egy préselt fekete szegfű és egy cédula vár. Ha mindet megtalálod, kiderül, ki áll mögöttük.")}</p>
@@ -157,10 +165,10 @@
   const TABS = [["ugy", "Ügyirat"], ["hely", "Helyszínek"], ["gyan", "Gyanúsítottak"], ["jegy", "Jegyzetfüzet"], ["tabla", "Tábla"], ["vad", "Vádemelés"]].map(([a, b]) => [a, T(b)]);
   function renderCase() {
     document.title = C.title;
-    app.innerHTML = `<div class="wrap">
+    app.innerHTML = `<div class="wrap ${S.master ? "master" : ""}">
       <div class="topnav"><a class="link" href="#">← ${T("Összes ügy")}</a>${langSwitch()}</div>
       <header class="case">
-        <div class="stack" style="gap:6px"><span class="meta">${esc(C.meta)}</span><h1>${esc(C.title)}</h1>${S.timed && !S.ended ? `<span class="clock ${budget(C) - S.used < 60 ? "low" : ""}">⏱ ${T("Még {0} a csendőrök érkezéséig", fmtLeft(budget(C) - S.used))}</span>` : ""}</div>
+        <div class="stack" style="gap:6px"><span class="meta">${esc(C.meta)}</span><h1>${esc(C.title)}</h1>${S.master ? `<span class="badge">${T("Mester mód")}</span>` : ""}${S.timed && !S.ended ? `<span class="clock ${budget(C) - S.used < 60 ? "low" : ""}">⏱ ${T("Még {0} a csendőrök érkezéséig", fmtLeft(budget(C) - S.used))}</span>` : ""}</div>
         <span class="stamp">${T(S.ended === "win" ? "Ügy lezárva" : S.ended ? "Elszalasztva" : "Nyomozás folyamatban")}</span>
       </header>
       <nav class="tabs" role="tablist">${TABS.map(([id, l]) => `<button role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${l}${id === "jegy" && S.clues.length ? `<span class="count">${S.clues.length}</span>` : ""}</button>`).join("")}</nav>
@@ -175,6 +183,7 @@
     BIND[S.tab] && BIND[S.tab]();
     bindLang();
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
+    else checkEvents();
     SCENE((S.tab === "hely" && S.loc && C.sounds && C.sounds[S.loc]) || C.sound || "home");
     FX();
   }
@@ -189,7 +198,7 @@
       <h2>${esc(C.intro.heading)}</h2>
       <p class="lead">${esc(C.intro.lead)}</p>
       <p>${esc(C.intro.body)}</p>
-      <div class="typed">${T("TEENDŐ:\n1. Járd végig a helyszíneket, gyűjts nyomokat.\n2. Oldd meg a(z) {0} rejtvényt, mindegyik döntő bizonyítékot ad.\n3. Szembesítsd a gyanúsítottakat a nyomokkal. Aki hazudik, nem feltétlenül gyilkos.\n4. Emelj vádat, és támaszd alá bizonyítékkal. Három próbálkozásod van, utána a tettes kicsúszik a kezeid közül.", pids(C).length)}</div>
+      <div class="typed">${T("TEENDŐ:\n1. Járd végig a helyszíneket. Olvasd figyelmesen a leírást: a nyomokra neked kell rábukkannod, és nem minden gyanús részlet nyom.\n2. Oldd meg a(z) {0} rejtvényt.\n3. A Jegyzetfüzetben vesd össze a nyomokat. A következtetést neked kell levonnod.\n4. Szembesítsd a gyanúsítottakat. Aki hazudik, nem feltétlenül gyilkos.\n5. Emelj vádat bizonyítékokkal. Ha ártatlant nevezel meg, azt letartóztatják, és nincs visszaút.", pids(C).length)}</div>
       ${C.dossier ? `<div class="stack dossier"><span class="eyebrow">${esc(C.dossier.heading)}</span><p>${esc(C.dossier.text)}</p><div class="cnotes">${THREAD.map(c => noteCard(c, true)).join("")}</div></div>` : ""}
       ${pips()}
       <div class="row"><button class="btn" data-go>${T("Helyszínelés indítása")} →</button></div>
@@ -198,14 +207,14 @@
     hely: () => {
       if (S.loc) return viewLoc(C.locations.find(l => l.id === S.loc));
       return `<div class="stack"><span class="eyebrow">${T("A helyszín alaprajza")}</span><h2>${T("Helyszínek")}</h2>
-        <p>${T("Válassz egy helyiséget. A rejtvényt rejtő helyszíneket ✦ jelöli.")}</p>
+        <p>${T(S.master ? "Válassz egy helyiséget." : "Válassz egy helyiséget. A rejtvényt rejtő helyszíneket ✦ jelöli.")}</p>
         <div class="grid2">${C.locations.map(l => {
           const locked = l.requires && !S.solved[l.requires];
           const items = l.items || [];
           const total = items.length + (l.puzzle ? 1 : 0);
           const got = items.filter(i => S.clues.includes(i.clue)).length + (l.puzzle && S.solved[l.puzzle] ? 1 : 0);
-          const status = locked ? `<span class="status locked">${T("Zárva")}</span>` : got === total ? `<span class="status done">${T("Átkutatva")}</span>` : `<span class="status">${T("{0}/{1} felderítve", got, total)}</span>`;
-          return `<button class="loc" data-loc="${l.id}" ${locked ? "disabled" : ""}><div class="art" aria-hidden="true">${ART.scene(l, "")}</div><h3>${l.puzzle ? "✦ " : ""}${esc(l.name)}</h3><p>${esc(l.desc)}</p>${status}</button>`;
+          const status = locked ? `<span class="status locked">${T("Zárva")}</span>` : S.master ? (got ? `<span class="status">${T("{0} nyom innen", got)}</span>` : "") : got === total ? `<span class="status done">${T("Átkutatva")}</span>` : `<span class="status">${T("{0}/{1} felderítve", got, total)}</span>`;
+          return `<button class="loc" data-loc="${l.id}" ${locked ? "disabled" : ""}><div class="art" aria-hidden="true">${ART.scene(l, "")}</div><h3>${l.puzzle && !S.master ? "✦ " : ""}${esc(l.name)}</h3><p>${esc(l.desc)}</p>${status}</button>`;
         }).join("")}</div></div>`;
     },
 
@@ -235,16 +244,21 @@
     },
 
     jegy: () => {
-      const ids = Object.keys(C.clues).filter(k => S.clues.includes(k));
+      const ids = rawIds(C).filter(k => S.clues.includes(k));
+      const dids = dedsOf(C).map(d => d.id).filter(k => S.clues.includes(k));
       return `<div class="stack"><span class="eyebrow">${T("Saját jegyzeteid")}</span><h2>${T("Jegyzetfüzet")}</h2>${pips()}
+        ${dedPanel()}
+        ${dids.length ? `<span class="eyebrow">${T("Következtetéseid")}</span><div class="stack">${dids.map(k => `<div class="clue ded"><span class="src">${T("Következtetés")}</span><h3>${esc(C.clues[k].t)}</h3><p>${esc(C.clues[k].x)}</p></div>`).join("")}</div>` : ""}
+        ${ids.length ? `<span class="eyebrow">${T("Nyomok")}</span>` : ""}
         ${ids.length ? `<div class="stack">${ids.map(k => `<div class="clue"><span class="src">${esc(C.clues[k].src)}</span><h3>${esc(C.clues[k].t)}</h3><p>${esc(C.clues[k].x)}</p></div>`).join("")}</div>`
           : `<p class="typed">${T("Még üres a füzet. Kezdd ott, ahol a holttestet megtalálták.")}</p>`}
         ${S.conf.length ? `<span class="eyebrow">${T("Feltárt ellentmondások")}</span><div class="stack">${contra(C).filter(k => S.conf.includes(k.id)).map(k => `<div class="clue"><span class="src">${esc(C.suspects.find(x => x.id === k.suspect).name)}</span><p>${esc(k.reveal)}</p></div>`).join("")}</div>` : ""}
-        <p class="eyebrow">${T("{0} / {1} nyom", ids.length, Object.keys(C.clues).length)}</p></div>`;
+        <p class="eyebrow">${S.master ? T("{0} nyom", ids.length) : T("{0} / {1} nyom", ids.length, rawIds(C).length)}</p></div>`;
     },
 
     tabla: () => `<div class="stack"><span class="eyebrow">${T("A nyomozó parafatáblája")}</span><h2>${T("Tábla")}</h2>
       <p>${T("Húzd a kártyákat oda, ahová szeretnéd, és köss össze piros fonallal mindent, ami összetartozik.")} ${S.clues.length ? "" : T("Még nincs nyomod: a talált nyomok maguktól felkerülnek a táblára.")}</p>
+      ${dedPanel()}
       <div class="row"><button class="btn ghost small" data-thread aria-pressed="false">${T("Fonal húzása")}</button><button class="btn ghost small" data-tidy>${T("Rendezés")}</button><button class="btn ghost small" data-unthread>${T("Fonalak le")}</button><span class="meta" data-boardhint></span></div>
       <div class="board-wrap"><div class="board" data-board><svg class="threads" data-threads aria-hidden="true"></svg>${boardCards().map(k => `<div class="pin ${k.kind}" tabindex="0" data-pin="${k.id}" style="left:${k.x}px;top:${k.y}px" aria-label="${esc(k.label)}">${k.html}</div>`).join("")}</div></div></div>`,
 
@@ -252,12 +266,14 @@
       if (S.ended === "win") return C.reveal && S.rstep < C.reveal.length ? viewReveal() : viewEnding();
       if (S.ended === "lose" || S.ended === "timeout") return viewLose();
       if (S.ended === "reveal") return viewEnding(true);
+      if (S.ended === "wrong") return viewWrong();
       const left = pids(C).filter(p => !S.solved[p]).length, triesLeft = MAXTRIES(C) - S.tries;
       const clueOpts = S.clues.map(k => ({ v: k, label: C.clues[k].t }));
       const A = S.acc || {};
       return `<div class="stack"><span class="eyebrow">${T("Mindenki rád vár")}</span><h2>${T("Vádemelés")}</h2>
         <p>${T("Összehívod a ház lakóit, és elmondod, mi történt. Minden állításodhoz jelöld meg a döntő bizonyítékot a jegyzetfüzetből: egy jó ügyvéd csak a bizonyítéknak hisz.")}</p>
-        <p class="meta">${T("Még {0} próbálkozásod van.", triesLeft)}${left ? " " + T("{0} rejtvény megoldatlan.", left) : ""}</p>
+        <p class="meta">${T("Még {0} próbálkozásod van.", triesLeft)}${left && !S.master ? " " + T("{0} rejtvény megoldatlan.", left) : ""}</p>
+        <p class="warn">${T("Vigyázz: akit tettesként megnevezel, azt a csendőrök letartóztatják. Ha ártatlan, nincs visszaút. A bizonyítékokban tévedhetsz, a személyben nem.")}</p>
         ${C.accusation.questions.map(q => {
           const opts = q.from === "suspects" ? C.suspects.map(s => ({ v: s.id, label: s.name })).concat(q.extra || []) : q.from === "clues" ? clueOpts : q.options;
           const radios = opts.length ? opts.map(o => `<label class="opt"><input type="radio" name="q-${q.id}" value="${o.v}" ${A[q.id] === o.v ? "checked" : ""}> ${esc(o.label)}</label>`).join("") : `<p class="meta">${T("Még nincs egyetlen nyomod sem.")}</p>`;
@@ -267,6 +283,62 @@
         <div class="row"><button class="btn" data-accuse>${T("Kimondom a vádat")}</button></div><p class="msg" data-accmsg></p></div>`;
     }
   };
+
+  /* ---------- összevetés: két nyomból a játékos von le következtetést ---------- */
+  const pairOk = (d, a, b) => (has(d.from[0], a) && has(d.from[1], b)) || (has(d.from[0], b) && has(d.from[1], a));
+  function dedPanel() {
+    if (!dedsOf(C).length || S.ended) return "";
+    const n = dedsOf(C).filter(d => S.clues.includes(d.id)).length;
+    const pend = S.pend && dedsOf(C).find(d => d.id === S.pend && !S.clues.includes(d.id));
+    const opts = S.clues.map(k => `<option value="${k}">${isDed(k) ? "◆ " : ""}${esc(C.clues[k].t)}</option>`).join("");
+    const sel = (id, ph) => `<select id="${id}" aria-label="${ph}"><option value="">${ph}</option>${opts}</select>`;
+    return `<div class="deduce"><span class="eyebrow">${T("Összevetés")}</span>
+      <p>${T("Válassz két nyomot, amelyek együtt többet árulnak el, mint külön-külön, és vond le a következtetést. Az elhamarkodott összevetés pontlevonással jár.")}</p>
+      ${S.clues.length < 2 ? `<p class="meta">${T("Ehhez legalább két nyom kell.")}</p>` : `<div class="dsel">${sel("dd-a", T("Első nyom…"))}<span aria-hidden="true">+</span>${sel("dd-b", T("Második nyom…"))}<button class="btn ghost small" data-dd>${T("Összevetem")}</button></div>`}
+      <p class="msg" data-ddmsg></p>
+      ${pend ? `<div class="dq"><p class="meta">${T("Összevetve:")} ${(S.pendPair || []).filter(k => C.clues[k]).map(k => esc(C.clues[k].t)).join(" + ")}</p><p><b>${esc(pend.q)}</b></p>${pend.opts.map((o, i) => `<label class="opt"><input type="radio" name="dq" value="${i}"> ${esc(o)}</label>`).join("")}<div class="row"><button class="btn small" data-dq>${T("Ez a következtetésem")}</button></div><p class="msg" data-dqmsg></p></div>` : ""}
+      <p class="meta">${S.master ? T("Levont következtetések: {0}", n) : T("Levont következtetések: {0} / {1}", n, dedsOf(C).length)}</p></div>`;
+  }
+  function bindDed() {
+    const b = $("[data-dd]");
+    if (b) b.onclick = () => {
+      const a = $("#dd-a").value, c = $("#dd-b").value, m = $("[data-ddmsg]");
+      if (!a || !c || a === c) { m.className = "msg bad"; m.textContent = T("Válassz két különböző nyomot."); return; }
+      const d = dedsOf(C).find(x => pairOk(x, a, c));
+      if (d && S.clues.includes(d.id)) { m.className = "msg"; m.textContent = T("Ezt a következtetést már levontad."); return; }
+      if (d) { S.pend = d.id; S.pendPair = [a, c]; save(); SND("tick"); rerender(); return; }
+      S.wrongDed = (S.wrongDed || 0) + 1; save(); SND("wrong");
+      if (spend(COST.deduce)) return renderCase();
+      updateClock(); m.className = "msg bad"; m.textContent = T("Ez a kettő együtt sem mond többet, mint külön-külön.");
+    };
+    const q = $("[data-dq]");
+    if (q) q.onclick = () => {
+      const d = dedsOf(C).find(x => x.id === S.pend), r = app.querySelector("input[name=dq]:checked"), m = $("[data-dqmsg]");
+      if (!r) { m.className = "msg bad"; m.textContent = T("Előbb válassz egyet."); return; }
+      if (+r.value === d.ans) { gain(d.id); S.pend = null; save(); SND("success"); spend(COST.deduce); rerender(); return; }
+      S.wrongDed = (S.wrongDed || 0) + 1; save(); SND("wrong");
+      if (spend(COST.deduce)) return renderCase();
+      updateClock(); m.className = "msg bad"; m.textContent = T("Ez nem következik belőle. Gondold végig újra.");
+    };
+  }
+  const rerender = () => { const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); };
+
+  /* ---------- váratlan fordulatok ---------- */
+  function checkEvents() {
+    if (S.ended || !S.introSeen || !C.events || document.querySelector(".intro")) return;
+    const got = rawIds(C).filter(k => S.clues.includes(k)).length;
+    const ev = C.events.find(e => !S.events.includes(e.id) && ((e.after && got >= e.after) || (e.afterClue && S.clues.includes(e.afterClue)) || (e.afterSolved && S.solved[e.afterSolved])));
+    if (!ev) return;
+    S.events.push(ev.id); if (ev.gives) gain(ev.gives); save();
+    const ov = document.createElement("div"); ov.className = "intro event"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", ev.title);
+    ov.innerHTML = `<div class="intro-card"><span class="eyebrow">${T("Váratlan fordulat")}</span><h2>${esc(ev.title)}</h2>${ev.text.split(/\n\n+/).map(t => `<p>${esc(t)}</p>`).join("")}${ev.gives ? `<p class="found">✓ ${T("Új nyom:")} ${esc(C.clues[ev.gives].t)}</p>` : ""}<div class="row"><button class="btn" data-close>${T("Folytatom a nyomozást")}</button></div></div>`;
+    document.body.appendChild(ov);
+    SND(ev.sound || "stamp");
+    if (ev.flash) window.dispatchEvent(new CustomEvent("mm:lightning"));
+    requestAnimationFrame(() => ov.classList.add("on"));
+    const btn = ov.querySelector("[data-close]"); btn.focus();
+    btn.onclick = () => { ov.remove(); rerender(); };
+  }
 
   /* ---------- nyomozótábla ---------- */
   const BW = 1120, BH = 820;
@@ -280,7 +352,7 @@
     });
     S.clues.forEach((k, i) => {
       const p = S.board["c:" + k] || { x: 24 + (i % 5) * 216, y: 300 + Math.floor(i / 5) * 132 };
-      out.push({ id: "c:" + k, kind: "pin-clue", label: C.clues[k].t, x: p.x, y: p.y,
+      out.push({ id: "c:" + k, kind: isDed(k) ? "pin-clue pin-ded" : "pin-clue", label: C.clues[k].t, x: p.x, y: p.y,
         html: `<span class="src">${esc(C.clues[k].src)}</span><b>${esc(C.clues[k].t)}</b><span class="tx" title="${esc(C.clues[k].x)}">${esc(C.clues[k].x)}</span>` });
     });
     return out;
@@ -312,6 +384,7 @@
         <p class="meta">${T("Hogyan nyomozol?")}</p>
         <div class="row"><button class="btn" data-mode="free">${T("Szabad nyomozás")}</button><button class="btn ghost" data-mode="timed">${T("Hajnalig, időre")}</button></div>
         <p class="meta">${T("Időre játszva minden lépés perceket visz el, és a csendőrök {0} múlva megérkeznek.", fmtLeft(budget(C)))}</p>
+        <label class="opt master-opt"><input type="checkbox" data-master> <span><b>${T("Mester mód")}</b> · ${T("nincs súgó, nincs ✦ jelölés és számláló, és senki sem mondja meg, mennyire jársz közel.")}</span></label>
       </div>
       <button class="link intro-skip" data-skip>${T("Kihagyom")} ›</button></div>`;
     document.body.appendChild(ov);
@@ -320,7 +393,7 @@
     const finish = () => { clearInterval(t); box.textContent = full; choose.hidden = false; ov.querySelector("[data-skip]").hidden = true; const b = ov.querySelector("[data-mode]"); if (b) b.focus(); };
     if (reduce) finish(); else t = setInterval(() => { i += 2; box.textContent = full.slice(0, i); if (i % 6 === 0) SND("tick"); if (i >= full.length) finish(); }, 28);
     ov.querySelector("[data-skip]").onclick = finish;
-    ov.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { S.introSeen = true; S.timed = b.dataset.mode === "timed"; S.used = 0; save(); ov.remove(); renderCase(); });
+    ov.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { S.introSeen = true; S.timed = b.dataset.mode === "timed"; S.master = !!(ov.querySelector("[data-master]") || {}).checked; S.used = 0; save(); ov.remove(); renderCase(); });
     requestAnimationFrame(() => ov.classList.add("on"));
   }
 
@@ -375,10 +448,28 @@
     } catch (e) {}
   }
 
+  const itemOf = (l, id) => (l.items || []).find(i => i.clue === id);
+  function lookHtml(l) {
+    return l.look.split(/\n\n+/).map(par => `<p>${esc(par).replace(/\[\[(.+?)\|(.+?)\]\]/g, (m, txt, id) => {
+      const it = itemOf(l, id), done = it ? S.clues.includes(id) : S.seen.includes(l.id + ":" + id);
+      return `<span class="spot ${done ? (it ? "got" : "seen") : ""}" role="button" tabindex="0" data-spot="${id}">${txt}</span>`;
+    })}</p>`).join("");
+  }
   function viewLoc(l) {
     let h = `<div class="stack"><button class="link" data-back>← ${T("Vissza az alaprajzhoz")}</button>
       <div class="art locart">${ART.scene(l, l.name)}</div>
-      <span class="eyebrow">${T("Helyszín")}</span><h2>${esc(l.name)}</h2><p>${esc(l.desc)}</p>`;
+      <span class="eyebrow">${T("Helyszín")}</span><h2>${esc(l.name)}</h2>`;
+    if (l.look) {
+      h += `<p class="meta">${T("Kattints arra a részletre, amit közelebbről megnéznél. Nem minden gyanús dolog nyom.")}</p><div class="look">${lookHtml(l)}</div>`;
+      const seen = Object.keys(l.decoys || {}).filter(k => S.seen.includes(l.id + ":" + k));
+      if (seen.length) h += `<div class="seenlist">${seen.map(k => `<p><span class="meta">${T("Megnézted:")}</span> ${esc(l.decoys[k])}</p>`).join("")}</div>`;
+      (l.items || []).filter(it => S.clues.includes(it.clue)).forEach(it => {
+        h += `<div class="item" data-item="${it.clue}"><h3>${esc(it.label)}</h3><p>${esc(it.text)}</p><span class="found">✓ ${T("Nyom feljegyezve:")} ${esc(C.clues[it.clue].t)}</span><p class="typed">${esc(C.clues[it.clue].x)}</p></div>`;
+      });
+      if (l.puzzle) h += `<div class="item" data-puzzle="${l.puzzle}">${renderPuzzle(l.puzzle)}</div>`;
+      return h + `</div>`;
+    }
+    h += `<p>${esc(l.desc)}</p>`;
     (l.items || []).forEach(it => {
       const has = S.clues.includes(it.clue);
       h += `<div class="item"><h3>${esc(it.label)}</h3><p>${esc(it.text)}</p>${has
@@ -394,12 +485,13 @@
     const culprit = C.suspects.find(s => s.id === [].concat(C.accusation.questions[0].answer)[0]);
     const conf = !revealOnly && C.confession ? `<div class="rv-obj confess"><div class="art portrait">${culprit ? ART.portrait(culprit) : ""}</div><div><b>${culprit ? esc(culprit.name) : ""}</b><p>${esc(C.confession)}</p></div></div>` : "";
     const stats = revealOnly ? `<p class="eyebrow">${T("A megoldás, amit nem sikerült bizonyítanod")}</p>`
-      : `<p class="rank">${T("{0} pont", sc)} · ${rank(sc)}</p>${S.timed ? `<p class="found">⏱ ${T("Hajnal előtt megoldva, {0} tartalékkal", fmtLeft(budget(C) - S.used))}</p>` : ""}<p class="eyebrow">${T("{0}. vádra", S.tries)} · ${hu ? T("{0} súgó", hu) : T("súgó nélkül")} · ${T("{0} téves szembesítés", S.wrongConf || 0)}${S.rmiss ? " · " + T("{0} elhibázott bizonyíték", S.rmiss) : ""} · ${T("{0}/{1} ellentmondás", S.conf.length, contra(C).length)} · ${T("{0}/{1} nyom", S.clues.length, Object.keys(C.clues).length)}</p>`;
+      : `<p class="rank">${T("{0} pont", sc)} · ${rank(sc)}</p>${S.timed ? `<p class="found">⏱ ${T("Hajnal előtt megoldva, {0} tartalékkal", fmtLeft(budget(C) - S.used))}</p>` : ""}<p class="eyebrow">${T("{0}. vádra", S.tries)} · ${hu ? T("{0} súgó", hu) : T("súgó nélkül")} · ${T("{0} téves szembesítés", S.wrongConf || 0)}${S.rmiss ? " · " + T("{0} elhibázott bizonyíték", S.rmiss) : ""} · ${T("{0}/{1} ellentmondás", S.conf.length, contra(C).length)} · ${T("{0}/{1} nyom", rawIds(C).filter(k => S.clues.includes(k)).length, rawIds(C).length)}${S.wrongDed ? " · " + T("{0} elhamarkodott összevetés", S.wrongDed) : ""}${S.master ? " · " + T("Mester mód") : ""}</p>`;
     return `<div class="stack"><div class="ending ${revealOnly ? "lost" : ""}"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit) : ""}</div><span class="stamp anim">${T(revealOnly ? "Megoldás" : "Ügy lezárva")}</span></div>
       <h2>${esc(C.ending.heading)}</h2>
       ${conf}
       ${!revealOnly && C.carnation ? `<div class="carnation"><span class="eyebrow">${T("A titkos szál")}</span><p>${esc(C.carnation.found)}</p><p class="typed">${esc(C.carnation.note)}</p><span class="cletter big">${esc(C.carnation.letter)}</span><p class="meta">${FINALE && unlocked(FINALE) ? T("Megvan mind a hat cédula. A címoldalon megnyílt a záró ügy.") : T("{0} / {1} cédula a címoldalon, A titkos szál alatt.", THREAD.filter(wonCase).length, THREAD.length)}</p></div>` : ""}
       ${C.ending.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}
+      ${revealOnly ? "" : aftermath()}
       ${stats}</div>
       <div class="row"><a class="btn" href="#">${T("Vissza az ügyekhez")}</a>${revealOnly ? `<button class="btn ghost" data-restart>${T("Újrakezdem az ügyet")}</button>` : `<button class="btn ghost" data-share>${T("Eredménykártya")}</button>`}</div></div>`;
   }
@@ -416,6 +508,26 @@
       <div class="confront"><select id="rv-proof" aria-label="${T("Bizonyíték")}"><option value="">${T("Felmutatom a bizonyítékot…")}</option>${opts}</select><button class="btn" data-rv>${T("Felmutatom")}</button></div>
       <p class="msg" data-rvmsg></p></div>`;
   }
+  function viewWrong() {
+    const s = C.suspects.find(x => x.id === S.accused);
+    const fate = s ? ((C.fates || {})[s.id] || T("{0} hiába bizonygatta az ártatlanságát. A bíróság a te vallomásod alapján ítélte el.", s.name)) : T("Az ügyet balesetként zárták le, és senki sem kereste tovább a tettest.");
+    return `<div class="stack"><div class="ending lost"><div class="row" style="justify-content:space-between;align-items:flex-start">${s ? `<div class="art portrait" style="width:110px">${ART.portrait(s)}</div>` : ""}<span class="stamp anim">${T("Téves vád")}</span></div>
+      <h2>${s ? T("{0} letartóztatása", s.name) : T("Lezárt akta")}</h2>
+      ${fate.split(/\n\n+/).map(p => `<p>${esc(p)}</p>`).join("")}
+      <p>${T("A valódi tettes végignézte, ahogy elvezetik a megvádoltat. Másnap reggel ő is elhagyta a házat, szabadon.")}</p>
+      <p class="meta">${T("Újrakezdheted az ügyet, vagy megnézheted, mi történt valójában.")}</p></div>
+      <div class="row"><button class="btn" data-restart>${T("Újrakezdem az ügyet")}</button><button class="btn ghost" data-reveal>${T("Megmutatom a megoldást")}</button></div></div>`;
+  }
+  function aftermath() {
+    const miss = contra(C).filter(k => !S.conf.includes(k.id));
+    const names = [...new Set(miss.map(k => k.suspect))].map(id => C.suspects.find(x => x.id === id)).filter(Boolean).map(x => x.short || x.name);
+    const dn = dedsOf(C).filter(d => S.clues.includes(d.id)).length, dt = dedsOf(C).length;
+    const all = !miss.length && dn === dt;
+    return `<div class="aftermath"><span class="eyebrow">${T("Ami kiderült, és ami rejtve maradt")}</span>
+      <p>${all ? T("Semmi sem maradt rejtve. A ház minden titka napvilágra került, és a vádirat egyetlen kérdést sem hagyott nyitva.")
+        : names.length ? T("Nem mindenki titka került napvilágra. {0} elhallgatott valamit, amire sosem kérdeztél rá, és ez a titok velük együtt távozott a házból.", names.join(", ")) : T("Minden hazugságot leleplezted, de nem minden következtetést vontál le.")}</p>
+      ${dt ? `<p class="meta">${T("Levont következtetések: {0} / {1}", dn, dt)} · ${T("{0}/{1} ellentmondás", S.conf.length, contra(C).length)}</p>` : ""}</div>`;
+  }
   function viewLose() {
     return `<div class="stack"><div class="ending lost"><span class="stamp" style="align-self:flex-start">${T("Elszalasztva")}</span>
       <h2>${T(S.ended === "timeout" ? "Megérkeztek a csendőrök." : "A tettes kicsúszott a kezeid közül.")}</h2>
@@ -427,7 +539,7 @@
   /* ---------- rejtvények ---------- */
   function hintBlock(pid) {
     const p = C.puzzles[pid], n = S.hints[pid] || 0, all = (p.hints || []).length;
-    if (!all) return "";
+    if (!all || S.master) return "";
     const shown = p.hints.slice(0, n).map((t, i) => `<p class="hint"><b>${i + 1}.</b> ${esc(t)}</p>`).join("");
     const btn = !S.solved[pid] && n < all ? `<button class="btn ghost small" data-hint="${pid}">${T("Súgó kérése")} (${n + 1}/${all})</button>` : "";
     return `<div class="hints">${shown}</div>${btn ? `<div class="row">${btn}</div>` : ""}`;
@@ -488,7 +600,7 @@
           if (ids.some(id => !cur[id])) return msg(T("Minden sort tölts ki."));
           if (p.unique !== false && new Set(ids.map(id => cur[id])).size < ids.length) return msg(p.uniqueMsg || T("Mindenki máshol volt: egy lehetőség csak egyszer szerepelhet."));
           const ok = ids.filter(id => cur[id] === p.answer[id]).length;
-          if (ok === ids.length) { solve(pid); renderCase(); } else msg(T("{0} / {1} helyes. Olvasd újra a vallomásokat.", ok, ids.length));
+          if (ok === ids.length) { solve(pid); renderCase(); } else msg(S.master ? T("Nem stimmel.") : T("{0} / {1} helyes. Olvasd újra a vallomásokat.", ok, ids.length));
         };
       }
     },
@@ -543,7 +655,7 @@
         root.querySelectorAll("[data-down]").forEach(b => b.onclick = () => move(+b.dataset.down, 1));
         root.querySelector("[data-try]").onclick = () => {
           const ok = cur.filter((id, i) => id === p.answer[i]).length;
-          if (ok === cur.length) { solve(pid); renderCase(); } else msg(T("{0} / {1} esemény van a helyén.", ok, cur.length));
+          if (ok === cur.length) { solve(pid); renderCase(); } else msg(S.master ? T("Nem stimmel.") : T("{0} / {1} esemény van a helyén.", ok, cur.length));
         };
       }
     },
@@ -594,6 +706,21 @@
       $$("[data-loc]").forEach(b => b.onclick = () => go("hely", b.dataset.loc));
       const bk = $("[data-back]"); if (bk) bk.onclick = () => go("hely");
       $$("[data-take]").forEach(b => b.onclick = () => { gain(b.dataset.take); save(); SND("paper"); spend(COST.take); renderCase(); });
+      const L = S.loc && C.locations.find(l => l.id === S.loc);
+      $$("[data-spot]").forEach(b => {
+        b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); b.click(); } };
+        b.onclick = () => {
+          const id = b.dataset.spot, it = itemOf(L, id);
+          if (it) {
+            if (S.clues.includes(id)) { app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+            gain(id); save(); SND("paper"); spend(COST.take); rerender();
+            app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" });
+          } else {
+            const key = L.id + ":" + id; if (S.seen.includes(key)) return;
+            S.seen.push(key); save(); SND("tick"); spend(COST.look); rerender();
+          }
+        };
+      });
       $$("[data-hint]").forEach(b => b.onclick = () => { const id = b.dataset.hint; S.hints[id] = (S.hints[id] || 0) + 1; save(); SND("paper"); spend(COST.hint); renderCase(); });
       const box = $("[data-puzzle]");
       if (box && !S.solved[box.dataset.puzzle]) {
@@ -616,7 +743,9 @@
         m.className = "msg bad"; m.textContent = `${first} ${REBUFF[(S.wrongConf + sid.length) % REBUFF.length]}`;
       });
     },
+    jegy() { bindDed(); },
     tabla() {
+      bindDed();
       const board = $("[data-board]"); if (!board) return;
       let threadMode = false, first = null;
       const hint = $("[data-boardhint]"), tbtn = $("[data-thread]");
@@ -670,6 +799,7 @@
         const A = S.acc;
         if (qs.some(q => !A[q.id] || (q.proof && !A["p-" + q.id]))) { m.className = "msg bad"; m.textContent = T("Minden kérdésre válaszolj, és mindenhol jelöld meg a bizonyítékot."); return; }
         S.tries++;
+        if (!has(qs[0].answer, A[qs[0].id])) { S.ended = "wrong"; S.accused = A[qs[0].id]; save(); SND("wrong"); renderCase(); window.scrollTo({ top: 0 }); return; }
         const wrong = qs.filter(q => !has(q.answer, A[q.id]) || (q.proof && !has(q.proof, A["p-" + q.id]))).length;
         if (!wrong) { S.ended = "win"; save(); SND("stamp"); renderCase(); window.scrollTo({ top: 0 }); return; }
         SND("wrong");
@@ -677,7 +807,7 @@
         if (S.tries >= MAXTRIES(C)) { S.ended = "lose"; save(); renderCase(); window.scrollTo({ top: 0 }); return; }
         save(); updateClock(); m.className = "msg bad";
         const left = MAXTRIES(C) - S.tries;
-        m.textContent = wrong === qs.length ? T("Néma csend. A vádlott felnevet: semmi sem stimmel. Még {0} próbálkozásod van.", left)
+        m.textContent = S.master ? T("Az ügyvéd közbevág: a vád így nem áll meg. Még {0} próbálkozásod van.", left) : wrong === qs.length ? T("Néma csend. A vádlott felnevet: semmi sem stimmel. Még {0} próbálkozásod van.", left)
           : T("Az ügyvéd közbevág: a vádból {0} pont nem áll meg. Hogy melyik, azt neked kell kitalálnod. Még {1} próbálkozásod van.", wrong, left);
       };
     }

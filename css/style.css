@@ -286,3 +286,29 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .casecard.finale{border-color:var(--stamp)}
 .casecard.locked{border-style:dashed;opacity:.85}
 .dossier{border-top:1px dashed var(--line);padding-top:14px}
+/* rejtett nyomok a helyszínleírásban */
+.look p{font-size:18px;line-height:1.7}
+.spot{cursor:pointer;border-bottom:1px dotted color-mix(in srgb,var(--ink) 45%,transparent);transition:background .15s,color .15s}
+.spot:hover,.spot:focus-visible{background:color-mix(in srgb,var(--accent) 22%,transparent);outline:none}
+.spot.got{border-bottom:2px solid var(--good);color:var(--good)}
+.spot.seen{border-bottom-style:solid;border-bottom-color:var(--line);color:var(--muted)}
+.master .spot:not(.got):not(.seen){border-bottom-color:transparent}
+.seenlist{display:flex;flex-direction:column;gap:4px;font-size:15px;color:var(--muted);border-left:3px solid var(--line);padding-left:12px}
+.seenlist p{margin:0}
+/* összevetés */
+.deduce{display:flex;flex-direction:column;gap:10px;border:1px solid var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--paper2));padding:16px 18px;border-radius:3px}
+.deduce p{margin:0}
+.dsel{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dsel select{flex:1 1 220px;min-width:0;max-width:100%}
+.dq{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:10px}
+.clue.ded{border-left:4px solid var(--accent)}
+.pin-ded{background:color-mix(in srgb,var(--accent) 20%,var(--paper2));border-color:var(--accent)}
+.warn{font-size:15px;border-left:3px solid var(--stamp);padding:4px 0 4px 10px;margin:0}
+.aftermath{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.badge{align-self:flex-start;font-family:var(--type);font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--accent);color:var(--accent);padding:2px 8px;border-radius:2px}
+.master-opt{display:flex;gap:8px;align-items:flex-start;text-align:left;font-size:15px;margin-top:6px}
+.intro.event .intro-card{border-color:var(--stamp)}
+.intro.event h2{color:var(--stamp)}
+.look{display:flex;flex-direction:column;gap:12px}
+.intro-card>*{flex-shrink:0}
+.clue.ded{padding-left:14px}

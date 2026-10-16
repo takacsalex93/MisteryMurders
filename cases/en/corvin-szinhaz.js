@@ -23,43 +23,78 @@
   },
   clues: {
     holttest: { t: "On the stage", src: "Stage", x: "Sárközy lies on mark seven, the burst sandbag beside him. The end of the rope that held the bag hangs down from above. Mimi Rácz was standing one step to the left of the mark when the bag fell." },
-    kotel: { t: "The burned rope", src: "Fly loft", x: "The rope was not cut, and it was not worn either: it burned through. Its end is scorched, there are drops of wax beneath it, and the stub of a church candle is wired to the rail. Someone set it up in advance so the rope would part by itself." },
+    kotel: { t: "The burned rope", src: "Fly loft", x: "The rope was not cut, and it was not worn either: it burned through. Its end is scorched, there are drops of wax beneath it, and the stub of a church candle is wired to the rail." },
     gyertya: { t: "When was the candle lit?", src: "Prop room", x: "The candle was lit at 20:41. The first interval lasted from 20:35 to 20:55." },
-    szunet: { t: "Who was where in the first interval?", src: "Buffet · statements", x: "In the first interval Tibor Vass was in the buffet, Director Kálmán in his office, Klára Lengyel in the prompt box, Ferenc Bodó in his own dressing room. Mimi Rácz's dressing room was locked, its key hanging at the stage door. That leaves her one place: the fly loft." },
-    felnezett: { t: "Mimi knew what was coming", src: "Director's office · statement", x: "The prompter says Mimi looked up at the fly loft just before the fall and jumped to the left. In her signed statement Mimi claimed she never looked up." },
+    szunet: { t: "Who was where in the first interval?", src: "Buffet · statements", x: "Pieced together from the statements, in the first interval: Tibor Vass in the buffet, Director Kálmán in his office, Klára Lengyel in the prompt box, Ferenc Bodó in his own dressing room, Mimi Rácz (dressing room locked, key at the stage door) in the fly loft." },
+    felnezett: { t: "A contradiction in Mimi's statement", src: "Director's office · statement", x: "In her signed statement Mimi claimed she never looked up at the fly loft. The prompter says she looked up just before the fall and jumped to the left." },
     sugo: { t: "The prompter's observation", src: "Prompt box", x: "Klára Lengyel: “At the last verse of the duet Mimi looked up, straight at the fly loft, then practically jumped a step to the left. Thirty years I've been prompting, and I've never seen her do that.”" },
     level: { t: "Sárközy's letter", src: "Dressing rooms · Mimi's room", x: "On Mimi's make-up table, a letter from Sárközy: “Don't be angry, Mimi. Tomorrow I announce my engagement to Liza Kálmán. What there was between us is over. You knew it would end one day.”" },
     bodo: { t: "The understudy's contract", src: "Dressing rooms · Bodó's room", x: "Ferenc Bodó's contract: if Sárközy drops out for any reason, he sings the Vienna tour. The chorister next door says he heard scales from Bodó's dressing room throughout the interval." },
     vass: { t: "The IOU", src: "Buffet", x: "In Tibor Vass's pocket, an IOU for a thousand pengő, signed by Sárközy." },
     pletyka: { t: "The gossip column manuscript", src: "Prompt box", x: "In the prompt box, a manuscript: next week's gossip column for Színházi Élet. “Is it true that the Corvin's leading man is to marry the director's daughter, and that a certain prima donna will soon have a headache?”" },
-    kalman: { t: "Sárközy's demand", src: "Director's office", x: "Sárközy's letter to the director: he demands double his fee, or from January he sings in Vienna." }
+    kalman: { t: "Sárközy's demand", src: "Director's office", x: "Sárközy's letter to the director: he demands double his fee, or from January he sings in Vienna." },
+    hetes: { t: "Who asked for mark seven?", src: "Kálmán's statement", x: "Kálmán says that in the afternoon Mimi asked for Iván to stand on mark seven in the final scene, because the light is lovelier there. Sandbag seven hangs above mark seven." }
   },
   contradictions: {
     "c-mimi": { reveal: "Mimi flares up: “All right, I wasn't in my dressing room! I just… wanted some fresh air.” Where, she won't say." },
-    "c-mimi2": { reveal: "Mimi turns pale: “Anyone looks up if something creaks!” But the crash only came afterwards." },
+    "c-mimi2": { reveal: "Mimi turns pale: “Anyone looks up if something creaks!”" },
     "c-kalman": { reveal: "Kálmán sits down: “My daughter… Yes, I knew about the engagement. And mark seven wasn't my idea. Mimi asked this afternoon for Iván to stand there, because the light is lovelier.”" },
     "c-kalman2": { reveal: "“Yes, he wanted more. He always wanted more. But in the interval I was counting the takings with the accountant; ask him.”" },
     "c-vass": { reveal: "Vass shrugs: “I owed him, yes. But I spent the interval in the buffet and drank three spritzers. The barman will tell you.”" },
     "c-klara": { reveal: "Klára smiles: “Yes, I write it. That's how I know Iván meant to marry someone else. And who would have a headache over it.”" },
     "c-bodo": { reveal: "Bodó flushes: “Yes, now I get the tour. But I was singing scales live; the chorister heard me, it wasn't a gramophone.”" }
   },
-  locations: {
+    locations: {
     szinpad: { name: "Stage", desc: "A Viennese ballroom set, the curtain half lowered. The spotlight still shines on mark seven.",
-      items: { holttest: { label: "Mark seven", text: "Sárközy lies on the number seven chalked on the boards." } } },
-    zsinorpadlas: { name: "Fly loft", desc: "Narrow iron catwalks above the stage, ropes, pulleys, rows of sandbags. A dizzying drop." },
-    kellektar: { name: "Prop room", desc: "Candelabras, swords, papier-mâché fruit, a box of church candles." },
+      look: "A Viennese ballroom set, the curtain half lowered, the auditorium empty and dark. [[Sárközy lies on the chalked number seven|holttest]], beside him the burst sandbag. [[The spotlight|reflektor]] still shines on him. On the boards, [[a row of chalk marks|kreta]], one to twelve.",
+      decoys: { reflektor: "Hot and blinding. Anyone looking this way can see nothing of the fly loft.", kreta: "The director's marks. The chalk on seven is fresher: it was redrawn this afternoon." },
+      items: { holttest: { label: "Mark seven", text: "You examine the body and the sandbag." } } },
+    zsinorpadlas: { name: "Fly loft", desc: "Narrow iron walkways above the stage, ropes, pulleys, a row of sandbags. A dizzying drop.",
+      look: "Narrow iron walkways above the stage, a dizzying drop. [[Pulleys and ropes|csigak]] everywhere; along the rail, [[a row of sandbags, each with a number|zsakok]]. Where seven should be, only the rope hangs.",
+      decoys: { csigak: "Well-oiled, well-kept pulleys. Tibor Vass knows his job.", zsakok: "Twelve bags, eleven in place. Each hangs exactly above the stage mark whose number it bears." } },
+    kellektar: { name: "Props room", desc: "Candlesticks, swords, papier-mâché fruit, a box of church candles.",
+      look: "Papier-mâché fruit, [[wooden swords in a barrel|kardok]], candlesticks, a box of church candles. On the table, [[the props master's list|lista]].",
+      decoys: { kardok: "Wood, painted silver. None of them cuts.", lista: "“Church candles, 7 — Act III.” Someone has crossed out the seven and written 6." } },
     bufe: { name: "Buffet", desc: "Red plush, champagne glasses, the interval schedule on the wall. The barman is still at the counter.",
-      items: { vass: { label: "Tibor Vass's coat", text: "It hangs on a hook, a paper peeping from the pocket." } } },
+      look: "Red plush, champagne glasses; on the wall, [[the interval schedule|rend]]. The barman is still at the counter. On the coat stand, [[Tibor Vass's coat, a paper sticking out of the pocket|vass]].",
+      decoys: { rend: "First interval: 20:35–20:55. Second interval: 21:50–22:05. The final duet begins at 22:38." },
+      items: { vass: { label: "Tibor Vass's coat", text: "You pull the paper out of the pocket." } } },
     sugolyuk: { name: "Prompt box", desc: "A cramped little den at the front of the stage: a lamp, a chair and the prompt book.",
-      items: { sugo: { label: "Klára Lengyel", text: "The prompter is happy to talk; you only have to ask." },
-               pletyka: { label: "Under the prompt book", text: "A typed manuscript, corrections in the margin." } } },
-    oltozok: { name: "Dressing rooms", desc: "A long corridor, name plates on the doors, mirrors framed with bulbs inside.",
-      items: { level: { label: "Mimi Rácz's make-up table", text: "Powder, lipstick and a crumpled letter." },
-               bodo: { label: "Ferenc Bodó's dressing room", text: "Piles of sheet music, a signed contract." } } },
+      look: "A cramped little den at the front of the stage; from here you see the actors' faces, not their backs. [[Klára Lengyel|sugo]] sits on the chair and is happy to talk. [[Under the prompt book, a typed manuscript|pletyka]] with corrections in the margin. [[The little lamp|lampa]] has a green shade.",
+      decoys: { lampa: "It lights only the prompt book; it can't be seen from the auditorium." },
+      items: { sugo: { label: "Klára Lengyel", text: "You ask her what she saw." },
+               pletyka: { label: "Under the prompt book", text: "You read the manuscript." } } },
+    oltozok: { name: "Dressing rooms", desc: "A long corridor, name plates on the doors, mirrors ringed with bulbs inside.",
+      look: "A long corridor, name plates on the doors. [[On Mimi Rácz's dressing table|level]], powder, lipstick and a crumpled letter. [[In Ferenc Bodó's dressing room|bodo]], a pile of scores and a signed contract. In the corner, [[a gramophone|gramofon]].",
+      decoys: { gramofon: "Thick with dust. Whoever sang scales tonight did it live." },
+      items: { level: { label: "Mimi Rácz's dressing table", text: "You smooth out the crumpled letter." },
+               bodo: { label: "Ferenc Bodó's dressing room", text: "You leaf through the contract." } } },
     iroda: { name: "Director's office", desc: "Posters on the walls, a telephone; the police are taking statements here.",
-      items: { kalman: { label: "The director's desk", text: "Letters, bills and one angrily underlined letter." } } }
+      look: "On the walls, [[posters|plakat]]; the police are taking statements here. [[On the director's desk|kalman]], letters, bills and one angrily underlined letter.",
+      decoys: { plakat: "“Viennese Blood” — Iván Sárközy and Mimi Rácz. On the poster Mimi's name is printed smaller." },
+      items: { kalman: { label: "The director's desk", text: "You read the underlined letter." } } }
   },
-  puzzles: {
+  deductions: {
+    "d-idozito": { t: "A candle timer", x: "The rope was burned through by a candle wired beneath it and lit at 20:41, in the first interval. The killer did not need to be in the loft when the bag fell.",
+      q: "What does this mean for the killer's alibi?", opts: ["The killer was in the fly loft when the bag fell.", "The killer could have been anywhere when it fell, even on stage: they only had to be up there in the first interval.", "The candle was left there by chance; the rope wore through."] },
+    "d-padlas": { t: "Who was up there at 20:41?", x: "The candle was lit in the first interval. In the first interval only Mimi Rácz was in the fly loft.",
+      q: "Who could have lit the candle?", opts: ["Mimi Rácz.", "Tibor Vass, the flyman.", "Ferenc Bodó, the understudy."] },
+    "d-tudta": { t: "Mimi knew", x: "Just before the fall Mimi looked up and jumped one step to the left, out from under the bag. She knew when and where it would fall.",
+      q: "What do you conclude from Mimi's movement?", opts: ["Mimi heard the creak and jumped instinctively.", "Mimi stepped left because of the spotlight.", "Mimi knew when and where the bag would fall."] },
+    "d-hely": { t: "Who put him under the bag?", x: "Sandbag seven hung above mark seven, and it was Mimi who asked that afternoon for Iván to stand exactly there.",
+      q: "At whose request did Iván stand on the fatal spot?", opts: ["Director Kálmán's, who restaged the scene for the light.", "Mimi's, who asked in the afternoon for Iván to stand on mark seven.", "Nobody's: the mark has been there for years."] }
+  },
+  events: {
+    recseg: { title: "A creak overhead", text: "Something creaks above the dark stage. A lantern's light wavers in the fly loft, and a sandbag slowly sways.\n\nTibor Vass climbs down the ladder. “Just checking my ropes,” he says hoarsely. “Twenty-two years and not one has ever broken. Not one.”" },
+    ajul: { title: "Mimi collapses", text: "When you say it aloud in the corridor, twenty forty-one, Mimi Rácz staggers at the far end of the dressing-room corridor and collapses in the doorway.\n\nDirector Kálmán rushes over, shouting for smelling salts. Mimi slowly opens her eyes, and the first place she looks is not at you but upwards, at the ceiling." }
+  },
+  fates: {
+    kalman: "He restaged the scene, and his daughter's future was at stake. Ödön Kálmán is convicted, the Corvin Theatre is closed, and his daughter's engagement never takes place.",
+    vass: "It was his rope, his fly loft, and he owed the victim money. Tibor Vass is convicted; after twenty-two years the first rope that ever broke drags him down with it.",
+    klara: "She wrote the gossip column and she knew everything. The prompter is convicted, and in prison nobody cares what she saw from the prompt box.",
+    bodo: "He got the part and the Vienna tour. Ferenc Bodó is convicted; in the end a third tenor sings the tour."
+  },
+puzzles: {
     kotel: {
       title: "The end of the rope",
       body: `<p>The end of the rope that held the number-seven sandbag hangs by the rail. The director says it was worn; the fly master says someone cut it. Look closely and choose.</p>`,

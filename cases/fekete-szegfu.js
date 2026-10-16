@@ -50,19 +50,19 @@
     cianid: { t: "A kálium-cianid", src: "Sötétkamra", x: "Fekete sötétkamrájában, a fényképészeti vegyszerek között egy „Kálium-cianid — fixáló” feliratú üveg. Ma délután még tele volt, most hiányzik belőle egy kanálnyi. Mellette egy teáskanál, rajta fehér maradvány." },
     galos: { t: "Nedves sárcipőnyomok", src: "Hátsó lépcső", x: "A hátsó lépcsőn nedves, 44-es angol sárcipő nyomai vezetnek fel az irodához, és vissza le. Az iroda kabátfogasán Fekete angol sárcipője, még vizes." },
     kulcs: { t: "A hátsó ajtó kulcsa", src: "Hátsó lépcső", x: "A hátsó lépcső ajtaját kívülről csak kulccsal lehet kinyitni. Két kulcs van: az egyik Pintéré, a másik Dr. Fekete kulcscsomóján." },
-    ido: { t: "Ki hol volt fél hétkor?", src: "Porta · tanúvallomások", x: "Irma asszony otthon, a Rózsadombon. Halmi a kaszinóban. Pintér a Kék Macska kocsmában. Rózsa néni a házmesterlakásban. Dr. Fekete nem a Gerbeaud-ban volt, hanem az irodában: negyed héttől öt perccel hét előttig üresen állt a széke a kávéházban." },
+    ido: { t: "Ki hol volt fél hétkor?", src: "Porta · tanúvallomások", x: "Irma asszony otthon, a Rózsadombon. Halmi a kaszinóban. Pintér a Kék Macska kocsmában. Rózsa néni a házmesterlakásban. Dr. Fekete az irodában (a Gerbeaud-ban negyed héttől öt perccel hét előttig üresen állt a széke)." },
     penz: { t: "A boríték a házmesternénél", src: "Porta", x: "Rózsa néni kötényzsebében egy boríték száz pengővel. A borítékon zöldeskék tintával egyetlen betű: R." },
     kesztyu: { t: "Egy női kesztyű", src: "Váróterem", x: "A váróterem fogasán egy finom női kesztyű, erős ibolyaillattal. A bélésébe hímezve: F. I." },
     zseton: { t: "Kaszinózsetonok", src: "Váróterem", x: "Halmi kabátzsebében két kaszinózseton és egy bírósági értesítő: „Március 15-én, nemzeti ünnep alkalmából a törvényszék zárva tart.”" },
     kocsma: { t: "A kocsmai blokk", src: "Porta", x: "Pintér mellényzsebében a Kék Macska kocsma blokkja: két fröccs, 18:05 és 19:20 között." },
-    hazugsag: { t: "Fekete hazugsága", src: "Váróterem · vallomás", x: "Fekete azt vallotta, egy percre sem állt fel a Gerbeaud asztalától. A pincér szerint negyed hétkor elment, és csak öt perccel hét előtt jött vissza." },
+    hazugsag: { t: "Ellentmondás Fekete vallomásában", src: "Váróterem · vallomás", x: "Fekete azt vallotta, egy percre sem állt fel a Gerbeaud asztalától. A pincér szerint negyed hétkor elment, és csak öt perccel hét előtt jött vissza." },
     dosszie: { t: "Edit titkos dossziéja", src: "Irattár", x: "Megfejtve: „A fekete szegfű: Dr. Fekete Szilárd. Hat cédula, hat gyilkos, hat vétel: a Kendeffy-képek, a Hollós cukrászda, Az utolsó tánc jogai, a Ráday-részvények, a Corvin Színház, a Récsey-birtok. Mindet a Lánchíd Rt. vette meg, áron alul. A Lánchíd Rt. tulajdonosa: Dr. Fekete Szilárd.”" },
     fenykepek: { t: "Száradó fényképek", src: "Sötétkamra", x: "A sötétkamra zsinórján hat fénykép szárad: a Szegfű-villa, a Hollós cukrászda, az Arany Griff, egy hálókocsi a Keleti pályaudvaron, a Corvin Színház zsinórpadlása és a Récsey-birtok pincéje. Mindegyiken egy dátum, mindig néhány nappal a gyilkosság előttről." },
     lanchid: { t: "A cégjegyzék", src: "Irattár", x: "A Lánchíd Rt. cégkivonata: egyedüli részvényese Dr. Fekete Szilárd. Az elmúlt nyolc évben hat nagy vásárlás, mindegyik közvetlenül egy gyilkossági botrány után." }
   },
 
   contradictions: [
-    { id: "c-fekete", suspect: "fekete", clue: ["galos", "kulcs"], reveal: "Fekete mosolya meg sem rezdül: „Gyakran használom a hátsó lépcsőt, a kocsimtól közelebb van.” Csakhogy azt állította, hat és hét között a Gerbeaud-ban ült." },
+    { id: "c-fekete", suspect: "fekete", clue: ["galos", "kulcs"], reveal: "Fekete mosolya meg sem rezdül: „Gyakran használom a hátsó lépcsőt, a kocsimtól közelebb van.”" },
     { id: "c-fekete2", suspect: "fekete", clue: ["tinta", "toll"], reveal: "„Bárki kölcsönvehette a tollamat” mondja Fekete. Közben a gomblyukában lévő sötét szegfűt igazgatja." },
     { id: "c-irma", suspect: "irma", clue: ["kesztyu"], reveal: "Irma elsápad: „Jó, itt voltam ötkor. Meg akartam kérdezni Editet, van-e a férjemnek valakije. Azt mondta, sokkal rosszabb a helyzet, de még nem mondhatja el. Fél hatkor hazamentem.”" },
     { id: "c-halmi", suspect: "halmi", clue: ["zseton"], reveal: "Halmi elvörösödik: „A bíróság zárva volt, igen. A kaszinóban voltam. Ha Fekete megtudja, kirúg. De Editet nem bántottam.”" },
@@ -70,42 +70,90 @@
     { id: "c-rozsa", suspect: "rozsa", clue: ["penz"], reveal: "Rózsa néni összetöri a kezét: „Fekete úr adta. Fél hétkor jött vissza a hátsó lépcsőn, és azt mondta, felejtsem el. Száz pengő, kérem. Nekem az egy havi lakbér.”" }
   ],
 
-  locations: [
+    locations: [
     { id: "titkarsag", name: "Edit szobája", desc: "Iratszekrények, egy írógép, a radiátoron kihűlt teáskanna. Az asztalon egy váza egyetlen virággal.",
+      look: "Iratszekrények, a radiátoron kihűlt teáskanna. [[Edit az íróasztalra borult, a keze még a teáscsésze mellett|holttest]]. [[Az írógépben egy levél maradt, alul tintás aláírással|bucsu]]. Az asztalon [[egy váza, benne egyetlen szál, szinte fekete virág|szegfu]].\n\nA fiókban, [[egy köteg iktatókönyv alatt|fuzet]], valami vékonyabb lapul. Az ablakpárkányon [[egy kis tükör és egy rúzs|rouge]].",
+      decoys: { rouge: "Edit rúzsa, halvány rózsaszín. A csésze peremén nincs nyoma: a teát már nem itta meg nyugodtan." },
       items: [
-        { clue: "holttest", label: "Edit", text: "Az íróasztalra borult, a keze még a teáscsésze mellett." },
-        { clue: "bucsu", label: "A búcsúlevél", text: "Az írógépben maradt, alul tintás aláírás." },
-        { clue: "szegfu", label: "A váza", text: "Egyetlen szál, szinte fekete virág." },
-        { clue: "fuzet", label: "A gyorsírásos füzet", text: "A fiókban, egy köteg iktatókönyv alatt." }],
+        { clue: "holttest", label: "Edit", text: "Megvizsgálod Editet és a csészét." },
+        { clue: "bucsu", label: "A búcsúlevél", text: "Kihúzod a levelet az írógépből." },
+        { clue: "szegfu", label: "A váza", text: "Megnézed a virágot." },
+        { clue: "fuzet", label: "A gyorsírásos füzet", text: "Előhúzod a füzetet." }],
       puzzle: "alairas" },
     { id: "fekete_iroda", name: "Fekete irodája", desc: "Bőrfotelek, mahagóni íróasztal, a falon bekeretezett fényképek a Balatonról, Tokajról, egy színházról. Hátul egy zárt ajtó.",
+      look: "Bőrfotelek, mahagóni íróasztal. A falon [[bekeretezett fényképek a Balatonról, Tokajról, egy színházról|kepek]]. [[Az íróasztalon egy töltőtoll, a kupakja félrecsúszva|toll]], mellette [[az asztali naptár|naptar]]. A kisasztalon [[egy kristálykancsó konyakkal|konyak]]. Hátul egy zárt ajtó számzárral.",
+      decoys: { kepek: "Szép, gondos felvételek, mindegyik napnyugtakor. A Corvin Színház képén a zsinórpadlás ablaka világít.", konyak: "Drága francia konyak, két pohár. Az egyik még nedves." },
       items: [
-        { clue: "toll", label: "Az íróasztal", text: "Egy töltőtoll, a kupakja félrecsúszva." },
-        { clue: "naptar", label: "Az asztali naptár", text: "A március 15-i lapon valami ki van radírozva." }],
+        { clue: "toll", label: "Az íróasztal", text: "Megvizsgálod a töltőtollat." },
+        { clue: "naptar", label: "Az asztali naptár", text: "Fény felé tartod a március 15-i lapot." }],
       puzzle: "sotetkod" },
     { id: "sotetkamra", name: "Sötétkamra", desc: "Vörös lámpa, előhívótálak, száradó fényképek egy zsinóron. Mindegyiken egy-egy ismerős helyszín.",
+      look: "Vörös lámpa, ecetszag. [[Előhívótálak|talak]] sorban, a falon [[a vegyszerespolc: barna üvegek, és egy teáskanál ott, ahol nem kellene lennie|cianid]]. A zsinóron fényképek száradnak.",
+      decoys: { talak: "Előhívó, stopfürdő, fixáló. A fixálós tál üres, mintha ma nem is hívtak volna elő semmit." },
       requires: "sotetkod",
-      items: [{ clue: "cianid", label: "A vegyszerespolc", text: "Barna üvegek, címkék, egy teáskanál ott, ahol nem kellene lennie." }] },
+      items: [{ clue: "cianid", label: "A vegyszerespolc", text: "Leemeled az üveget és a kanalat." }] },
     { id: "porta", name: "Házmesterlakás és kapu", desc: "Szűk fülke a kapualjban, ablak az udvarra, a falon a lakók névsora.",
+      look: "Szűk fülke a kapualjban, ablak az udvarra. A falon [[a lakók névsora|nevsor]]. [[Rózsa néni kötényzsebében|penz]] valami zizeg. A fogason [[Pintér mellénye, a zsebéből papír kandikál ki|kocsma]]. Az ablakban [[egy szál szegfű egy befőttesüvegben|uveg]].",
+      decoys: { nevsor: "Harmadik emelet: Dr. Fekete Szilárd, ügyvédi iroda. Hátsó bejárat az udvarról.", uveg: "Sötét, majdnem fekete szegfű. Rózsa néni szerint „egy úr” adta ma este, és mosolygott hozzá." },
       items: [
-        { clue: "penz", label: "Rózsa néni köténye", text: "Valami zizeg a zsebében." },
-        { clue: "kocsma", label: "Pintér mellénye", text: "A fogason lóg, a zsebéből papír kandikál ki." }],
+        { clue: "penz", label: "Rózsa néni köténye", text: "Megkéred Rózsa nénit, hogy ürítse ki a zsebét." },
+        { clue: "kocsma", label: "Pintér mellénye", text: "Kihúzod a papírt a zsebből." }],
       puzzle: "hol" },
     { id: "hatso", name: "Hátsó lépcső", desc: "Keskeny cselédlépcső az udvar felől, egy vasajtó, a lépcsőfokokon víz.",
+      look: "Keskeny cselédlépcső az udvar felől. [[A lépcsőfokokon nedves nyomok, felfelé és lefelé is|galos]]. Fent [[egy vasajtó, kívülről csak kulccsal nyílik|kulcs]]. A fordulóban [[egy gázóra|gazora]].",
+      decoys: { gazora: "Rendesen jár. A radiátoron át senki sem engedett gázt a szobákba." },
       items: [
-        { clue: "galos", label: "A lépcsőfokok", text: "Nedves nyomok, felfelé és lefelé is." },
-        { clue: "kulcs", label: "A vasajtó", text: "Kívülről csak kulccsal nyílik." }] },
+        { clue: "galos", label: "A lépcsőfokok", text: "Leguggolsz a nyomokhoz." },
+        { clue: "kulcs", label: "A vasajtó", text: "Megvizsgálod a zárat." }] },
     { id: "varo", name: "Váróterem", desc: "Bőr kanapék, újságok, a rendőrség itt veszi fel a vallomásokat. A fogason kabátok.",
+      look: "Bőr kanapék, a rendőrség itt veszi fel a vallomásokat. [[Az asztalon a mai újságok|ujsag]]. A fogason kabátok: [[egy finom női kesztyű, ibolyaillattal|kesztyu]], és [[Halmi kabátja, a zsebében valami kerek csörög|zseton]].",
+      decoys: { ujsag: "Pesti Hírlap, március 15.: „A Lánchíd Rt. megvásárolta a tokaji Récsey-birtokot.” A cikk mellett Fekete fényképe." },
       items: [
-        { clue: "kesztyu", label: "A fogas", text: "Egy finom női kesztyű, ibolyaillattal." },
-        { clue: "zseton", label: "Halmi kabátja", text: "Valami kerek csörög a zsebében." }],
+        { clue: "kesztyu", label: "A fogas", text: "Leveszed a kesztyűt a fogasról." },
+        { clue: "zseton", label: "Halmi kabátja", text: "Belenyúlsz a zsebébe." }],
       puzzle: "vallomas" },
     { id: "irattar", name: "Irattár", desc: "Polcok a mennyezetig, dossziék évszámokkal. Egy virágcserépben elszáradt szegfű.",
-      items: [{ clue: "lanchid", label: "A cégjegyzékek", text: "A Lánchíd Rt. dossziéja, vastagabb a többinél." }],
+      look: "Polcok a mennyezetig, [[dossziék évszámokkal|evszam]]. [[A cégjegyzékek között egy dosszié vastagabb a többinél|lanchid]]. Az ablakban egy virágcserép, benne elszáradt szegfű.",
+      decoys: { evszam: "1931, 1933, 1934, 1936, 1937, 1938. Ugyanazok az évek, mint a hat cédulán." },
+      items: [{ clue: "lanchid", label: "A cégjegyzékek", text: "Kihúzod a Lánchíd Rt. dossziéját." }],
       puzzle: "dosszie" }
   ],
 
-  puzzles: {
+  deductions: [
+    { id: "d-hamislevel", from: ["bucsu", "tinta"], t: "Nem Edit írta alá", x: "A búcsúlevél aláírása zöldeskék tintával, széles hegyű tollal készült, Edit pedig csak lila tintás, finom hegyű tollat használt. A levelet más írta alá: nem öngyilkosság volt.",
+      q: "Mit jelent ez a búcsúlevélre nézve?", ans: 1,
+      opts: ["Edit sietségében valaki más tollát kapta fel.", "Nem Edit írta alá: a halálát öngyilkosságnak akarták álcázni.", "Edit szándékosan írt más tollal, hogy jelezzen valamit."] },
+    { id: "d-hatso", from: ["galos", "kulcs"], t: "A hátsó lépcsőn jött", x: "A hátsó ajtó kívülről csak kulccsal nyílik, kulcs Pintérnél és Feketénél van. A nyomok 44-es angol sárcipőtől valók, és Fekete sárcipője vizesen lóg a fogason.",
+      q: "Ki jött fel este a hátsó lépcsőn?", ans: 2,
+      opts: ["Pintér, aki a kocsmából jött vissza.", "Egy idegen, aki Rózsa néni kulcsát kérte el.", "Dr. Fekete, a saját kulcsával."] },
+    { id: "d-ures", from: ["ido", "holttest"], t: "Az üres szék", x: "Edit fél hétkor főzte a teáját, és fél hét és háromnegyed hét között halt meg. Fekete széke a Gerbeaud-ban negyed héttől öt perccel hét előttig üres volt, és az iroda hét percre van.",
+      q: "Mit árul el a kettő együtt Fekete alibijéről?", ans: 0,
+      opts: ["Fekete pont akkor nem ült a Gerbeaud-ban, amikor Edit meghalt.", "Fekete alibije szilárd, hiszen hatkor leült.", "Edit már hat előtt meghalt, amikor Fekete még bent volt."] },
+    { id: "d-mereg", from: ["cianid", "holttest"], t: "A sötétkamra mérge", x: "Edit teájában cián volt, és Fekete zárt sötétkamrájának fixálójából ma délután hiányzik egy kanálnyi, a kanálon fehér maradvány. A mérget onnan vitték át.",
+      q: "Honnan származott a méreg?", ans: 1,
+      opts: ["Edit maga hozta otthonról.", "Fekete zárt sötétkamrájából, a fényképészeti fixálóból.", "A radiátorból szivárgó gázból."] },
+    { id: "d-rozsa", from: ["penz", "tinta"], t: "A zöld R betű", x: "A Rózsa néninél talált borítékon zöldeskék tintával áll az R. Ilyen tinta csak Fekete tollában van. Fekete fizette le a házmesternét.",
+      q: "Ki adta a száz pengőt Rózsa néninek?", ans: 2,
+      opts: ["Halmi, a kaszinói nyereségéből.", "Irma asszony, hogy ne mondja el, hogy ötkor itt járt.", "Dr. Fekete, a saját tollával megcímezve."] },
+    { id: "d-lanchid", from: ["dosszie", "lanchid"], t: "A Lánchíd Rt.", x: "Mind a hat gyilkosság után a Lánchíd Rt. vásárolt áron alul, és a Lánchíd Rt. egyedüli részvényese Dr. Fekete Szilárd. Edit erre jött rá.",
+      q: "Mire jött rá Edit?", ans: 0,
+      opts: ["Hogy Fekete a hat gyilkosság mögött álló fekete szegfű, és ő gazdagodott meg mindegyikből.", "Hogy Halmi sikkaszt az irodából.", "Hogy Fekete viszonyt folytat valakivel."] }
+  ],
+
+  events: [
+    { id: "gomblyuk", after: 3, title: "Friss szegfű",
+      text: "Nyílik az ajtó. Dr. Fekete Szilárd lép be, kalapban, a gomblyukában egy friss, sötét, szinte fekete szegfű.\n\n„Ugye nem zavarom, nyomozó úr? Szegény Edit.” A pillantása egy másodpercre a vázára esik, aztán rád. Mosolyog. „Ha bármiben segíthetek, tudja, hol talál.”" },
+    { id: "voros", afterSolved: "sotetkod", title: "Kialszik a vörös lámpa",
+      text: "Alig lépsz be a sötétkamrába, mögötted halkan kattan a zár. A vörös lámpa kialszik. Vaksötét, ecetszag, és valahol a polcon üvegek csilingelnek.\n\nPerceknek tűnik, mire Pintér rád nyitja az ajtót. A kilincs még meleg, a folyosón drága kölni illata. „Senkit sem láttam” mondja Pintér, de a keze remeg." }
+  ],
+
+  fates: {
+    irma: "A kesztyű és az elhallgatott délutáni látogatás elég volt. Irmát a férje titkárnőjének megölésével vádolják és elítélik. Dr. Fekete megrendülten nyilatkozik a lapoknak, a gomblyukában egy sötét szegfűvel.",
+    halmi: "A kaszinó, a hazugság és a zárva tartó bíróság mindent eldöntött. Halmit elítélik; az ügyvédi kamara kizárja, Fekete pedig új ifjabb társat vesz fel.",
+    pinter: "Nem zárta be az ajtót, és hétkor ő találta meg. Pintér Józsefet harminc év szolgálat után elítélik. A Lánchíd Rt. aktái a polcon maradnak, érintetlenül.",
+    rozsa: "A száz pengő a zsebében volt, és ez elég volt. Rózsa nénit elítélik; a fekete szegfű pedig nyolcadszor is vásárol, áron alul."
+  },
+puzzles: {
     alairas: {
       type: "choice", title: "Az aláírás", reward: "tinta", answer: "D",
       body: `<p>A búcsúlevél gépelt, de az aláírás tintával készült. A tinta zöldeskék, a vonal széles, a „V” betűnél a toll hegye szétnyílt. Négy toll van az irodában. Hasonlítsd össze a próbavonalaikat.</p>`,
@@ -168,12 +216,12 @@
 
   accusation: {
     questions: [
-      { id: "who", legend: "Ki ölte meg Varga Editet?", name: "a tettes", from: "suspects", answer: "fekete", proof: ["ido", "galos", "hazugsag", "kulcs"] },
-      { id: "how", legend: "Hogyan halt meg Edit?", name: "a módszer", answer: "cian", proof: ["cianid", "holttest"],
+      { id: "who", legend: "Ki ölte meg Varga Editet?", name: "a tettes", from: "suspects", answer: "fekete", proof: ["d-ures", "d-hatso"] },
+      { id: "how", legend: "Hogyan halt meg Edit?", name: "a módszer", answer: "cian", proof: ["d-mereg"],
         options: [{ v: "ongyilkos", label: "Öngyilkos lett, ahogy a búcsúlevél írja" }, { v: "cian", label: "Ciánt tettek a teájába a sötétkamra fixálójából" }, { v: "gaz", label: "Gázzal mérgezték meg a radiátorból" }] },
-      { id: "why", legend: "Miért kellett meghalnia?", name: "az indíték", answer: "szegfu", proof: ["dosszie", "lanchid", "fuzet"],
+      { id: "why", legend: "Miért kellett meghalnia?", name: "az indíték", answer: "szegfu", proof: ["d-lanchid", "dosszie"],
         options: [{ v: "szerelem", label: "Fekete viszonyt folytatott vele, és szakítani akart" }, { v: "sikkasztas", label: "Rájött Halmi sikkasztására" }, { v: "szegfu", label: "Rájött, hogy Fekete a fekete szegfű, és le akarta leplezni" }, { v: "orokseg", label: "Örökölt volna Feketétől" }] },
-      { id: "plant", legend: "Melyik nyommal akarták öngyilkosságnak láttatni a halálát?", name: "a hamis nyom", from: "clues", answer: "bucsu" }
+      { id: "plant", legend: "Melyik nyommal akarták öngyilkosságnak láttatni a halálát?", name: "a hamis nyom", from: "clues", answer: "bucsu", proof: ["d-hamislevel"] }
     ]
   },
 

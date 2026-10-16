@@ -25,7 +25,7 @@
     holttest: { t: "The ice room", src: "Ice room", x: "Hollós lay curled up beside the blocks of ice, without his coat. The doctor says he froze to death around midnight. The oak door was bolted from the outside; there is no handle on the inside. On the shelf stands the pistachio cake, with one slice missing." },
     der: { t: "The name in the frost", src: "Ice room · door window", x: "From inside, with his finger, Hollós wrote a first name on the door's small window: BÉLA. There are two Bélas at the patisserie: Béla Szendrei, the head pastry chef, and Béla Hollós, the nephew." },
     kartya: { t: "A playing card among the ice", src: "Ice room", x: "Among the blocks of ice, a playing card: the ace of hearts, dry and clean. There is not a single damp patch in the sawdust around it, although the ice was melting all night." },
-    retesz: { t: "The cream on the bolt", src: "Kitchen", x: "On the handle of the bolt, crusted green pistachio cream mixed with flour. This cream had been drying all night: it got there in the evening. Only Béla Szendrei made the cream that evening, and his apron bears the same dry, flour-flecked stain." },
+    retesz: { t: "The cream on the bolt", src: "Kitchen", x: "On the handle of the bolt, crusted green pistachio cream mixed with flour, dried overnight. Only Béla Szendrei made the cream that evening, and his apron bears the same dry, flour-flecked stain." },
     szerzodes: { t: "The preliminary contract", src: "Office · safe", x: "A preliminary contract with Lánchíd Café Ltd.: tomorrow Hollós sells the patisserie and the staff are dismissed. Beside it, a note: “I won't tell Szendrei. For fifteen years I've promised him a partnership. He'll understand.”" },
     tavozas: { t: "Who went home when?", src: "Watchman's booth · timesheet", x: "Béla Hollós 21:00, Anna Kertész 21:30, Madame Vilma 21:45, Béla Szendrei 22:30. György Fehér stayed in all night. Hollós went down to the ice room at 22:00." },
     valtok: { t: "Béla Hollós's coat", src: "Changing room", x: "In Béla Hollós's coat, gambling IOUs for three thousand pengő. On the coat sleeve, a fresh, still-wet green cream stain, with no flour in it. The coat has hung on its hook since the evening." },
@@ -36,29 +36,63 @@
   },
   contradictions: {
     "c-szendrei": { reveal: "Szendrei turns pale: “All right… I left later. I was clearing up, that's all. At ten the master went down; I didn't see him after that.”" },
-    "c-szendrei2": { reveal: "Szendrei answers too quickly: “He must have smeared it in the kitchen.” But the coat had hung on its hook since the evening, and the cream on it is still wet. Someone smeared it this morning, and he said he hadn't been in the kitchen this morning." },
+    "c-szendrei2": { reveal: "Szendrei answers too quickly: “The boy must have smeared it in the kitchen; he touches everything.”" },
     "c-hollosbela": { reveal: "Béla Hollós looks at the card: “It's from my deck. My deck had been lying in the kitchen since yesterday afternoon; anyone could have taken it. I was at the club from nine until dawn, ten people will swear to it.”" },
     "c-anna": { reveal: "Anna bursts into tears: “I borrowed it for my mother's doctor. Two weeks later I put it back; Mr Hollós found out and forgave me. I really did go home at half past nine.”" },
     "c-vilma": { reveal: "Vilma says quietly: “I knew. I signed it too. We wanted to retire, Ernő wanted it too. I was ashamed to admit it.”" },
     "c-feher": { reveal: "Uncle Gyuri twists his cap: “After ten I nodded off, all right. I only woke at dawn. I didn't see who went towards the ice room.”" }
   },
-  locations: {
-    jegkamra: { name: "Ice room", desc: "Cold mist, blocks of ice in sawdust, cakes on the shelves. A small, frosted window in the door.",
-      items: { holttest: { label: "The master", text: "Hollós is curled up beside the blocks of ice, as if trying to warm himself." },
-               kartya: { label: "Among the blocks of ice", text: "Something red and white flashes in the sawdust." } } },
-    muhely: { name: "Kitchen", desc: "Marble tables, copper pans, a row of aprons on the wall. Flour and icing sugar everywhere." },
-    iroda: { name: "Hollós's office", desc: "A desk, framed diplomas, a green-painted safe in the corner." },
-    portas: { name: "Watchman's booth", desc: "A tiny booth by the back gate, the timesheet on the wall, a bottle on the table.",
-      items: { palinka: { label: "The table", text: "A bottle, a glass knocked over beside it." } } },
+    locations: {
+    jegkamra: { name: "Ice room", desc: "Cold mist, blocks of ice in sawdust, cakes on the shelves. A small frosted glass window in the door.",
+      look: "Cold mist, blocks of ice in sawdust, the drip of meltwater. [[Hollós is huddled beside the ice blocks|holttest]], as if he had tried to keep warm. On the shelf, [[the pistachio cake, one slice missing|torta]].\n\n[[Something red and white flashes in the sawdust between the ice blocks|kartya]]. In the corner, [[an overturned bucket|vodor]]. In the door, a small frosted glass window.",
+      decoys: { torta: "The master cut the missing slice himself, to taste it. The doctor says there's no sign of poison.", vodor: "Icy water and a wooden spoon. Perhaps Hollós banged on the door with it." },
+      items: { holttest: { label: "The master", text: "You kneel beside the master." },
+               kartya: { label: "Between the ice blocks", text: "You pull it out of the sawdust." } } },
+    muhely: { name: "Kitchen", desc: "Marble tables, copper pans, a row of aprons on the wall. Flour and icing sugar everywhere.",
+      look: "Marble tables, copper pans, flour and icing sugar everywhere. [[In a copper pan|ust]], the remains of a green cream. A row of aprons on the wall; outside the ice-room door, [[the heavy iron bolt|retesz_]]. On the table, [[a rolling pin|sodrofa]].",
+      decoys: { ust: "Pistachio cream thickened with flour. Szendrei's secret, says the apprentice: nobody else makes it like that.", retesz_: "A green stain on the handle. Whose it is, you'll have to compare with the stains on the clothes.", sodrofa: "Clean, in its place. Nobody was struck with it." } },
+    iroda: { name: "Hollós's office", desc: "A desk, framed diplomas, a green-painted safe in the corner.",
+      look: "A desk, [[framed diplomas|oklevel]] on the wall, a green-painted safe in the corner. On the desk, the recipe for the Hollós cake and [[a desk calendar|naptar]].",
+      decoys: { oklevel: "Vienna 1911, Paris 1925, Budapest 1930. Only Hollós's name on each, though Szendrei has made the cakes for years.", naptar: "12 April: “Lánchíd Ltd, 10 o'clock, signing.” Underlined twice." } },
+    portas: { name: "Night watchman's booth", desc: "A cramped booth by the back gate, the attendance sheet on the wall, a bottle on the table.",
+      look: "A cramped booth by the back gate, the rain-soaked attendance sheet on the wall. [[On the table, a bottle and an overturned glass|palinka]]. On a nail, [[Uncle Gyuri's lantern|lampas]].",
+      decoys: { lampas: "Cold, the glass sooty. Nobody made the rounds with it tonight." },
+      items: { palinka: { label: "The table", text: "You sniff the glass." } } },
     kassza: { name: "Till", desc: "A brass cash register, a thick cash book, small change in the drawer.",
-      items: { penzkonyv: { label: "The cash book", text: "Something seems not to add up on the last pages." } } },
-    oltozo: { name: "Staff changing room", desc: "Hooks, lockers, an elegant gentleman's coat among the aprons.",
-      items: { valtok: { label: "The elegant coat", text: "Béla Hollós's coat: papers poke out of the pocket, something green on the sleeve." } } },
-    uzlet: { name: "Shop floor", desc: "Mirrored walls, glass display cases, little marble tables. It was to have reopened here tomorrow.",
-      items: { vilmatask: { label: "Madame Vilma's bag", text: "She left it on the counter when she rushed in this morning." },
-               arlap: { label: "The price list", text: "Calligraphic lettering in a brass frame above the counter." } } }
+      look: "A brass cash register, [[the thick cash book|penzkonyv]], [[small change|apro]] in the drawer.",
+      decoys: { apro: "Exactly what the till roll says it should be. Nobody touched it tonight." },
+      items: { penzkonyv: { label: "The cash book", text: "You leaf through the last pages." } } },
+    oltozo: { name: "Staff changing room", desc: "Coat hooks, lockers, an elegant man's coat among the aprons.",
+      look: "Coat hooks, lockers, starched aprons. [[An elegant man's coat among the aprons|valtok]], something green on the sleeve. [[Szendrei's locker|szekreny]] stands open; on the bench, [[a pair of boots|csizma]].",
+      decoys: { szekreny: "A clean shirt, a photograph of Hollós and Szendrei arm in arm in 1918. His apron is missing from its peg.", csizma: "The apprentice's. He came in at six this morning; he found the master." },
+      items: { valtok: { label: "The elegant coat", text: "You go through Béla Hollós's coat." } } },
+    uzlet: { name: "Shop", desc: "Mirrored walls, glass display cases, little marble tables. It was to have reopened tomorrow.",
+      look: "Mirrored walls, glass display cases, little marble tables. On the counter, [[Madame Vilma's handbag|vilmatask]], forgotten when she rushed in this morning. Above the counter, [[the price list in a brass frame|arlap]]; in a display case, [[a swan cast in sugar|hattyu]].",
+      decoys: { hattyu: "Szendrei's masterpiece from the Paris exhibition. Yet the plinth bears Hollós's name." },
+      items: { vilmatask: { label: "Madame Vilma's handbag", text: "You look inside the bag." },
+               arlap: { label: "The price list", text: "You read the calligraphy." } } }
   },
-  puzzles: {
+  deductions: {
+    "d-csel": { t: "Morning clues", x: "The card is dry among ice that melted all night, and the cream on the coat is still wet, although the coat has hung on its hook since the evening. Both were placed this morning, to throw suspicion on Béla Hollós.",
+      q: "What do the playing card and the cream on the coat have in common?", opts: ["Both point to Béla Hollós, so he is the killer.", "Both are fresh: someone placed them this morning to throw suspicion on Béla Hollós.", "Béla Hollós came back this morning and left them then."] },
+    "d-egyedul": { t: "Alone in the house", x: "Hollós went down to the ice room at ten. By then only Szendrei and the night watchman were in the house, and after ten Uncle Gyuri was asleep from the pálinka. Szendrei stayed awake, alone, until half past ten.",
+      q: "Who could have been awake in the house when Hollós went down to the ice room?", opts: ["Only Béla Szendrei: the others had left and the watchman was asleep.", "Uncle Gyuri, who was awake at his post all night.", "Madame Vilma, who turned back before the tram."] },
+    "d-bela": { t: "Which Béla?", x: "The master wrote BÉLA in the frost. On the bolt is floury cream that got there in the evening and dried all night, and only Béla Szendrei made that; his apron bears the same stain.",
+      q: "Which Béla do the two clues point to together?", opts: ["Béla Hollós, the nephew, who inherits.", "Neither: the name refers to the bakery.", "Béla Szendrei, the head confectioner."] },
+    "d-vilma": { t: "Vilma knew", x: "Vilma signed the preliminary contract as a witness. She wanted the sale; her husband's death would have gained her nothing: the deal would have gone through anyway.",
+      q: "What does this mean for Vilma?", opts: ["She had no reason to kill her husband: she wanted the sale herself.", "Vilma wanted to stop the sale.", "Vilma forged her husband's signature."] }
+  },
+  events: {
+    unokaocs: { title: "Béla Hollós bursts in", text: "The back door slams. Béla Hollós stands there, hatless, his tie askew. “I heard what my uncle wrote! Béla? Don't you know how many Bélas there are in this city?”\n\nSzendrei watches from the kitchen doorway. He doesn't say a word, only wipes his hands on his apron, over and over." },
+    koteny: { title: "Smoke from the kitchen", text: "A smell of burning. The kitchen oven door is open, and Béla Szendrei is pushing his apron into the flames with a poker.\n\nThe apprentice snatches it out before it burns. The green stain is still on it, scorched. Szendrei puts down the poker. “My apron is my own,” he says quietly." }
+  },
+  fates: {
+    hollosbela: "The word BÉLA, the ace of hearts and the cream-stained coat fitted perfectly. The nephew is convicted; the inheritance he supposedly killed for is bought by Lánchíd Ltd for a song.",
+    anna: "The corrected cash book was enough. Anna Kertész is convicted, and her sick mother never learns why she doesn't come home.",
+    vilma: "The signed preliminary contract and the hidden sale convinced the court. Vilma is convicted of her husband's murder, and strangers reopen the shop.",
+    feher: "He was in the house all night and couldn't say what he had seen. Uncle Gyuri is convicted; for years the Váci utca tells how the kindly old night watchman killed the master."
+  },
+puzzles: {
     der: {
       title: "Writing in the frost", placeholder: "What name did he write?",
       body: `<p>On the small window of the ice-room door, Hollós wrote something in the frost from the inside with his finger before he collapsed. You are looking from the outside:</p>

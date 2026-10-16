@@ -36,15 +36,15 @@
 
   clues: {
     holttest: { t: "A lépcső alján", src: "Pincelépcső", x: "A gazda a lépcső alján fekszik, de a feje sértetlen, a kőlépcsőn egy csepp vér sincs. A csizmáján friss must szárad. A gyertyája és a kóstolópohara nincs mellette." },
-    erjeszto: { t: "Ahol valóban meghalt", src: "Erjesztőpince", x: "A gazda az erjesztőpincében halt meg. A gyertyája félig égve aludt ki, ahogy az erjedő must gázától szokott. A padlón két csík: a testet a lépcső felé húzták." },
+    erjeszto: { t: "A kialudt gyertya", src: "Erjesztőpince", x: "Az erjesztőpince asztalán a gazda félig égett, kialudt gyertyája és a kóstolópohara. A gyertya úgy aludt ki, ahogy az erjedő must gázától szokott. A padlón két csík vezet a lépcső felé." },
     hordo: { t: "Gáspár hordója", src: "Erjesztőpince", x: "A hetes hordón krétával: FURMINT 1937. A pincészek szerint Gáspár ezt „a saját hordójának” nevezi, és senkit sem enged a közelébe." },
     vasrud: { t: "A vasrúd", src: "Erjesztőpince", x: "Az erjesztőpince vasajtaja kívülről egy vasrúddal reteszelhető. A rúd most a falnak támasztva áll, a végén friss kopás. Bentről senki sem tudja kinyitni." },
-    hol: { t: "Ki hol volt 23:00 és 23:30 között?", src: "Udvar · tanúvallomások", x: "András és Lorenz a szalonban, Ilona a hálószobában, Rozália a konyhában, Bárány az istállóban. Fazekas Gáspár az udvaron, a szellőzőkürtőnél, pedig azt állítja, a présházban volt." },
+    hol: { t: "Ki hol volt 23:00 és 23:30 között?", src: "Udvar · tanúvallomások", x: "András és Lorenz a szalonban, Ilona a hálószobában, Rozália a konyhában, Bárány az istállóban. Fazekas Gáspár az udvaron, a szellőzőkürtőnél." },
     ejszaka: { t: "Az éjszaka sorrendje", src: "Szalon · összesítés", x: "23:00 a gazda lemegy. Valaki rárakja a vasrudat az ajtóra, aztán lezárja a kürtőt. Fél órán belül kialszik a gyertya. Egy óra körül valaki kinyitja a kürtőt és leveszi a rudat. Fél kettőkor Ilona megtalálja a férjét, és Báránnyal a lépcső aljára viszik. Fél hatkor a szüretelők rátalálnak." },
     lada: { t: "A pincemester ládája", src: "Pincemester háza", x: "A ládában háromezer pengő készpénz, egy köteg hamis aszúcímke „1935, 6 puttonyos” felirattal, és egy titkosított füzet." },
     fuzet: { t: "A titkos füzet", src: "A pincemester ládája", x: "„Lorenz ötven palack hamis aszút kapott. A gazda ma este a hetes hordóból akar kóstolni. Ha rájön, végem. A kürtőt be kell zárni.”" },
     penesz: { t: "Pincepenész", src: "Ilona szobája", x: "Ilona papucsán és pongyoláján fekete, bolyhos penész. A tokaji pincék falát borító nemes penész csak akkor tapad meg, ha valaki odalent a falhoz ér." },
-    hazugsag: { t: "Ilona éjjel lent járt", src: "Ilona szobája · vallomás", x: "Ilona azt mondta, reggelig ki sem mozdult a szobájából. A papucsán lévő pincepenész szerint éjjel lent járt a pincében." },
+    hazugsag: { t: "Ellentmondás Ilona vallomásában", src: "Ilona szobája · vallomás", x: "Ilona a jegyzőkönyvben azt állította, hogy bevette a cseppjeit, és reggelig ki sem mozdult a szobájából." },
     lorenz: { t: "Lorenz számlái", src: "Szalon", x: "Lorenz jegyzéke: ötven palack 1935-ös hatputtonyos aszú, készpénzért, Fazekas Gáspártól személyesen." },
     andras: { t: "András váltói", src: "Szalon", x: "András zsebében hatezer pengőről szóló váltók. A cselédek hallották, hogy délután az apja kitagadással fenyegette." },
     rozalia: { t: "Rozália levelei", src: "Konyha", x: "Rozália kötényében András levelei. Gyengéd, titkolt szerelem." },
@@ -61,36 +61,89 @@
     {"id": "c-andras", "suspect": "andras", "clue": ["andras"], "lie": false, "reveal": "András dacosan néz: „Igen, tartozom, és apám kitagadással fenyegetett. De tizenegytől éjfélig Lorenz úrral kártyáztam, és négyszáz pengőt vesztettem.”"}
   ],
 
-  locations: [
+    locations: [
     { id: "lepcso", name: "Pincelépcső", desc: "Meredek, nyirkos kőlépcső a mélybe, a falon fekete, bolyhos penész. Lent a gazda.",
-      items: [{ clue: "holttest", label: "A gazda", text: "A lépcső aljánál fekszik, a szeme nyitva." }],
+      look: "Meredek, nyirkos kőlépcső a mélybe. A falon [[fekete, bolyhos penész|penesz_]], [[a korlát|korlat]] hideg és nedves. [[A lépcső aljánál fekszik a gazda|holttest]], a szeme nyitva.",
+      decoys: { penesz_: "A tokaji nemes penész. Aki a falhoz ér, annak a ruháján, cipőjén is megmarad.", korlat: "Szilárd, sehol sem lazult meg. Aki megbotlik, ebbe kapaszkodhat." },
+      items: [{ clue: "holttest", label: "A gazda", text: "Megvizsgálod a holttestet és a lépcsőt." }],
       puzzle: "halal" },
     { id: "erjeszto", name: "Erjesztőpince", desc: "Hordósorok, a mustból sustorogva száll fel a gáz. Az asztalon kialudt gyertya.",
+      look: "Hordósorok, a mustból sustorogva száll fel a gáz, a levegő nehéz és édeskés. [[A hetes hordón krétával írt felirat|hordo]]. [[A vasajtón kívül egy nehéz vasrúd, a falnak támasztva|vasrud]]. A mennyezeten [[a szellőzőnyílás|nyilas]].",
+      decoys: { nyilas: "Felfelé vezet, a kürtőbe. Ha a fedelét lezárják, a gáz nem tud távozni." },
       requires: "halal",
       items: [
-        { clue: "hordo", label: "A hetes hordó", text: "Krétával írt felirat az elején." },
-        { clue: "vasrud", label: "A vasajtó", text: "Kívül egy nehéz vasrúd, a falnak támasztva." }] },
+        { clue: "hordo", label: "A hetes hordó", text: "Elolvasod a krétával írt feliratot." },
+        { clue: "vasrud", label: "A vasajtó", text: "Megvizsgálod az ajtót és a rudat." }] },
     { id: "udvar", name: "Udvar és szellőzőkürtő", desc: "Ködös udvar, a pince fölött kőből rakott kürtő, a fedele egy csavarral zárható.",
+      look: "Ködös udvar. A pince fölött kőből rakott kürtő, [[a fedele egy csavarral zárható|fedel]]. A sárban [[lábnyomok a kürtőtől a présház felé|nyom]], a présház ajtaján [[drót|drot]].",
+      decoys: { fedel: "A csavar frissen olajozott, a fedél nyitva. Valaki tudta, hogyan kell bánni vele.", nyom: "Egyenetlen lépések: egy rövid, egy hosszú, egy rövid, egy hosszú.", drot: "A présház ajtaját este dróttal kötötték be, és a drót érintetlen." },
       puzzle: "hol" },
     { id: "mester", name: "A pincemester háza", desc: "Kis vályogház a présház mögött. A falon évjárat-táblázat, az ágy alatt egy vasalt láda.",
+      look: "Kis vályogház a présház mögött. A falon évjárat-táblázat, az ágy alatt egy vasalt láda. A sarokban [[egy sétabot|bot]], az asztalon [[egy üveg aszú|asz]].",
+      decoys: { bot: "Kopott tölgyfa sétabot, a vége vasalt. Gáspár negyven éve biceg.", asz: "Címke nélküli palack. Ha megkóstolod: igazi, hatputtonyos aszú." },
       puzzle: "kod" },
     { id: "lada", name: "A pincemester ládája", desc: "A felnyitott ládában pénz, címkék és egy kopott füzet.",
+      look: "A felnyitott ládában pénzkötegek, címkék, és legalul [[egy kopott, viaszosvászon füzet|fuzet_]].",
+      decoys: { fuzet_: "Az utolsó oldala értelmetlen betűsor. Ezt meg kell fejteni." },
       requires: "kod", puzzle: "konyv" },
     { id: "haloszoba", name: "Ilona szobája", desc: "Kamillatea az éjjeliszekrényen, a szék támláján pongyola, az ágy előtt papucs.",
-      items: [{ clue: "penesz", label: "A papucs és a pongyola", text: "Valami fekete, bolyhos tapad rájuk." }],
+      look: "[[Kamillatea az éjjeliszekrényen|tea]], mellette [[egy üveg altatócsepp|csepp]]. [[A szék támláján pongyola, az ágy előtt papucs|penesz]].",
+      decoys: { tea: "Kihűlt, érintetlen. A szobalány fél tizenkettőkor hozta.", csepp: "Az üveg tele van. Ma este senki sem vett be belőle." },
+      items: [{ clue: "penesz", label: "A papucs és a pongyola", text: "Közelebbről megnézed a papucsot és a pongyolát." }],
       puzzle: "vallomas" },
     { id: "szalon", name: "Szalon", desc: "Kártyaasztal, félig üres borospoharak, a kandallóban hamu.",
+      look: "Kártyaasztal, [[kiterített kártyák|kartya]], félig üres borospoharak. [[Lorenz úr irattáskája|lorenz]] egy széken, [[András kabátja|andras]] a fotel karfáján.",
+      decoys: { kartya: "Ulti. A jegyzőlapon Lorenz javára négyszáz pengő, éjfélkor lezárva." },
       items: [
-        { clue: "lorenz", label: "Lorenz úr irattáskája", text: "Gondosan vezetett jegyzékek." },
-        { clue: "andras", label: "András kabátja", text: "Gyűrött papírok a zsebben." }],
+        { clue: "lorenz", label: "Lorenz úr irattáskája", text: "Átnézed a gondosan vezetett jegyzékeket." },
+        { clue: "andras", label: "András kabátja", text: "Kihúzod a gyűrött papírokat a zsebből." }],
       puzzle: "ido" },
     { id: "konyha", name: "Konyha", desc: "Mosatlan edények, az ablakból éppen a szellőzőkürtőre látni.",
+      look: "Mosatlan edények. [[Az ablakból|ablak]] éppen a szellőzőkürtőre látni. A szögön [[Rozália köténye|rozalia]].",
+      decoys: { ablak: "Innen tisztán látni a kürtőt, ködben is, ha valaki lámpással áll mellette." },
       items: [{ clue: "rozalia", label: "Rozália köténye", text: "A zsebéből levelek látszanak." }] },
     { id: "istallo", name: "Istálló", desc: "Szalma, lámpás, egy beteg ló pokróccal letakarva.",
-      items: [{ clue: "barany", label: "Bárány kabátja", text: "A szögön lóg, a zsebéből zsebkendő lóg ki." }] }
+      look: "Szalma, lámpás, [[egy beteg ló pokróccal letakarva|lo]]. A szögön [[Bárány kabátja, a zsebéből zsebkendő lóg ki|barany]]. A sarokban [[a kocsis|kocsis]] bóbiskol.",
+      decoys: { lo: "Kólikás, de túléli. Valaki egész éjjel itt virrasztott mellette.", kocsis: "„Bárány úr velem volt, csak fél kettőkor szaladt el, amikor az asszony kiabált. Egy óra körül nyikorgott a kürtő fedele.”" },
+      items: [{ clue: "barany", label: "Bárány kabátja", text: "Kihúzod a zsebkendőt." }] }
   ],
 
-  puzzles: {
+  deductions: [
+    { id: "d-attett", from: ["holttest", "erjeszto"], t: "Nem a lépcsőn halt meg", x: "A lépcsőn nincs vér, a gyertya és a pohár lent maradt az erjesztőpincében, a padlón húzásnyom. A gazda az erjesztőpincében halt meg, és utána vitték a lépcső aljára.",
+      q: "Mit mond a kettő együtt?", ans: 2,
+      opts: ["A gazda a lépcsőn esett el, és a gyertyája lerepült.", "A gazdát a lépcsőn ütötték le, és lehúzták a pincébe.", "A gazda az erjesztőpincében halt meg, és utána vitték a lépcső aljára."] },
+    { id: "d-gaz", from: ["erjeszto", "vasrud"], t: "Bezárva a gázba", x: "Az erjesztőpince ajtaját kívülről vasrúddal lehet reteszelni, és a rúdon friss a kopás. A gyertya a must gázától aludt ki. A gazdát bezárták, és a gáz ölte meg.",
+      q: "Hogyan halt meg a gazda?", ans: 0,
+      opts: ["Bezárták az erjesztőpincébe, és a must gáza ölte meg.", "Megmérgezték a kóstolóborral.", "A gáztól elszédült, és elesett a lépcsőn."] },
+    { id: "d-gaspar", from: ["hol", "fuzet"], t: "A kürtőnél", x: "Fazekas Gáspár tizenegy és fél tizenkettő között a kürtőnél állt, nem a présházban, és a füzetében ez áll: „A kürtőt be kell zárni.”",
+      q: "Ki zárta le a kürtőt?", ans: 1,
+      opts: ["Bárány, aki a lóhoz menet arra járt.", "Fazekas Gáspár, a pincemester.", "Rozália, aki az ablakból mindent látott."] },
+    { id: "d-ilona", from: ["penesz", "hazugsag"], t: "Ilona lent járt", x: "Ilona azt állítja, ki sem mozdult a szobájából, de a papucsán és a pongyoláján pincepenész van, ami csak odalent tapad meg.",
+      q: "Mit árul el a penész Ilona vallomásáról?", ans: 0,
+      opts: ["Hazudott: éjjel lent járt a pincében.", "Igazat mondott: a penész a ruhásszekrényből származik.", "Valaki más hordta be a penészt a szobájába."] },
+    { id: "d-cipelok", from: ["d-ilona", "barany"], t: "Ketten cipelték", x: "Ilona éjjel lent járt, és Bárány zsebkendőjén is pincepenész, a kabátján must. Ketten vitték fel a gazdát a lépcső aljára.",
+      q: "Ki vitte a holttestet a lépcsőhöz?", ans: 2,
+      opts: ["Gáspár egyedül, hogy balesetnek tűnjön.", "András és Lorenz, a kártyázás után.", "Ilona és Bárány intéző, együtt."] },
+    { id: "d-hamis", from: ["lada", "lorenz"], t: "A hamis aszú", x: "Gáspár ládájában hamis „1935, 6 puttonyos” címkék és háromezer pengő, Lorenz pedig ötven palack ilyen aszút vett tőle készpénzért, személyesen.",
+      q: "Mit csinált Gáspár a gazda háta mögött?", ans: 1,
+      opts: ["Lorenz megbízásából kémkedett a gazda után.", "Hamis aszút adott el Lorenznek, és a pénzt megtartotta.", "Kölcsönt vett fel a birtokra."] }
+  ],
+
+  events: [
+    { id: "lang", afterSolved: "halal", title: "Elkékül a láng",
+      text: "Ahogy belépsz az erjesztőpincébe, a gyertyád lángja hirtelen elkékül és összezsugorodik. A torkod kaparni kezd, a halántékod lüktet.\n\nValaki hátulról megragadja a karodat, és kiránt az ajtón. Fazekas Gáspár az. „A must gáza, uram! Még egy perc, és ön is ott marad.” A szeme furcsán csillog a lámpás fényében." },
+    { id: "kod", afterSolved: "kod", title: "Gáspár a ködben",
+      text: "Abban a pillanatban, ahogy a láda fedele felpattan, odakint csizmák csikorognak. Az ablakon át látod: Gáspár bicegve indul a szőlőhegy felé, be a ködbe.\n\nBárány intéző fut utána, és a szőlősor végén elkapja a karját. Gáspár nem ellenkezik. Csak annyit mond: „Negyven évig én csináltam ezt a bort.”" }
+  ],
+
+  fates: {
+    ilona: "Ilona tényleg lent járt, tényleg megrendezte a zuhanást, és ez elég volt. A gyilkosságot is rá bizonyítják. A valódi tettes a temetésen még a koporsót is segít vinni.",
+    andras: "A kitagadás és a váltók tökéletes indítékot adtak. Andrást elítélik az apja meggyilkolásáért, és Rozália sosem meri elmondani, mit látott az ablakból.",
+    lorenz: "A hamis aszú az ő pincéjébe került, a pénz az ő zsebéből jött. Anton Lorenzet elítélik, és a bécsi borházát a hitelezők árverezik el.",
+    rozalia: "Ő látta a lámpást, és hallgatott. Rozáliát, a mádi szakácslányt elítélik; a falu még évekig suttog arról, hogy a csendes lányok a legveszélyesebbek.",
+    barany: "Bárány tényleg cipelte a holttestet, és ez elég volt a bíróságnak. Az intézőt gyilkosságért ítélik el, a pincemester pedig tovább tölti a hamis aszút."
+  },
+puzzles: {
     halal: {
       type: "choice", title: "Hol halt meg?", reward: "erjeszto", answer: "B",
       body: `<p>A gazda a lépcső alján fekszik, de nem biztos, hogy ott is halt meg. Nézd meg a pince három ágát, ahová aznap este mehetett.</p>`,
@@ -177,12 +230,12 @@
 
   accusation: {
     questions: [
-      { id: "who", legend: "Ki ölte meg a gazdát?", name: "a gyilkos", from: "suspects", answer: "gaspar", proof: ["fuzet", "hol"] },
-      { id: "moved", legend: "Ki rendezte át a helyszínt?", name: "a helyszín átrendezője", from: "suspects", answer: "ilona", proof: ["penesz", "hazugsag", "barany"],
+      { id: "who", legend: "Ki ölte meg a gazdát?", name: "a gyilkos", from: "suspects", answer: "gaspar", proof: ["d-gaspar"] },
+      { id: "moved", legend: "Ki rendezte át a helyszínt?", name: "a helyszín átrendezője", from: "suspects", answer: "ilona", proof: ["d-ilona", "d-cipelok"],
         extra: [{ v: "senki", label: "Senki, a gazda tényleg a lépcsőn halt meg" }] },
-      { id: "how", legend: "Hogyan halt meg a gazda?", name: "a halál módja", answer: "gaz", proof: ["erjeszto", "vasrud", "ejszaka"],
+      { id: "how", legend: "Hogyan halt meg a gazda?", name: "a halál módja", answer: "gaz", proof: ["d-gaz", "ejszaka"],
         options: [{ v: "lepcso", label: "Leesett a pincelépcsőn" }, { v: "gaz", label: "Megfulladt az erjedő must gázától a bezárt pincében" }, { v: "mereg", label: "Megmérgezték a kóstolóborral" }] },
-      { id: "why", legend: "Miért ölt a gyilkos?", name: "az indíték", answer: "hamis", proof: ["fuzet", "lada", "lorenz"],
+      { id: "why", legend: "Miért ölt a gyilkos?", name: "az indíték", answer: "hamis", proof: ["d-hamis", "fuzet"],
         options: [{ v: "orokseg", label: "Az örökségért" }, { v: "valto", label: "A kifizetetlen váltók miatt" }, { v: "hamis", label: "A gazda leleplezte volna a hamis aszú eladását" }, { v: "szerelem", label: "Szerelemféltésből" }] }
     ]
   },

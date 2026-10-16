@@ -9,6 +9,53 @@
   document.documentElement.lang = lang;
 
   const EN = {
+    "Kutasd át a helyszíneket. A nyomok a leírásban rejtőznek: kattints arra, ami gyanús, de vigyázz, nem minden részlet nyom.": "Search the locations. The clues hide in the descriptions: click whatever looks suspicious, but beware, not every detail is a clue.",
+    "Vesd össze a nyomokat, és vond le a következtetéseket. A játék nem mondja meg helyetted, mit jelentenek.": "Compare clues and draw your own conclusions. The game won't tell you what they mean.",
+    "Emelj vádat, és minden állításodhoz jelöld meg a döntő bizonyítékot. Ha ártatlant nevezel meg, azt letartóztatják, és az ügy elveszett.": "Bring a charge and back every claim with the decisive evidence. If you name an innocent person, they are arrested and the case is lost.",
+    "Következtetés": "Deduction",
+    "Mester mód": "Master mode",
+    "TEENDŐ:\n1. Járd végig a helyszíneket. Olvasd figyelmesen a leírást: a nyomokra neked kell rábukkannod, és nem minden gyanús részlet nyom.\n2. Oldd meg a(z) {0} rejtvényt.\n3. A Jegyzetfüzetben vesd össze a nyomokat. A következtetést neked kell levonnod.\n4. Szembesítsd a gyanúsítottakat. Aki hazudik, nem feltétlenül gyilkos.\n5. Emelj vádat bizonyítékokkal. Ha ártatlant nevezel meg, azt letartóztatják, és nincs visszaút.": "TO DO:\n1. Search the locations. Read the descriptions carefully: you have to spot the clues yourself, and not every suspicious detail is a clue.\n2. Solve the {0} puzzles.\n3. Compare clues in the Notebook. Drawing the conclusion is up to you.\n4. Confront the suspects. A liar is not necessarily a killer.\n5. Bring a charge with evidence. If you name an innocent person, they will be arrested, and there is no going back.",
+    "{0} nyom innen": "{0} clue(s) from here",
+    "Válassz egy helyiséget.": "Choose a room.",
+    "Következtetéseid": "Your deductions",
+    "Nyomok": "Clues",
+    "{0} nyom": "{0} clues",
+    "Kattints arra a részletre, amit közelebbről megnéznél. Nem minden gyanús dolog nyom.": "Click any detail you want to look at more closely. Not everything suspicious is a clue.",
+    "Megnézted:": "Examined:",
+    "Nem stimmel.": "That doesn't add up.",
+    "nincs súgó, nincs ✦ jelölés és számláló, és senki sem mondja meg, mennyire jársz közel.": "no hints, no ✦ marks or counters, and nobody tells you how close you are.",
+    "Összevetés": "Compare clues",
+    "Válassz két nyomot, amelyek együtt többet árulnak el, mint külön-külön, és vond le a következtetést. Az elhamarkodott összevetés pontlevonással jár.": "Pick two clues that reveal more together than apart, and draw the conclusion. Hasty comparisons cost points.",
+    "Ehhez legalább két nyom kell.": "You need at least two clues for this.",
+    "Első nyom…": "First clue…",
+    "Második nyom…": "Second clue…",
+    "Összevetem": "Compare",
+    "Összevetve:": "Compared:",
+    "Ez a következtetésem": "That's my conclusion",
+    "Levont következtetések: {0}": "Deductions drawn: {0}",
+    "Levont következtetések: {0} / {1}": "Deductions drawn: {0} / {1}",
+    "Válassz két különböző nyomot.": "Choose two different clues.",
+    "Ezt a következtetést már levontad.": "You have already drawn that conclusion.",
+    "Ez a kettő együtt sem mond többet, mint külön-külön.": "Together these two say no more than they do apart.",
+    "Ez nem következik belőle. Gondold végig újra.": "That doesn't follow. Think it through again.",
+    "Váratlan fordulat": "An unexpected turn",
+    "Új nyom:": "New clue:",
+    "Folytatom a nyomozást": "Continue the investigation",
+    "Vigyázz: akit tettesként megnevezel, azt a csendőrök letartóztatják. Ha ártatlan, nincs visszaút. A bizonyítékokban tévedhetsz, a személyben nem.": "Careful: whoever you name as the killer will be arrested by the gendarmes. If they are innocent, there is no going back. You may get the evidence wrong, but not the person.",
+    "Az ügyvéd közbevág: a vád így nem áll meg. Még {0} próbálkozásod van.": "The lawyer cuts in: the charge doesn't hold up like this. You have {0} tries left.",
+    "{0} hiába bizonygatta az ártatlanságát. A bíróság a te vallomásod alapján ítélte el.": "{0} protested their innocence in vain. The court convicted them on your testimony.",
+    "Az ügyet balesetként zárták le, és senki sem kereste tovább a tettest.": "The case was closed as an accident, and nobody looked for the killer again.",
+    "Téves vád": "Wrong accusation",
+    "{0} letartóztatása": "The arrest of {0}",
+    "Lezárt akta": "Case closed",
+    "A valódi tettes végignézte, ahogy elvezetik a megvádoltat. Másnap reggel ő is elhagyta a házat, szabadon.": "The real killer watched as the accused was led away. The next morning they too left the house, free.",
+    "Újrakezdheted az ügyet, vagy megnézheted, mi történt valójában.": "You can start the case again, or see what really happened.",
+    "Ami kiderült, és ami rejtve maradt": "What came to light, and what stayed hidden",
+    "Semmi sem maradt rejtve. A ház minden titka napvilágra került, és a vádirat egyetlen kérdést sem hagyott nyitva.": "Nothing stayed hidden. Every secret in the house came to light, and the charge left not a single question open.",
+    "Nem mindenki titka került napvilágra. {0} elhallgatott valamit, amire sosem kérdeztél rá, és ez a titok velük együtt távozott a házból.": "Not every secret came to light. {0} kept something back that you never asked about, and that secret left the house with them.",
+    "Minden hazugságot leleplezted, de nem minden következtetést vontál le.": "You exposed every lie, but you didn't draw every conclusion.",
+    "Mesterdetektív: Poirot is tőled tanulna": "Master detective: Poirot could learn from you",
+    "{0} elhamarkodott összevetés": "{0} hasty comparison(s)",
     "A helyszín alaprajza": "Floor plan",
     "A játékállás ebben a böngészőben mentődik, bármikor folytathatod.": "Your progress is saved in this browser, so you can come back any time.",
     "A kapitányság dicséretét kapod": "Commended by the chief of police",
@@ -207,7 +254,8 @@
     (c.contradictions || []).forEach(k => Object.assign(k, (X.contradictions || {})[k.id] || {}));
     c.locations.forEach(l => {
       const L = (X.locations || {})[l.id]; if (!L) return;
-      set(l, "name", L.name); set(l, "desc", L.desc);
+      set(l, "name", L.name); set(l, "desc", L.desc); set(l, "look", L.look);
+      if (L.decoys && l.decoys) Object.assign(l.decoys, L.decoys);
       (l.items || []).forEach(it => Object.assign(it, (L.items || {})[it.clue] || {}));
     });
     Object.entries(X.puzzles || {}).forEach(([pid, P]) => {
@@ -225,6 +273,9 @@
       if (Q.extra && q.extra) q.extra.forEach(o => { if (Q.extra[o.v]) o.label = Q.extra[o.v]; });
     });
     Object.entries(X.interviews || {}).forEach(([sid, qs]) => (c.interviews && c.interviews[sid] || []).forEach(q => Object.assign(q, qs[q.id] || {})));
+    (c.deductions || []).forEach(d => Object.assign(d, (X.deductions || {})[d.id] || {}));
+    (c.events || []).forEach(e => Object.assign(e, (X.events || {})[e.id] || {}));
+    if (X.fates && c.fates) Object.assign(c.fates, X.fates);
     (X.reveal || []).forEach((r, i) => c.reveal && c.reveal[i] && Object.assign(c.reveal[i], r));
   }
 

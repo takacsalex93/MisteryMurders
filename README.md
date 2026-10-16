@@ -18,6 +18,12 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 ## Játékmenet
 
+- **Rejtett nyomok:** a helyszínek leírásában kell rábukkanni a nyomokra. Vannak csalinyomok is, amelyek csak időt visznek el.
+- **Összevetés és következtetés:** a nyomok csak tényeket közölnek. Két nyomot összevetve a játékosnak kell levonnia a következtetést, és a vádhoz főleg ezek kellenek bizonyítéknak. Az elhamarkodott összevetés pontot ér.
+- **Téves vád következménnyel:** ha a játékos ártatlant nevez meg tettesként, azt letartóztatják, és az ügy saját befejezéssel elveszik.
+- **Váratlan fordulatok:** nyomozás közben jelenetek szakítják meg a munkát (áramszünet, menekülési kísérlet, bizonyíték eltüntetése).
+- **Mester mód:** nincs súgó, nincs ✦ jelölés és számláló, és a rejtvények sem árulják el, mennyire jár közel a játékos.
+- **Ami rejtve maradt:** a befejezés megmutatja, kinek a titka maradt felderítetlen.
 - **Szembesítés:** a gyanúsítottakat a jegyzetfüzet nyomaival kell szembesíteni. A talált ellentmondás feltárja a hazugságot, a téves szembesítés pontlevonással jár. Ártatlanok is hazudnak.
 - **Bizonyítékkal alátámasztott vád:** minden állításhoz meg kell jelölni a döntő bizonyítékot. Három próbálkozás van, utána a tettes megszökik.
 - **Elültetett nyomok:** minden ügyben van legalább egy félrevezető nyom.
@@ -49,7 +55,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 1. Másold le valamelyik `cases/*.js` fájlt, és írd át a tartalmát.
 2. Állítsd be a `difficulty` mezőt: `Könnyű`, `Közepes` vagy `Nehéz`, és ha kell, a `sound` (háttérhang) és `fx` (borító-animáció) mezőt.
-3. Írd meg a `contradictions` listát (melyik nyom melyik vallomással ütközik) és a vádpontokhoz a `proof` bizonyítékokat.
+3. Írd meg a `contradictions` listát (melyik nyom melyik vallomással ütközik), a `deductions` listát (melyik két nyomból milyen következtetés jön, három válaszlehetőséggel), és a vádpontokhoz a `proof` bizonyítékokat. A helyszínek `look` szövegében `[[szöveg|azonosító]]` jelöli a kattintható részleteket: ha az azonosító egy nyom, az a nyom kerül elő, különben a `decoys` csalinyom-szövege. A `fates` az ártatlanul megvádolt gyanúsítottak sorsa, az `events` a nyomozás közbeni fordulatok.
 4. Vedd fel a fájlt az `index.html`-be a többi ügy mellé.
 5. Angol változathoz készíts egy `cases/en/<ügy>.js` fájlt ugyanazokkal az azonosítókkal.
 
