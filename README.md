@@ -20,6 +20,9 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 - **Szembesítés:** a gyanúsítottakat a jegyzetfüzet nyomaival kell szembesíteni. A talált ellentmondás feltárja a hazugságot, a téves szembesítés pontlevonással jár. Ártatlanok is hazudnak.
 - **Bizonyítékkal alátámasztott vád:** minden állításhoz meg kell jelölni a döntő bizonyítékot. Három próbálkozás van, utána a tettes megszökik.
 - **Elültetett nyomok:** minden ügyben van legalább egy félrevezető nyom.
+- **Kihallgatás:** minden gyanúsítottnak feltehetők kérdések, újabb nyomokkal újabb kérdések nyílnak meg.
+- **Leleplezés:** a sikeres vád után lépésről lépésre el kell mondani, mi történt, és minden ellenvetésre a megfelelő bizonyítékkal felelni.
+- **Nyomozótábla, Hajnalig mód, eredménykártya:** parafatábla piros fonallal, időre játszott változat, megosztható eredménykép.
 - **Rang:** a végén pontszám és nyomozói rang a próbálkozások, a súgók és a téves szembesítések alapján.
 
 ## Felépítés
@@ -32,6 +35,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 - `js/fx.js` — borító-animációk (eső, vihar, hó, por, köd)
 - `images/` — az illusztrációk, az `images/manifest.js` sorolja fel őket
 - `cases/*.js` — egy fájl = egy ügy (történet, nyomok, rejtvények, megoldás)
+- `cases/extras.js` — kihallgatási kérdések és a leleplezés jelenetei ügyenként
 
 ### Rejtvénytípusok
 

@@ -2,6 +2,7 @@
 (function () {
   "use strict";
   const CASES = (window.MM_CASES || []).slice().sort((a, b) => a.number - b.number);
+  CASES.forEach(c => Object.assign(c, (window.MM_EXTRAS || {})[c.id] || {}));
   const app = document.getElementById("app");
   const $ = s => app.querySelector(s);
   const $$ = s => app.querySelectorAll(s);
@@ -39,7 +40,7 @@
 
   /* ---------- mentés ---------- */
   const KEY = id => "mm2:" + id;
-  const fresh = () => ({ tab: "ugy", loc: null, clues: [], solved: {}, hints: {}, inputs: {}, tries: 0, ended: null, conf: [], wrongConf: 0, acc: {}, board: {}, threads: [], introSeen: false, timed: false, used: 0 });
+  const fresh = () => ({ tab: "ugy", loc: null, clues: [], solved: {}, hints: {}, inputs: {}, tries: 0, ended: null, conf: [], wrongConf: 0, acc: {}, board: {}, threads: [], introSeen: false, timed: false, used: 0, asked: [], rstep: 0, rmiss: 0 });
   function loadState(id) {
     try { const v = JSON.parse(localStorage.getItem(KEY(id))); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {}
     return fresh();
@@ -53,12 +54,12 @@
   const hintsUsed = st => Object.values(st.hints).reduce((a, b) => a + b, 0);
   const pids = c => Object.keys(c.puzzles);
   const MAXTRIES = c => c.maxTries || 3;
-  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0));
+  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0) - 4 * (st.rmiss || 0));
   const rank = n => n >= 90 ? "Hercule Poirot is megsüvegelné" : n >= 70 ? "A kapitányság dicséretét kapod" : n >= 45 ? "Megbízható nyomozó" : "Szerencsés kezdő";
   const contra = (c, sid) => (c.contradictions || []).filter(k => !sid || k.suspect === sid);
   const has = (list, v) => [].concat(list).includes(v);
   // időre játszott mód: minden lépés perceket visz el a csendőrök érkezéséig
-  const COST = { take: 10, wrong: 5, hint: 20, confront: 15, accuse: 30 };
+  const COST = { take: 10, wrong: 5, hint: 20, confront: 15, accuse: 30, ask: 5 };
   const budget = c => 10 * c.locations.reduce((n, l) => n + (l.items || []).length, 0) + 15 * (c.contradictions || []).length + 15 * pids(c).length + 90;
   const fmtLeft = m => { m = Math.max(0, m); const h = Math.floor(m / 60), mm = m % 60; return h ? `${h} óra ${mm} perc` : `${mm} perc`; };
   function spend(min) {
@@ -201,7 +202,10 @@
         const tool = legacy || S.ended ? "" : S.clues.length
           ? `<div class="confront"><select id="cf-${s.id}" aria-label="Nyom a szembesítéshez"><option value="">Szembesítés nyommal…</option>${opts}</select><button class="btn ghost small" data-cf="${s.id}">Szembesítem</button></div><p class="msg" data-cfmsg="${s.id}"></p>`
           : `<p class="meta">Még nincs nyomod, amivel szembesíthetnéd.</p>`;
-        return `<div class="suspect">${liar ? `<span class="stamp anim">Hazudott</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${esc(s.stmt)}</p>${notes}${tool}</div>`;
+        const qs = ((C.interviews || {})[s.id] || []).filter(q => (!q.after || S.clues.includes(q.after)) && (!q.afterConf || S.conf.includes(q.afterConf)));
+        const asked = qs.filter(q => S.asked.includes(s.id + ":" + q.id)), open = S.ended ? [] : qs.filter(q => !S.asked.includes(s.id + ":" + q.id));
+        const talk = qs.length ? `<div class="talk">${asked.map(q => `<p class="qa"><b>${esc(q.q)}</b> ${esc(q.a)}</p>`).join("")}${open.length ? `<div class="asks">${open.map(q => `<button class="btn ghost small ask" data-ask="${s.id}:${q.id}">${esc(q.q)}</button>`).join("")}</div>` : ""}</div>` : "";
+        return `<div class="suspect">${liar ? `<span class="stamp anim">Hazudott</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${esc(s.stmt)}</p>${talk}${notes}${tool}</div>`;
       }).join("")}</div></div>`;
     },
 
@@ -220,7 +224,7 @@
       <div class="board-wrap"><div class="board" data-board><svg class="threads" data-threads aria-hidden="true"></svg>${boardCards().map(k => `<div class="pin ${k.kind}" tabindex="0" data-pin="${k.id}" style="left:${k.x}px;top:${k.y}px" aria-label="${esc(k.label)}">${k.html}</div>`).join("")}</div></div></div>`,
 
     vad: () => {
-      if (S.ended === "win") return viewEnding();
+      if (S.ended === "win") return C.reveal && S.rstep < C.reveal.length ? viewReveal() : viewEnding();
       if (S.ended === "lose" || S.ended === "timeout") return viewLose();
       if (S.ended === "reveal") return viewEnding(true);
       const left = pids(C).filter(p => !S.solved[p]).length, triesLeft = MAXTRIES(C) - S.tries;
@@ -363,13 +367,28 @@
   function viewEnding(revealOnly) {
     const hu = hintsUsed(S), sc = score(S);
     const culprit = C.suspects.find(s => s.id === [].concat(C.accusation.questions[0].answer)[0]);
+    const conf = !revealOnly && C.confession ? `<div class="rv-obj confess"><div class="art portrait">${culprit ? ART.portrait(culprit) : ""}</div><div><b>${culprit ? esc(culprit.name) : ""}</b><p>${esc(C.confession)}</p></div></div>` : "";
     const stats = revealOnly ? `<p class="eyebrow">A megoldás, amit nem sikerült bizonyítanod</p>`
-      : `<p class="rank">${sc} pont · ${rank(sc)}</p>${S.timed ? `<p class="found">⏱ Hajnal előtt megoldva, ${fmtLeft(budget(C) - S.used)} tartalékkal</p>` : ""}<p class="eyebrow">${S.tries}. vádra · ${hu ? hu + " súgó" : "súgó nélkül"} · ${S.wrongConf || 0} téves szembesítés · ${S.conf.length}/${contra(C).length} ellentmondás · ${S.clues.length}/${Object.keys(C.clues).length} nyom</p>`;
+      : `<p class="rank">${sc} pont · ${rank(sc)}</p>${S.timed ? `<p class="found">⏱ Hajnal előtt megoldva, ${fmtLeft(budget(C) - S.used)} tartalékkal</p>` : ""}<p class="eyebrow">${S.tries}. vádra · ${hu ? hu + " súgó" : "súgó nélkül"} · ${S.wrongConf || 0} téves szembesítés${S.rmiss ? ` · ${S.rmiss} elhibázott bizonyíték` : ""} · ${S.conf.length}/${contra(C).length} ellentmondás · ${S.clues.length}/${Object.keys(C.clues).length} nyom</p>`;
     return `<div class="stack"><div class="ending ${revealOnly ? "lost" : ""}"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="art portrait" style="width:110px">${culprit ? ART.portrait(culprit) : ""}</div><span class="stamp anim">${revealOnly ? "Megoldás" : "Ügy lezárva"}</span></div>
       <h2>${esc(C.ending.heading)}</h2>
+      ${conf}
       ${C.ending.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}
       ${stats}</div>
       <div class="row"><a class="btn" href="#">Vissza az ügyekhez</a>${revealOnly ? `<button class="btn ghost" data-restart>Újrakezdem az ügyet</button>` : `<button class="btn ghost" data-share>Eredménykártya</button>`}</div></div>`;
+  }
+  function viewReveal() {
+    const steps = C.reveal, i = S.rstep, st = steps[i];
+    const who = C.suspects.find(x => x.id === st.who);
+    const past = steps.slice(0, i).map(p => `<div class="rv-done"><p class="rv-say">${esc(p.say)}</p><p class="rv-win">${esc(p.win)}</p></div>`).join("");
+    const opts = S.clues.map(k => `<option value="${k}">${esc(C.clues[k].t)}</option>`).join("");
+    return `<div class="stack reveal"><span class="eyebrow">A leleplezés · ${i + 1}. lépés / ${steps.length}</span><h2>Az igazság pillanata</h2>
+      <p class="meta">A vád megállt. Most mondd el nekik, hogyan történt. Minden ellenvetésre felelj a megfelelő bizonyítékkal.</p>
+      ${past}
+      <p class="rv-say lead">${esc(st.say)}</p>
+      <div class="rv-obj"><div class="art portrait">${who ? ART.portrait(who) : ""}</div><div><b>${who ? esc(who.name) : ""}</b><p>${esc(st.objection)}</p></div></div>
+      <div class="confront"><select id="rv-proof" aria-label="Bizonyíték"><option value="">Felmutatom a bizonyítékot…</option>${opts}</select><button class="btn" data-rv>Felmutatom</button></div>
+      <p class="msg" data-rvmsg></p></div>`;
   }
   function viewLose() {
     return `<div class="stack"><div class="ending lost"><span class="stamp" style="align-self:flex-start">Elszalasztva</span>
@@ -557,6 +576,7 @@
       }
     },
     gyan() {
+      $$("[data-ask]").forEach(b => b.onclick = () => { S.asked.push(b.dataset.ask); save(); SND("paper"); spend(COST.ask); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); });
       $$("[data-cf]").forEach(b => b.onclick = () => {
         const sid = b.dataset.cf, sel = $("#cf-" + sid), m = app.querySelector(`[data-cfmsg="${sid}"]`), clue = sel.value;
         const s = C.suspects.find(x => x.id === sid), first = s.name.split(" ").slice(-1)[0];
@@ -603,6 +623,15 @@
       requestAnimationFrame(drawThreads);
     },
     vad() {
+      const rv = $("[data-rv]");
+      if (rv) rv.onclick = () => {
+        const st = C.reveal[S.rstep], v = $("#rv-proof").value, m = $("[data-rvmsg]");
+        if (!v) { m.className = "msg bad"; m.textContent = "Válassz egy bizonyítékot a jegyzetfüzetből."; return; }
+        if (has(st.proof, v)) { S.rstep++; save(); SND(S.rstep >= C.reveal.length ? "stamp" : "success"); renderCase(); app.querySelector(".reveal .rv-say.lead, .ending")?.scrollIntoView({ block: "start" }); return; }
+        S.rmiss = (S.rmiss || 0) + 1; save(); SND("wrong");
+        const who = C.suspects.find(x => x.id === st.who);
+        m.className = "msg bad"; m.textContent = `${who ? who.name.split(" ").slice(-1)[0] + " felnevet" : "Valaki felnevet"}: „Ez semmit sem bizonyít!” A szalonban morajlás támad.`;
+      };
       $$("[data-share]").forEach(b => b.onclick = shareCard);
       $$("[data-restart]").forEach(b => b.onclick = () => { S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 }); });
       $$("[data-reveal]").forEach(b => b.onclick = () => { S.ended = "reveal"; save(); renderCase(); window.scrollTo({ top: 0 }); });

@@ -252,3 +252,19 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .intro-text{min-height:9em}
 .intro-skip{align-self:flex-end}
 .sharecard{width:100%;max-width:420px;align-self:center;border-radius:4px;box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}
+
+/* kihallgatás */
+.talk{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:8px}
+.qa{font-size:16px}
+.qa b{font-family:var(--type);font-size:13px;display:block;color:var(--accent)}
+.asks{display:flex;flex-wrap:wrap;gap:6px}
+.btn.ask{text-align:left;font-weight:400}
+
+/* leleplezés */
+.rv-say{font-style:italic}
+.rv-done{display:flex;flex-direction:column;gap:4px;opacity:.75;border-left:3px solid var(--good);padding-left:12px}
+.rv-win{font-family:var(--type);font-size:14px;color:var(--good)}
+.rv-obj{display:flex;gap:14px;align-items:flex-start;background:var(--paper2);border:1px solid var(--line);border-radius:3px;padding:12px}
+.rv-obj .portrait{width:78px;flex:none}
+.rv-obj b{font-family:var(--display);font-size:18px}
+.rv-obj.confess{border-color:var(--stamp)}
