@@ -49,6 +49,7 @@ window.MM_IMAGES = [
   "fekete-szegfu/portrait-rozsa.webp",
   "fekete-szegfu/scene-fekete_iroda.webp",
   "fekete-szegfu/scene-hatso.webp",
+  "fekete-szegfu/scene-irattar.webp",
   "fekete-szegfu/scene-porta.webp",
   "fekete-szegfu/scene-sotetkamra.webp",
   "fekete-szegfu/scene-titkarsag.webp",
