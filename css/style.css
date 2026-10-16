@@ -204,3 +204,51 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .rank{font-family:var(--display);font-style:italic;font-size:22px;color:var(--good)}
 .ending.lost{border-color:var(--stamp)}
 .ending .stamp{position:static;transform:rotate(-4deg)}
+
+/* óra az időre játszott módban */
+.clock{font-family:var(--type);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+.clock.low{color:var(--stamp)}
+
+/* nyomozótábla */
+:root{--cork:#b98b55;--cork2:#a57843;--thread:#b3202a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--cork:#5b4430;--cork2:#4c3726;--thread:#e04450}}
+:root[data-theme="dark"]{--cork:#5b4430;--cork2:#4c3726;--thread:#e04450}
+.board-wrap{overflow:auto;border:1px solid var(--line);border-radius:4px;max-height:78vh;-webkit-overflow-scrolling:touch}
+.board{position:relative;width:1120px;height:820px;
+  background-color:var(--cork);
+  background-image:radial-gradient(rgba(0,0,0,.14) 1px,transparent 1.4px),radial-gradient(rgba(255,255,255,.08) 1px,transparent 1.6px);
+  background-size:7px 7px,11px 11px;background-position:0 0,3px 4px;box-shadow:inset 0 0 40px rgba(0,0,0,.35)}
+.threads{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.thread{fill:none;stroke:var(--thread);stroke-width:2.4;stroke-linecap:round;filter:drop-shadow(0 2px 1px rgba(0,0,0,.35))}
+.thread-hit{fill:none;stroke:transparent;stroke-width:16;pointer-events:stroke;cursor:pointer}
+.pinhead{fill:var(--thread);stroke:rgba(0,0,0,.35);stroke-width:1}
+.pin{position:absolute;z-index:1;touch-action:none;user-select:none;cursor:grab;display:flex;flex-direction:column;gap:4px;
+  background:var(--paper);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 12px -6px rgba(0,0,0,.55);padding:8px}
+.pin.drag{cursor:grabbing;z-index:3;box-shadow:0 14px 24px -8px rgba(0,0,0,.6)}
+.pin.sel{outline:3px solid var(--thread);outline-offset:2px}
+.pin-sus{width:150px;transform:rotate(-1.5deg);align-items:center;text-align:center;padding-bottom:10px}
+.pin-sus:nth-child(even){transform:rotate(1.8deg)}
+.pin-sus .portrait{width:120px}
+.pin-sus b{font-family:var(--display);font-size:15px;line-height:1.15}
+.pin-sus .stamp{position:absolute;top:40px;left:50%;transform:translateX(-50%) rotate(-10deg);font-size:11px;background:var(--paper)}
+.pin-clue{width:200px;background:var(--paper2);transform:rotate(.8deg)}
+.pin-clue:nth-child(3n){transform:rotate(-1.2deg)}
+.pin-clue .src{font-family:var(--type);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.pin-clue b{font-family:var(--display);font-size:15px;line-height:1.2}
+.pin-clue .tx{font-size:13px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+
+/* írógépes bevezető és megosztás */
+.intro{position:fixed;inset:0;z-index:30;background:rgba(10,12,18,.82);display:flex;align-items:center;justify-content:center;
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  opacity:0;transition:opacity .4s}
+.intro.on{opacity:1}
+.intro-card{background:var(--paper);color:var(--ink);max-width:680px;width:100%;max-height:100%;overflow:auto;border-radius:6px;padding:clamp(18px,4vw,30px);display:flex;flex-direction:column;gap:14px;position:relative}
+.intro-card h2{font-style:italic;font-size:clamp(26px,5vw,38px)}
+.intro-cover{overflow:hidden;border-radius:3px;border:1px solid var(--line)}
+.intro-cover img,.intro-cover svg{display:block;width:100%;height:auto;aspect-ratio:600/260;object-fit:cover}
+@media (prefers-reduced-motion: no-preference){.intro.on .intro-cover img,.intro.on .intro-cover svg{animation:kenburns 14s ease-out forwards}}
+@keyframes kenburns{from{transform:scale(1.18) translateY(4%)}to{transform:scale(1) translateY(0)}}
+.intro-text{min-height:9em}
+.intro-skip{align-self:flex-end}
+.sharecard{width:100%;max-width:420px;align-self:center;border-radius:4px;box-shadow:0 10px 24px -10px rgba(0,0,0,.6)}
