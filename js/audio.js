@@ -3,6 +3,7 @@
 (function () {
   "use strict";
   const KEY = "mm:sound";
+  const L = t => (window.MM_I18N ? window.MM_I18N.T(t) : t);
   let on = false;
   try { on = localStorage.getItem(KEY) === "1"; } catch (e) {}
 
@@ -169,7 +170,7 @@
     on = v;
     try { localStorage.setItem(KEY, v ? "1" : "0"); } catch (e) {}
     btn.setAttribute("aria-pressed", String(v));
-    btn.innerHTML = v ? "♪ Hang: be" : "♪ Hang: ki";
+    btn.innerHTML = L(v ? "♪ Hang: be" : "♪ Hang: ki");
     if (v) {
       if (!ensure()) return;
       ctx.resume();
@@ -197,12 +198,12 @@
   btn.className = "soundtoggle"; btn.type = "button";
   btn.addEventListener("click", () => setOn(!on));
   document.body.appendChild(btn);
-  btn.setAttribute("aria-pressed", "false"); btn.innerHTML = "♪ Hang: ki";
+  btn.setAttribute("aria-pressed", "false"); btn.innerHTML = L("♪ Hang: ki");
   // a böngésző csak felhasználói mozdulat után enged hangot: az első kattintásra indulunk, ha korábban be volt kapcsolva
   if (on) {
     const first = () => { document.removeEventListener("pointerdown", first, true); document.removeEventListener("keydown", first, true); if (on) setOn(true); };
     document.addEventListener("pointerdown", first, true); document.addEventListener("keydown", first, true);
-    btn.innerHTML = "♪ Hang: be"; btn.setAttribute("aria-pressed", "true");
+    btn.innerHTML = L("♪ Hang: be"); btn.setAttribute("aria-pressed", "true");
   }
   document.addEventListener("visibilitychange", () => { if (!ctx) return; if (document.hidden) ctx.suspend(); else if (on) ctx.resume(); });
   window.addEventListener("mm:lightning", () => { if (on && ctx && cur && cur.P.thunder) thunder(ctx.currentTime + rnd(0.5, 1.6), cur.bus); });

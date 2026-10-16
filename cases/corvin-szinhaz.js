@@ -91,8 +91,8 @@
       confirm: "Így szakadt el",
       wrong: { A: "A kopott kötél szálai egyenetlenek. Ezek egyformák és feketék.", B: "A vágás tiszta nyomot hagy. Ez a vég megpörkölődött." },
       hints: [
-        "Számold ki, óránként hány centit ég a gyertya, és mennyi égett le belőle.",
-        "12 centi három óra alatt: 4 centi óránként. 8 centi égett le, az két óra. Vond le a 22:41-ből."
+        "Figyeld a kötél végének színét, és azt, mi van alatta a járdán.",
+        "Fekete, kemény szálvégek és viaszcseppek. Mi okozza mindkettőt?"
       ]
     },
     gyertya: {
@@ -102,8 +102,8 @@
 <p>Mikor gyújtották meg a gyertyát? Írd be óra és perc szerint, négy számjeggyel.</p>`,
       wrong: "Ekkor még nem gyújthatták meg. Számold újra, mennyi égett le.",
       hints: [
-        "A 12 centis gyertyából 4 centi maradt. Mennyi égett le, és az hány óra?",
-        "8 centi, óránként 4 centi: két óra. Vond le a 22:41-ből."
+        "Számold ki, óránként hány centit ég a gyertya, és mennyi égett le belőle.",
+        "12 centi három óra alatt: 4 centi óránként. 8 centi égett le, az két óra. Vond le a 22:41-ből."
       ]
     },
     szunet: {

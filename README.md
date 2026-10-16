@@ -1,6 +1,6 @@
 # Rejtélyes gyilkosságok
 
-Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.
+Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és angolul (Mystery Murders). Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.
 
 **Játék:** https://takacsalex93.github.io/MisteryMurders/
 
@@ -36,6 +36,8 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 - `images/` — az illusztrációk, az `images/manifest.js` sorolja fel őket
 - `cases/*.js` — egy fájl = egy ügy (történet, nyomok, rejtvények, megoldás)
 - `cases/extras.js` — kihallgatási kérdések és a leleplezés jelenetei ügyenként
+- `cases/en/*.js` — az ügyek angol fordítása (azonosítók szerint ráolvad az eredetire)
+- `js/i18n.js` — nyelvválasztás és a felület angol szótára
 
 ### Rejtvénytípusok
 
@@ -47,5 +49,6 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik. Járd be a hely
 2. Állítsd be a `difficulty` mezőt: `Könnyű`, `Közepes` vagy `Nehéz`, és ha kell, a `sound` (háttérhang) és `fx` (borító-animáció) mezőt.
 3. Írd meg a `contradictions` listát (melyik nyom melyik vallomással ütközik) és a vádpontokhoz a `proof` bizonyítékokat.
 4. Vedd fel a fájlt az `index.html`-be a többi ügy mellé.
+5. Angol változathoz készíts egy `cases/en/<ügy>.js` fájlt ugyanazokkal az azonosítókkal.
 
 Szerver és telepítés nem kell, a játékállás a böngészőben mentődik.

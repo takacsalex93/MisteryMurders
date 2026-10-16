@@ -268,3 +268,6 @@ a.btn,a.link{text-decoration:none;display:inline-block}
 .rv-obj .portrait{width:78px;flex:none}
 .rv-obj b{font-family:var(--display);font-size:18px}
 .rv-obj.confess{border-color:var(--stamp)}
+.langs{display:flex;gap:6px;align-items:center;font-family:var(--type);font-size:13px;color:var(--muted)}
+.langs .link[aria-pressed="true"]{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.home-head .topnav{flex-wrap:wrap}
