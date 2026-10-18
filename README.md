@@ -18,20 +18,17 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 ## Játékmenet
 
-- **Rejtett nyomok:** a helyszínek leírásában kell rábukkanni a nyomokra. Vannak csalinyomok is, amelyek csak időt visznek el.
-- **Összevetés és következtetés:** a nyomok csak tényeket közölnek. Két nyomot összevetve a játékosnak kell levonnia a következtetést, és a vádhoz főleg ezek kellenek bizonyítéknak. Az elhamarkodott összevetés pontot ér.
-- **Téves vád következménnyel:** ha a játékos ártatlant nevez meg tettesként, azt letartóztatják, és az ügy saját befejezéssel elveszik.
-- **Váratlan fordulatok:** nyomozás közben jelenetek szakítják meg a munkát (áramszünet, menekülési kísérlet, bizonyíték eltüntetése).
-- **Mester mód:** nincs súgó, nincs ✦ jelölés és számláló, és a rejtvények sem árulják el, mennyire jár közel a játékos.
-- **Ami rejtve maradt:** a befejezés megmutatja, kinek a titka maradt felderítetlen.
-- **Szembesítés:** a gyanúsítottakat a jegyzetfüzet nyomaival kell szembesíteni. A talált ellentmondás feltárja a hazugságot, a téves szembesítés pontlevonással jár. Ártatlanok is hazudnak.
-- **Bizonyítékkal alátámasztott vád:** minden állításhoz meg kell jelölni a döntő bizonyítékot. Három próbálkozás van, utána a tettes megszökik.
-- **Elültetett nyomok:** minden ügyben van legalább egy félrevezető nyom.
-- **Kihallgatás:** minden gyanúsítottnak feltehetők kérdések, újabb nyomokkal újabb kérdések nyílnak meg.
-- **Leleplezés:** a sikeres vád után lépésről lépésre el kell mondani, mi történt, és minden ellenvetésre a megfelelő bizonyítékkal felelni.
-- **Nyomozótábla, Hajnalig mód, eredménykártya:** parafatábla piros fonallal, időre játszott változat, megosztható eredménykép.
-- **A titkos szál:** minden ügy végén egy fekete szegfűs cédula és egy bekarikázott betű. A hat betű a záró ügy kulcsa.
-- **Rang:** a végén pontszám és nyomozói rang a próbálkozások, a súgók és a téves szembesítések alapján.
+- **Rejtett nyomok:** a helyszínek leírásában kell rábukkanni a nyomokra, csalinyomokkal együtt.
+- **Szókártyák (Golden Idol-módszer):** a szövegekben aláhúzott neveket, tárgyakat, helyeket, időpontokat, tetteket és indítékokat kattintással kell összegyűjteni.
+- **Tábla és következtetések:** két összetartozó nyomot a Táblán piros fonallal (vagy a Jegyzetfüzetben) összekötve megnyílik egy hiányos mondat, amelyet a szókártyákból kell kiegészíteni. Csak a teljesen helyes mondat fogadható el; a visszajelzés legfeljebb annyi, hány szó hibás.
+- **Vád:** az egész történetet hiányos mondatokból kell összerakni. Ártatlan megnevezése saját befejezéssel zárja az ügyet.
+- **Dokumentumelemzés:** naplók (`log`), ujjlenyomat-összehasonlítás (`print`), jelírás (`glyph`).
+- **Alaprajz:** minden ügynek kattintható art deco alaprajza van ajtókkal és térbeli megjegyzésekkel.
+- **Jegyzetlap:** szabadon írható papír, a nyomok szövegéből kijelölt rész egy gombbal rámásolható.
+- **Fekete szegfű jelírás:** a hat cédulán visszatérő jelek jelentését a címoldali szótárban kell kikövetkeztetni, a záró ügyben egy csak jelekkel írt üzenetet kell elolvasni.
+- **Nehézség:** Nyomozó, Mester (nincs súgó, jelölés, számláló) és Noir (a jegyzetfüzet csak a nyomok címét jegyzi fel).
+- **Szembesítés, kihallgatás, leleplezés, váratlan fordulatok, Hajnalig mód, eredménykártya.**
+- Az angol változat (`cases/en/*.js`) egyelőre ki van kapcsolva.
 
 ## Felépítés
 
@@ -49,7 +46,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 ### Rejtvénytípusok
 
-`code` számzár · `choice` összevetés · `assign` logikai beosztás · `order` időrend · `text` szabad válasz (pl. anagramma) · `caesar` eltolásos titkosírás · `keyword` kulcsszavas (Vigenère) titkosírás · `spot` hazugság keresése egy vallomásban
+`code` számzár · `choice` összevetés · `log` napló · `print` ujjlenyomat · `glyph` jelírás · `assign` logikai beosztás · `order` időrend · `text` szabad válasz (pl. anagramma) · `caesar` eltolásos titkosírás · `keyword` kulcsszavas (Vigenère) titkosírás · `spot` hazugság keresése egy vallomásban
 
 ### Új ügy hozzáadása
 

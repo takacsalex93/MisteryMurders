@@ -23,33 +23,42 @@
     { id: "matild", look: { hair: "wave", clothes: "dress", acc: ["pearls", "earrings"], lips: true }, name: "Kendeffy Matild", role: "Az özvegy, 29 éves. A báró második felesége.",
       stmt: "„Délután összevesztünk Auréllal, utána ki sem jöttem a szobámból. Fájt a fejem, a doktor adott valamit, és elaludtam. A könyvtárba aznap be sem tettem a lábam.”" },
     { id: "gabor", look: { hair: "slick", clothes: "bowtie" }, name: "Kendeffy Gábor", role: "Az unokaöcs, 34 éves. Az örökség fő várományosa.",
-      stmt: "„Vacsora után a szalonban zongoráztam, Chopint, egész este. Délután volt egy kis vitám a bácsikámmal a könyvtárban, de este oda sem néztem.”" },
+      stmt: "„Vacsora után a szalonban {{zongoráztam|zongorazott}}, Chopint, egész este. Délután volt egy kis vitám a bácsikámmal a könyvtárban, az {{örökségről|orokseg}}, de este oda sem néztem.”" },
     { id: "szirmai", look: { hair: "short", clothes: "suit", acc: ["glasses", "mustache"] }, name: "Dr. Szirmai Ottó", role: "Háziorvos, 52 éves. Régi barát.",
-      stmt: "„Fél tíztől kint szivaroztam az üvegháznál, Matild asszony nem tűri a füstöt. Tízkor benéztem hozzá, aludt. A táskám egész este a hallban volt, nem hiányzik belőle semmi.”" },
+      stmt: "„Fél tíztől kint {{szivaroztam|szivarozott}} az üvegháznál, Matild asszony nem tűri a füstöt. Tízkor benéztem hozzá, aludt. A táskám egész este a hallban volt, nem hiányzik belőle semmi.”" },
     { id: "ilona", look: { hair: "bun", clothes: "blouse", acc: ["glasses"], lips: true }, name: "Bakos Ilona", role: "A báró titkárnője, 31 éves. Négy éve kezeli a gyűjtemény papírjait.",
       stmt: "„Vacsora után felmentem a szobámba, és egész este gépeltem: a báró úr leveleit tisztáztam le. Lefelé egyszer sem jöttem.”" },
     { id: "lukacs", look: { hair: "bald", clothes: "bowtie", acc: ["mustache"] }, name: "Lukács János", role: "Komornyik, 61 éves. Harminc éve szolgálja a családot.",
       stmt: "„Fél tízkor kitöltöttem a báró úr konyakját a könyvtárban, ahogy minden este, aztán visszamentem a konyhába az ezüsthöz. Délután Gábor úrral együtt kerestük a mandzsettagombját a könyvtárban, a karosszék alatt is, de nem találtuk.”" }
   ],
 
-  clues: {
-    holttest: { t: "Keserűmandula-szag", src: "Könyvtár", x: "A báró a karosszékben ül, előtte a félig kiürült konyakospohár. A pohárból enyhe keserűmandula-szag árad. Dr. Szirmai szerint ciánmérgezés, a halál azonnal beállt, tíz óra körül." },
-    mandzsetta: { t: "Mandzsettagomb a karosszék alatt", src: "Könyvtár", x: "A karosszék alatt, a pohár közelében egy arany mandzsettagomb, K. G. monogrammal. Fényes, por nem ül rajta, pedig a szőnyeg alatta poros." },
-    telefon: { t: "A telefonbeszélgetés", src: "Hall", x: "A posta központjának kezelőnője szerint a báró 21:30-tól 21:55-ig a halli telefonon Budapesttel beszélt. A beszélgetés végén azt mondta: „Holnap mindent elmondok.”" },
-    taska: { t: "Az orvosi táska", src: "Hall", x: "Dr. Szirmai táskájában a bársonytartó egyik helye üres: egy morfiumampulla hiányzik. Cián vagy cianidtartalmú szer nincs a táskában, és a nyilvántartásában sem szerepel." },
-    zalog: { t: "Zálogcédulák", src: "Vendégszoba", x: "Gábor kabátzsebében három budapesti zálogcédula: aranyóra, egy cigarettatárca és egy ezüstfejű sétabot. Az utolsót két hete adta zálogba." },
-    levelk: { t: "Szerelmes levél", src: "Emeleti szobák", x: "Matild fiókjában egy aláíratlan, rajongó hangú levél egy budapesti festőtől: „Ha elválsz tőle, tavasszal Párizsban várlak.”" },
-    ilonaszoba: { t: "Ilona szobája", src: "Emeleti szobák", x: "Ilona emeleti szobájában ágy, szekrény, mosdó és egy kis asztal. Írógép nincs, és soha nem is volt: a házban csak a földszinti titkárságon gépelnek." },
-    kertesz: { t: "A kertész vallomása", src: "Üvegház", x: "A kertész szerint aznap délután egyetlen ember járt az üvegházban: a titkárnő kisasszony, aki virágot vágott a báró asztalára. Este fél tíz és tíz között valaki a bejáratnál szivarozott, de be nem ment." },
-    darazs: { t: "Az üvegházi darázsirtó", src: "Üvegház", x: "A harmadik polcon álló „Darázsirtó — MÉREG” feliratú bádogdoboz (kálium-cianid) fedele lazán áll, a porban friss nyom. A polc előtt keskeny, magas sarkú női cipő lenyomata." },
-    level: { t: "A báró el nem küldött levele", src: "Könyvtár · íróasztal", x: "„Tekintetes Rendőrkapitányság! Gyűjteményem öt festményét az elmúlt két évben hamisítványokra cserélték, az eredetieket eladták. Az eladási nyugták a házban, írógépen készültek. Holnap, október 10-én személyesen megnevezem a tettest. — Kendeffy Aurél”" },
-    gep: { t: "A hamis nyugta írógépe", src: "Titkárság", x: "A hamis nyugta nem a titkárság új Remingtonján készült, hanem a zárt szekrényben tartott régi Continentalon. A szekrény kulcsa csak Ilonánál van. A szekrényben ugyanerről a gépről még két nyugta: Mednyánszky 6 000 és Szinyei 9 000 pengőről." },
-    alibi: { t: "Ki hol volt 21:30 és 22:00 között?", src: "Szalon · tanúvallomások", x: "A vallomásokból összerakott idővonal fél tíz és tíz között: Lukács a konyhában, Dr. Szirmai az üvegháznál, Gábor a szalonban, Matild az emeleten, Bakos Ilona a könyvtárban." },
-    jegyzet: { t: "Ilona titkosított jegyzete", src: "Emeleti szobák · zsebnaptár", x: "Megfejtve: „Üvegház, harmadik polc. Konyak fél tíz után, amíg telefonál.” Ilona zsebnaptárából, a gyilkosság napjáról." },
-    kereses: { t: "A délutáni keresés", src: "Gábor vallomása", x: "Gábor és Lukács délután, a veszekedés után az egész könyvtárat átkutatta az elveszett mandzsettagomb után, a karosszék alatt is. Akkor nem volt ott." },
-    hamu: { t: "Égett papír a kályhában", src: "Titkárság", x: "A titkárság kályhájában egy félig elégett gépelt lap: „…ánszky, olaj, vászon… 6 0…” A folyosó szőnyegén nedves, keskeny női cipőnyom vezet a titkárság ajtajáig." }
+    words: {
+    baro: ["a báró", "személy"], kertesz: ["a kertész", "személy"],
+    cian: ["cián", "tárgy"], morfium: ["morfium", "tárgy"], konyak: ["konyak", "tárgy"], mandzsetta: ["mandzsettagomb", "tárgy"], continental: ["Continental írógép", "tárgy"], remington: ["Remington írógép", "tárgy"],
+    uveghaz: ["üvegház", "hely"], konyvtar: ["könyvtár", "hely"], hall: ["hall", "hely"], titkarsag: ["titkárság", "hely"], szalon: ["szalon", "hely"],
+    t2130: ["21:30", "idő"], t2155: ["21:55", "idő"], t22: ["tíz óra", "idő"], delutan: ["délután", "idő"],
+    telefonal: ["telefonált", "tett"], viragvagas: ["virágot vágott", "tett"], zongorazott: ["zongorázott", "tett"], szivarozott: ["szivarozott", "tett"],
+    hamisitas: ["festményhamisítás", "indíték"], orokseg: ["örökség", "indíték"], adossag: ["adósság", "indíték"], valas: ["válás", "indíték"]
   },
 
+  clues: {
+    holttest: { t: "Keserűmandula-szag", src: "Könyvtár", x: "A báró a karosszékben ül, előtte a félig kiürült {{konyakospohár|konyak}}. A pohárból enyhe keserűmandula-szag árad. Dr. Szirmai szerint {{ciánmérgezés|cian}}, a halál azonnal beállt, {{tíz óra|t22}} körül." },
+    mandzsetta: { t: "Mandzsettagomb a karosszék alatt", src: "Könyvtár", x: "A karosszék alatt, a pohár közelében egy arany {{mandzsettagomb|mandzsetta}}, K. G. monogrammal. Fényes, por nem ül rajta, pedig a szőnyeg alatta poros." },
+    telefon: { t: "A telefonbeszélgetés", src: "Hall", x: "A posta központjának kezelőnője szerint {{a báró|baro}} {{21:30|t2130}}-tól {{21:55|t2155}}-ig a {{halli|hall}} telefonon Budapesttel {{beszélt|telefonal}}. A beszélgetés végén azt mondta: „Holnap mindent elmondok.”" },
+    taska: { t: "Az orvosi táska", src: "Hall", x: "Dr. Szirmai táskájában a bársonytartó egyik helye üres: egy {{morfiumampulla|morfium}} hiányzik. Cián vagy cianidtartalmú szer nincs a táskában, és a nyilvántartásában sem szerepel." },
+    zalog: { t: "Zálogcédulák", src: "Vendégszoba", x: "Gábor kabátzsebében három budapesti zálogcédula: aranyóra, egy cigarettatárca és egy ezüstfejű sétabot. Az utolsót két hete adta zálogba. Mellette egy uzsorás levele: „Az {{adósságát|adossag}} hétfőig rendezze.”" },
+    levelk: { t: "Szerelmes levél", src: "Emeleti szobák", x: "Matild fiókjában egy aláíratlan, rajongó hangú levél egy budapesti festőtől: „Ha {{elválsz|valas}} tőle, tavasszal Párizsban várlak.”" },
+    ilonaszoba: { t: "Ilona szobája", src: "Emeleti szobák", x: "Ilona emeleti szobájában ágy, szekrény, mosdó és egy kis asztal. Írógép nincs, és soha nem is volt: a házban csak a földszinti {{titkárságon|titkarsag}} gépelnek." },
+    kertesz: { t: "A kertész vallomása", src: "Üvegház", x: "{{A kertész|kertesz}} szerint aznap {{délután|delutan}} egyetlen ember járt az üvegházban: a titkárnő kisasszony, aki {{virágot vágott|viragvagas}} a báró asztalára. Este fél tíz és tíz között valaki a bejáratnál {{szivarozott|szivarozott}}, de be nem ment." },
+    darazs: { t: "Az üvegházi darázsirtó", src: "Üvegház", x: "Az {{üvegház|uveghaz}} harmadik polcán álló „Darázsirtó — MÉREG” feliratú bádogdoboz (kálium-{{cianid|cian}}) fedele lazán áll, a porban friss nyom. A polc előtt keskeny, magas sarkú női cipő lenyomata." },
+    level: { t: "A báró el nem küldött levele", src: "Könyvtár · íróasztal", x: "„Tekintetes Rendőrkapitányság! Gyűjteményem öt festményét az elmúlt két évben {{hamisítványokra cserélték|hamisitas}}, az eredetieket eladták. Az eladási nyugták a házban, írógépen készültek. Holnap, október 10-én személyesen megnevezem a tettest. — Kendeffy Aurél”" },
+    gep: { t: "A hamis nyugta írógépe", src: "Titkárság", x: "A hamis nyugta nem a titkárság új {{Remingtonján|remington}} készült, hanem a zárt szekrényben tartott régi {{Continentalon|continental}}. A szekrény kulcsa csak Ilonánál van. A szekrényben ugyanerről a gépről még két nyugta: Mednyánszky 6 000 és Szinyei 9 000 pengőről." },
+    alibi: { t: "Ki hol volt 21:30 és 22:00 között?", src: "Szalon · tanúvallomások", x: "A vallomásokból összerakott idővonal fél tíz és tíz között: Lukács a konyhában, Dr. Szirmai az üvegháznál, Gábor a {{szalonban|szalon}}, Matild az emeleten, Bakos Ilona a {{könyvtárban|konyvtar}}." },
+    jegyzet: { t: "Ilona titkosított jegyzete", src: "Emeleti szobák · zsebnaptár", x: "Megfejtve: „{{Üvegház|uveghaz}}, harmadik polc. Konyak fél tíz után, amíg {{telefonál|telefonal}}.” Ilona zsebnaptárából, a gyilkosság napjáról." },
+    kereses: { t: "A délutáni keresés", src: "Gábor vallomása", x: "Gábor és Lukács {{délután|delutan}}, a veszekedés után az egész könyvtárat átkutatta az elveszett mandzsettagomb után, a karosszék alatt is. Akkor nem volt ott." },
+    hamu: { t: "Égett papír a kályhában", src: "Titkárság", x: "A titkárság kályhájában egy félig elégett gépelt lap: „…ánszky, olaj, vászon… 6 0…” A folyosó szőnyegén nedves, keskeny női cipőnyom vezet a titkárság ajtajáig." },
+    ujj: { t: "Ujjlenyomat a darázsirtón", src: "Üvegház", x: "A darázsirtó fedelén talált részleges ujjlenyomat azzal a nyommal egyezik, amelyet Lukács a titkárnő vacsorapoharáról vett le." }
+  },
   contradictions: [
     { id: "c-ilona", suspect: "ilona", clue: ["ilonaszoba", "alibi"],
       reveal: "Ilona elsápad: „Jó… nem gépeltem. Lent voltam, a könyvtárban rendeztem a gyűjtemény papírjait. De a konyakhoz hozzá sem nyúltam!”" },
@@ -100,27 +109,22 @@
       decoys: { szivar: "Havannai szivar hamuja. Valaki sokáig állt itt, de a nedves kavicson befelé nem vezet lábnyom.", orchidea: "Délután vágták, a báró asztalára szánták. A metszőolló még itt hever." },
       items: [
         { clue: "darazs", label: "A vegyszerespolc", text: "Megnézed a harmadik polcot." },
-        { clue: "kertesz", label: "A kertész", text: "Megkérdezed a kertészt, ki járt ma itt." }] }
+        { clue: "kertesz", label: "A kertész", text: "Megkérdezed a kertészt, ki járt ma itt." }],
+      puzzle: "ujj" }
   ],
 
-  deductions: [
+    deductions: [
     { id: "d-ido", from: ["holttest", "telefon"], t: "A méreg ideje", x: "A báró azonnal meghalt, tíz óra körül, és 21:55-ig telefonált. A mérget tehát 21:30 és 21:55 között tették a konyakba, amíg a pohár őrizetlenül állt.",
-      q: "Mit árul el a kettő együtt?", ans: 1,
-      opts: ["A bárót a hallban, telefonálás közben mérgezték meg.", "A mérget 21:30 és 21:55 között tették a konyakba, amíg a báró telefonált.", "A báró már telefonálás előtt megitta a mérget."] },
+      text: "A mérget {} és {} között tették a pohárba, amelyben {} volt, amíg a báró a hallban {}.", b: ["t2130", "t2155", "konyak", "telefonal"] },
     { id: "d-mereg", from: ["darazs", "kertesz"], t: "Ki vitte el a mérget?", x: "Délután egyetlen ember járt az üvegházban, egy nő, és a darázsirtó előtt női cipő nyoma látszik. A cianidot délután a titkárnő vitte el.",
-      q: "Ki vihette el a cianidot az üvegházból?", ans: 2,
-      opts: ["A doktor, amikor este az üvegháznál szivarozott.", "A kertész, aki mindenhez hozzáfér.", "A titkárnő, amikor délután virágot vágott."] },
+      text: "A cianidot {} vitte el ebből a helyiségből: {}. Akkor történt, amikor {} {}.", b: ["ilona", "uveghaz", "delutan", "viragvagas"] },
     { id: "d-alibi", from: ["ilonaszoba", "alibi"], t: "Ilona hamis alibije", x: "Ilona azt állítja, egész este a szobájában gépelt, de ott nincs írógép, és az idővonal szerint a könyvtárban volt, ahol a konyak állt.",
-      q: "Mire következtetsz?", ans: 0,
-      opts: ["Ilona hazudik: nem a szobájában volt, hanem a könyvtárban.", "Ilona a titkárságon gépelt, csak rosszul emlékszik.", "Az idővonal hibás, mert Ilona nem tud zongorázni."] },
+      text: "{} azt állítja, egész este a szobájában gépelt. Írógép azonban csak itt van: {}. Fél tíz után valójában itt volt: {}.", b: ["ilona", "titkarsag", "konyvtar"] },
     { id: "d-hamis", from: ["level", "gep"], t: "A hamisító", x: "A báró a hamis nyugták gépelőjét akarta másnap megnevezni. A nyugták a zárt szekrény Continentalján készültek, amelynek kulcsa csak Ilonánál van.",
-      q: "Kit akart a báró másnap megnevezni?", ans: 1,
-      opts: ["Gábort, aki adósságai miatt eladta a képeket.", "Ilonát, mert csak ő férhetett hozzá a Continentalhoz.", "Senkit: a báró maga hamisított a biztosítás miatt."] },
+      text: "A hamis nyugták írógépe: {}. Egyedül ő fér hozzá: {}. A báró ezt akarta másnap leleplezni: {}.", b: ["continental", "ilona", "hamisitas"] },
     { id: "d-csel", from: ["mandzsetta", "kereses"], t: "Elültetett mandzsettagomb", x: "Délután még nem volt a karosszék alatt, este már ott volt, por nélkül. Valaki a gyilkosság után tette oda, hogy Gáborra terelje a gyanút.",
-      q: "Mit jelent ez a mandzsettagombra nézve?", ans: 0,
-      opts: ["Valaki később tette oda, hogy Gáborra terelje a gyanút.", "Gábor este visszament a könyvtárba, és ott ejtette el.", "A gomb végig ott volt, csak délután nem vették észre."] }
+      text: "A(z) {} {} még nem volt a karosszék alatt, este mégis por nélkül feküdt ott. Valaki odacsempészte, hogy a gyanú rá essen: {}.", b: ["mandzsetta", "delutan", "gabor"] }
   ],
-
   events: [
     { id: "aram", afterSolved: "desk", flash: true, gives: "hamu", title: "Kialszik a villany",
       text: "Abban a pillanatban, ahogy a fiók kinyílik, hatalmasat dörren az ég, és a villa elsötétül. A sötétben gyors léptek a folyosón, egy ajtó csapódik, valahol papír sercen.\n\nMire Lukács gyertyát hoz, a titkárság ajtaja résnyire nyitva, a kályhából füst száll. Valaki megpróbált eltüntetni valamit, és sietett." }
@@ -134,7 +138,18 @@
   },
 
   puzzles: {
-    desk: {
+        ujj: {
+      type: "print", title: "Ujjlenyomat a fedélen", reward: "ujj", answer: "C", refLabel: "A darázsirtó fedeléről",
+      body: `<p>A darázsirtó bádogfedelén egy részleges ujjlenyomat maradt. Lukács a vacsoraasztalról minden vendég poharát félretette, és korommal levette róluk a nyomokat. Melyik egyezik?</p>`,
+      options: [
+        { v: "A", label: "Matild pohara", seed: 11, type: "hurok" },
+        { v: "B", label: "Gábor pohara", seed: 23, type: "orveny" },
+        { v: "C", label: "Ilona pohara", seed: 37, type: "hurok" },
+        { v: "D", label: "Dr. Szirmai pohara", seed: 41, type: "iv" }
+      ],
+      hints: ["Először a rajzolat típusát nézd: örvény, hurok vagy ív. Aztán a megszakadó vonalakat."]
+    },
+desk: {
       type: "code", title: "Az íróasztal számzára", reward: "level", answers: ["1405", "0514"], length: 4,
       body: `<p>A báró íróasztalának fiókja négyjegyű számzárral nyílik. Lukács szerint a gazdája minden zárat ugyanarra a napra állított: arra, amikor életében először meglátta Katalint, az első feleségét.</p>
 <p>Az asztalon két bekeretezett fénykép áll. Az egyiken Matild, alatta: „Matildnak, az esküvőnk napján. 1929. X. 9.” A másikon egy fiatal pár galambok között, a hátoldalán:</p>
@@ -198,18 +213,17 @@ Bud<span class="r">a</span>pest, l93l. VI. 2.</div>`,
     }
   },
 
-  accusation: {
-    questions: [
-      { id: "who", legend: "Ki a gyilkos?", name: "a tettes", from: "suspects", answer: "ilona", proof: ["d-alibi", "jegyzet"] },
-      { id: "how", legend: "Mivel ölt?", name: "az eszköz", answer: "cian", proof: ["d-mereg", "jegyzet"],
-        options: [{ v: "morfium", label: "Morfium az orvosi táskából" }, { v: "cian", label: "Cián az üvegházi darázsirtóból" }, { v: "altato", label: "Altató Matild éjjeliszekrényéről" }] },
-      { id: "why", legend: "Miért?", name: "az indíték", answer: "hamisitas", proof: ["d-hamis"],
-        options: [{ v: "orokseg", label: "Az örökség megszerzése" }, { v: "feltekenyseg", label: "Féltékenység, megcsalt házasság" }, { v: "hamisitas", label: "A festményhamisítás leleplezésének megakadályozása" }, { v: "adossag", label: "Felhalmozott kártyaadósság" }] },
-      { id: "plant", legend: "Melyik nyomot csempészték oda, hogy másra terelje a gyanút?", name: "a hamis nyom", from: "clues", answer: "mandzsetta", proof: ["d-csel"] }
-    ]
+    accusation: {
+    story: "A gyilkos: {}. A mérget, a(z) {} nevű szert, délután vitte el innen: {}. Este, amíg a báró a hallban {}, a konyakba szórta.\nAzért ölt, mert a báró le akarta leplezni ezt: {}.\nA gyanút egy {} segítségével erre a személyre akarta terelni: {}.",
+    b: ["ilona", "cian", "uveghaz", "telefonal", "hamisitas", "mandzsetta", "gabor"], who: [0]
   },
 
-  carnation: { letter: "S", found: "Ilona zsebnaptárában, a kulcsszó mellett egy préselt fekete szegfű és egy gépelt cédula lapult. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„A báró tudja. Holnap a rendőrségre megy. A darázsirtó az üvegház harmadik polcán áll. A Munkácsykat továbbra is én veszem. — F. Sz.”" },
+  plan: { w: 12, h: 8,
+    rooms: { konyvtar: [0, 0, 4, 3], hall: [4, 0, 4, 3], szalon: [8, 0, 4, 3], titkarsag: [0, 3, 3, 2], _konyha: [3, 3, 3, 2, "Konyha"], uveghaz: [8, 4, 4, 2.6], emelet: [0, 5.8, 5, 2.2], vendeg: [5, 5.8, 3, 2.2] },
+    doors: [[4, 1, 4, 2], [8, 1, 8, 2], [1, 3, 2, 3], [4.5, 3, 5.5, 3]],
+    marks: [[8.1, 3.75, "kert · kavicsos út"], [6.2, 3.4, ""], [0.1, 5.6, "emelet ↑"]],
+    note: "Földszint, fölötte az emelet. Az üvegház a kertben áll, a ház mögött." },
+  carnation: { letter: "S", found: "Ilona zsebnaptárában, a kulcsszó mellett egy préselt fekete szegfű és egy gépelt cédula lapult. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„A báró tudja. ⟪ido⟫ Holnap a rendőrségre megy. ⟪mereg⟫ A darázsirtó az üvegház harmadik polcán áll. ⟪vevo⟫ A Munkácsykat továbbra is én veszem. — F. Sz.”" },
 
   ending: {
     heading: "Bakos Ilona volt az.",

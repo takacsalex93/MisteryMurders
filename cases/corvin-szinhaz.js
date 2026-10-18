@@ -32,27 +32,36 @@
       stmt: "„Tudom, mit gondolnak. Most én kapom a szerepet. De a szünetben skáláztam az öltözőmben, az egész folyosó hallotta.”" }
   ],
 
-  clues: {
-    holttest: { t: "A színpadon", src: "Színpad", x: "Sárközy a hetes jelzésnél fekszik, mellette a szétrepedt homokzsák. A zsákot tartó kötél vége fentről lóg le. Rácz Mimi a jelzéstől egy lépésre balra állt, amikor a zsák lezuhant." },
-    kotel: { t: "Az elégett kötél", src: "Zsinórpadlás", x: "A kötelet nem elvágták, és nem is kopott el: átégett. A vége megpörkölődött, alatta viaszcseppek, és a korláthoz drótozva egy templomi gyertya csonkja." },
-    gyertya: { t: "Mikor gyújtották meg a gyertyát?", src: "Kellektár", x: "A gyertyát 20:41-kor gyújtották meg. Az első szünet 20:35-től 20:55-ig tartott." },
-    szunet: { t: "Ki hol volt az első szünetben?", src: "Büfé · tanúvallomások", x: "A vallomásokból összerakva, az első szünetben: Vass Tibor a büfében, Kálmán igazgató az irodájában, Lengyel Klára a súgólyukban, Bodó Ferenc a saját öltözőjében, Rácz Mimi (zárt öltözővel, kulcsa a portán) a zsinórpadláson." },
-    felnezett: { t: "Ellentmondás Mimi vallomásában", src: "Igazgatói iroda · vallomás", x: "Mimi a jegyzőkönyvben azt állította, fel sem nézett a zsinórpadlásra. A súgónő szerint a zuhanás előtt felnézett, és balra ugrott." },
-    sugo: { t: "A súgónő megfigyelése", src: "Súgólyuk", x: "Lengyel Klára: „A kettős utolsó strófájánál Mimi felnézett, egyenesen a zsinórpadlásra, aztán szinte ugrott egyet balra. Harminc éve súgok, ilyet még nem láttam tőle.”" },
-    level: { t: "Sárközy levele", src: "Öltözősor · Mimi öltözője", x: "Mimi sminkasztalán Sárközy levele: „Ne haragudj, Mimi. Holnap bejelentem az eljegyzésemet Kálmán Lizával. Ami köztünk volt, vége. Te is tudtad, hogy egyszer vége lesz.”" },
-    bodo: { t: "A beugró szerződése", src: "Öltözősor · Bodó öltözője", x: "Bodó Ferenc szerződése: ha Sárközy bármi okból kiesik, ő énekli a bécsi turnét. A szomszéd kórista szerint a szünetben végig skálázást hallott Bodó öltözőjéből." },
-    vass: { t: "A váltó", src: "Büfé", x: "Vass Tibor zsebében egy ezer pengőről szóló váltó, Sárközy aláírásával." },
-    pletyka: { t: "A pletykarovat kézirata", src: "Súgólyuk", x: "A súgólyukban kézirat: a Színházi Élet következő heti pletykarovata. „Igaz-e, hogy a Corvin bonvivánja a direktor lányát veszi el, és egy primadonnának hamarosan fáj majd a feje?”" },
-    kalman: { t: "Sárközy követelése", src: "Igazgatói iroda", x: "Sárközy levele az igazgatónak: dupla gázsit követel, különben januártól Bécsben énekel." },
-    hetes: { t: "Ki kérte a hetes jelzést?", src: "Kálmán vallomása", x: "Kálmán szerint délután Mimi kérte, hogy Iván a záró jelenetben a hetes jelzéshez álljon, mert ott szebb a fény. A hetes jelzés fölött a hetes homokzsák lóg." }
+    words: {
+    sarkozy: ["Sárközy Iván", "személy"], liza: ["Kálmán Liza", "személy"],
+    gyertya: ["templomi gyertya", "tárgy"], kotel: ["kötél", "tárgy"], homokzsak: ["homokzsák", "tárgy"], reflektor: ["reflektor", "tárgy"], gramofon: ["gramofon", "tárgy"],
+    zsinorpadlas: ["zsinórpadlás", "hely"], hetes: ["hetes jelzés", "hely"], oltozo: ["Mimi öltözője", "hely"], bufe: ["büfé", "hely"], sugolyuk: ["súgólyuk", "hely"],
+    t2041: ["20:41", "idő"], szunet: ["az első szünet", "idő"], t2241: ["22:41", "idő"], kettos: ["a záró kettős", "idő"],
+    felnezett: ["felnézett", "tett"], balra: ["balra ugrott", "tett"], skalazott: ["skálázott", "tett"], frocs: ["fröccsöt ivott", "tett"],
+    eljegyzes: ["az eljegyzés", "indíték"], turne: ["a bécsi turné", "indíték"], tartozas: ["tartozás", "indíték"], gazsi: ["a dupla gázsi", "indíték"]
   },
 
-  contradictions: [
-    {"id": "c-mimi", "suspect": "mimi", "clue": ["szunet"], "reveal": "Mimi felcsattan: „Jó, nem az öltözőben voltam! Csak… friss levegőt akartam.” Hogy hol, azt nem mondja meg."},
+  clues: {
+    holttest: { t: "A színpadon", src: "Színpad", x: "{{Sárközy|sarkozy}} a {{hetes jelzésnél|hetes}} fekszik, mellette a szétrepedt {{homokzsák|homokzsak}}. A zsákot tartó {{kötél|kotel}} vége fentről lóg le. A zsák {{22:41|t2241}}-kor zuhant le. Rácz Mimi a jelzéstől egy lépésre balra állt." },
+    kotel: { t: "Az elégett kötél", src: "Zsinórpadlás", x: "A kötelet nem elvágták, és nem is kopott el: átégett. A vége megpörkölődött, alatta viaszcseppek, és a korláthoz drótozva egy {{templomi gyertya|gyertya}} csonkja." },
+    gyertya: { t: "Mikor gyújtották meg a gyertyát?", src: "Kellektár", x: "A gyertyát {{20:41|t2041}}-kor gyújtották meg. {{Az első szünet|szunet}} 20:35-től 20:55-ig tartott." },
+    szunet: { t: "Ki hol volt az első szünetben?", src: "Büfé · tanúvallomások", x: "A vallomásokból összerakva, az első szünetben: Vass Tibor a {{büfében|bufe}}, Kálmán igazgató az irodájában, Lengyel Klára a {{súgólyukban|sugolyuk}}, Bodó Ferenc a saját öltözőjében, Rácz Mimi (zárt öltözővel, kulcsa a portán) a {{zsinórpadláson|zsinorpadlas}}." },
+    felnezett: { t: "Ellentmondás Mimi vallomásában", src: "Igazgatói iroda · vallomás", x: "Mimi a jegyzőkönyvben azt állította, fel sem nézett a zsinórpadlásra. A súgónő szerint a zuhanás előtt {{felnézett|felnezett}}, és {{balra ugrott|balra}}." },
+    sugo: { t: "A súgónő megfigyelése", src: "Súgólyuk", x: "Lengyel Klára: „A {{kettős utolsó strófájánál|kettos}} Mimi felnézett, egyenesen a zsinórpadlásra, aztán szinte ugrott egyet balra. Harminc éve súgok, ilyet még nem láttam tőle.”" },
+    level: { t: "Sárközy levele", src: "Öltözősor · Mimi öltözője", x: "Mimi sminkasztalán Sárközy levele: „Ne haragudj, Mimi. Holnap bejelentem az {{eljegyzésemet|eljegyzes}} {{Kálmán Lizával|liza}}. Ami köztünk volt, vége. Te is tudtad, hogy egyszer vége lesz.”" },
+    bodo: { t: "A beugró szerződése", src: "Öltözősor · Bodó öltözője", x: "Bodó Ferenc szerződése: ha Sárközy bármi okból kiesik, ő énekli a {{bécsi turnét|turne}}. A szomszéd kórista szerint a szünetben végig {{skálázást|skalazott}} hallott Bodó öltözőjéből." },
+    vass: { t: "A váltó", src: "Büfé", x: "Vass Tibor zsebében egy ezer pengőről szóló váltó, Sárközy aláírásával. Vass régi {{tartozása|tartozas}}." },
+    pletyka: { t: "A pletykarovat kézirata", src: "Súgólyuk", x: "A súgólyukban kézirat: a Színházi Élet következő heti pletykarovata. „Igaz-e, hogy a Corvin bonvivánja a direktor lányát veszi el, és egy primadonnának hamarosan fáj majd a feje?”" },
+    kalman: { t: "Sárközy követelése", src: "Igazgatói iroda", x: "Sárközy levele az igazgatónak: {{dupla gázsit|gazsi}} követel, különben januártól Bécsben énekel." },
+    hetes: { t: "Ki kérte a hetes jelzést?", src: "Kálmán vallomása", x: "Kálmán szerint délután Mimi kérte, hogy Iván a záró jelenetben a hetes jelzéshez álljon, mert ott szebb a fény. A hetes jelzés fölött a hetes homokzsák lóg." },
+    kulcs: { t: "A kulcsnapló", src: "Művészbejáró", x: "A porta kulcsnaplója szerint Rácz Mimi 20:33-kor leadta az öltözője kulcsát, és csak 20:54-kor vette fel újra. Az egész első szünetben nem volt az öltözőjében." }
+  },
+contradictions: [
+    {"id": "c-mimi", "suspect": "mimi", "clue": ["szunet"], "reveal": "Mimi felcsattan: „Jó, nem az {{öltözőben|oltozo}} voltam! Csak… friss levegőt akartam.” Hogy hol, azt nem mondja meg."},
     {"id": "c-mimi2", "suspect": "mimi", "clue": ["felnezett", "sugo"], "reveal": "Mimi elsápad: „Bárki felnéz, ha recseg valami!”"},
     {"id": "c-kalman", "suspect": "kalman", "clue": ["level"], "gives": "hetes", "reveal": "Kálmán leül: „A lányom… Igen, tudtam az eljegyzésről. És a hetes jelzést nem én találtam ki. Mimi kérte délután, hogy Iván ott álljon, mert ott szebb a fény.”"},
     {"id": "c-kalman2", "suspect": "kalman", "clue": ["kalman"], "lie": false, "reveal": "„Igen, többet akart. Mindig többet akart. De a szünetben a könyvelővel számoltam a bevételt, kérdezze meg.”"},
-    {"id": "c-vass", "suspect": "vass", "clue": ["vass"], "lie": false, "reveal": "Vass vállat von: „Tartoztam neki, igen. De a szünetet a büfében töltöttem, három fröccsöt ittam. A büfés megmondja.”"},
+    {"id": "c-vass", "suspect": "vass", "clue": ["vass"], "lie": false, "reveal": "Vass vállat von: „Tartoztam neki, igen. De a szünetet a büfében töltöttem, három {{fröccsöt ittam|frocs}}. A büfés megmondja.”"},
     {"id": "c-klara", "suspect": "klara", "clue": ["pletyka"], "lie": false, "reveal": "Klára elmosolyodik: „Igen, én írom. Ezért tudom, hogy Iván mást akart elvenni. És hogy kinek fáj majd a feje miatta.”"},
     {"id": "c-bodo", "suspect": "bodo", "clue": ["bodo"], "lie": false, "reveal": "Bodó elvörösödik: „Igen, most én kapom a turnét. De élőben skáláztam, a kórista hallotta, nem gramofon volt.”"}
   ],
@@ -60,7 +69,7 @@
     locations: [
     { id: "szinpad", name: "Színpad", desc: "Bécsi bálterem díszlete, félig leeresztett függöny. A reflektor még mindig a hetes jelzésre világít.",
       look: "Bécsi bálterem díszlete, félig leeresztett függöny, a nézőtér üres és sötét. [[Sárközy a krétával jelölt hetes számon fekszik|holttest]], mellette a szétrepedt homokzsák. [[A reflektor|reflektor]] még mindig rá világít. A deszkákon [[krétajelek sora|kreta]], egytől tizenkettőig.",
-      decoys: { reflektor: "Forró és vakító. Aki ide néz, a zsinórpadlásból semmit sem lát.", kreta: "A rendező jelzései. A hetesnél frissebb a kréta: ma délután húzták újra." },
+      decoys: { reflektor: "A {{reflektor|reflektor}} forró és vakító. Aki ide néz, a zsinórpadlásból semmit sem lát.", kreta: "A rendező jelzései. A hetesnél frissebb a kréta: ma délután húzták újra." },
       items: [{ clue: "holttest", label: "A hetes jelzés", text: "Megvizsgálod a holttestet és a zsákot." }] },
     { id: "zsinorpadlas", name: "Zsinórpadlás", desc: "Keskeny vasjárdák a színpad fölött, kötelek, csigák, homokzsákok sora. Szédítő mélység.",
       look: "Keskeny vasjárdák a színpad fölött, szédítő mélység. [[Csigák és kötelek|csigak]] mindenütt, a korlátnál [[homokzsákok sora, mindegyiken egy szám|zsakok]]. A hetes helyén csak a kötél lóg.",
@@ -83,10 +92,14 @@
         { clue: "pletyka", label: "A súgópéldány alatt", text: "Elolvasod a kéziratot." }] },
     { id: "oltozok", name: "Öltözősor", desc: "Hosszú folyosó, ajtókon névtáblák, bent tükrök körbe izzókkal.",
       look: "Hosszú folyosó, az ajtókon névtáblák. [[Rácz Mimi sminkasztalán|level]] púder, rúzs és egy összegyűrt levél. [[Bodó Ferenc öltözőjében|bodo]] kottahalom, egy aláírt szerződés. A sarokban [[egy gramofon|gramofon]].",
-      decoys: { gramofon: "Vastag por lepi. Aki ma este skálázott, élőben tette." },
+      decoys: { gramofon: "A {{gramofont|gramofon}} vastag por lepi. Aki ma este skálázott, élőben tette." },
       items: [
         { clue: "level", label: "Rácz Mimi sminkasztala", text: "Kisimítod az összegyűrt levelet." },
         { clue: "bodo", label: "Bodó Ferenc öltözője", text: "Átlapozod a szerződést." }] },
+    { id: "porta", name: "Művészbejáró", desc: "A színészbejáró portásfülkéje: kulcstábla, egy vastag kulcsnapló, a falon a ma esti szereposztás.",
+      look: "Huzatos kis fülke a színészbejárónál. A falon [[a kulcstábla|tabla]], az ablakpárkányon [[a ma esti szereposztás|szereposztas]]. A pulton a kulcsnapló: a portás minden kulcs leadását és felvételét beírja, percre pontosan.",
+      decoys: { tabla: "Minden öltözőnek saját szöge van. Mimié üres, a kulcs most a csendőröknél van.", szereposztas: "„Bécsi vér” — Sárközy Iván, Rácz Mimi. A beugró neve ceruzával: Bodó Ferenc." },
+      puzzle: "kulcsnaplo" },
     { id: "iroda", name: "Igazgatói iroda", desc: "Plakátok a falon, telefon, a rendőrség itt veszi fel a vallomásokat.",
       look: "A falon [[plakátok|plakat]], a rendőrség itt veszi fel a vallomásokat. [[Az igazgató asztalán|kalman]] levelek, számlák, egy dühösen aláhúzott levél.",
       decoys: { plakat: "„Bécsi vér” — Sárközy Iván és Rácz Mimi. A plakáton Mimi neve kisebb betűkkel áll." },
@@ -94,22 +107,17 @@
       puzzle: "vallomas" }
   ],
 
-  deductions: [
+    deductions: [
     { id: "d-idozito", from: ["kotel", "gyertya"], t: "Időzítő gyertya", x: "A kötelet egy alá drótozott gyertya égette át, amelyet 20:41-kor, az első szünetben gyújtottak meg. A gyilkosnak a zuhanáskor nem kellett a padláson lennie.",
-      q: "Mit jelent ez a gyilkos alibijére nézve?", ans: 1,
-      opts: ["A gyilkos a zuhanáskor a zsinórpadláson volt.", "A gyilkos a zuhanáskor bárhol lehetett, akár a színpadon is: az első szünetben kellett fent lennie.", "A gyertyát véletlenül hagyták ott, a kötél elkopott."] },
+      text: "A kötelet egy {} égette át, amelyet ekkor gyújtottak meg: {}, az első szünetben. A gyilkosnak a zuhanáskor nem kellett fent lennie.", b: ["gyertya", "t2041"] },
     { id: "d-padlas", from: ["szunet", "d-idozito"], t: "Ki volt fent 20:41-kor?", x: "A gyertyát az első szünetben gyújtották meg. Az első szünetben egyedül Rácz Mimi volt a zsinórpadláson.",
-      q: "Ki gyújthatta meg a gyertyát?", ans: 0,
-      opts: ["Rácz Mimi.", "Vass Tibor, a zsinórpadlásmester.", "Bodó Ferenc, a beugró."] },
+      text: "Az első szünetben ezen a helyen: {} egyetlen ember tartózkodott: {}.", b: ["zsinorpadlas", "mimi"] },
     { id: "d-tudta", from: ["felnezett", "holttest"], t: "Mimi tudta", x: "Mimi a zuhanás előtt felnézett, és egy lépéssel balra ugrott, ki a zsák alól. Tudta, mikor és hova esik.",
-      q: "Mire következtetsz Mimi mozdulatából?", ans: 2,
-      opts: ["Mimi a recsegést hallotta meg, és ösztönösen elugrott.", "Mimi a reflektor miatt lépett balra.", "Mimi tudta, mikor és hova zuhan a zsák."] },
+      text: "Mimi a zuhanás előtt {}, és {}. Tudta, mikor és hova zuhan a zsák.", b: ["felnezett", "balra"] },
     { id: "d-hely", from: ["hetes", "holttest"], t: "Ki állította a zsák alá?", x: "A hetes zsák a hetes jelzés fölött lógott, és Mimi kérte délután, hogy Iván pont ott álljon.",
-      q: "Kinek a kérésére állt Iván a halálos helyen?", ans: 1,
-      opts: ["Kálmán igazgatóéra, aki a fény miatt rendezte át a jelenetet.", "Mimiére, aki délután kérte, hogy Iván a hetes jelzéshez álljon.", "Senkiére: a jelzés évek óta ott van."] }
+      text: "Iván azért állt itt: {}, mert délután ő kérte: {}.", b: ["hetes", "mimi"] }
   ],
-
-  events: [
+events: [
     { id: "recseg", after: 3, title: "Recsegés odafent",
       text: "A sötét színpad fölött megreccsen valami. Egy lámpás fénye imbolyog a zsinórpadláson, és egy homokzsák lassan megleng.\n\nVass Tibor mászik le a létrán. „Csak a köteleimet nézem” mondja rekedten. „Huszonkét éve egy sem szakadt el. Egy sem.”" },
     { id: "ajul", afterSolved: "gyertya", title: "Mimi összeesik",
@@ -122,7 +130,24 @@
     klara: "Ő írta a pletykarovatot, és ő tudott mindent. A súgónőt elítélik, és a börtönben senki sem kíváncsi arra, mit látott a súgólyukból.",
     bodo: "Ő kapta meg a szerepet és a bécsi turnét. Bodó Ferencet elítélik; a turnét végül egy harmadik tenor énekli el."
   },
-puzzles: {
+  puzzles: {
+    kulcsnaplo: {
+      type: "log", title: "A kulcsnapló", reward: "kulcs", answer: [0, 4],
+      body: `<p>Az öltözők kulcsát a színészek a portán adják le, ha kimennek, és ott veszik fel, ha visszatérnek. Keresd meg azt a két sort, amely együtt elárulja, hol nem volt valaki az első szünetben.</p>`,
+      cols: ["Idő", "Név", "Bejegyzés"],
+      rows: [
+        ["20:33", "Rácz M.", "öltöző kulcsa leadva"],
+        ["20:35", "—", "I. szünet kezdete (csengő)"],
+        ["20:36", "Bodó F.", "öltöző kulcsa nála"],
+        ["20:40", "Kálmán Ö.", "iroda kulcsa nála (könyvelővel)"],
+        ["20:54", "Rácz M.", "öltöző kulcsa felvéve"],
+        ["20:55", "—", "I. szünet vége (csengő)"],
+        ["21:52", "Vass T.", "szerszámosláda kulcsa felvéve"],
+        ["22:05", "Vass T.", "szerszámosláda kulcsa leadva"]
+      ],
+      wrong: { 6: "Ez a második szünet, a gyertya addigra rég égett.", 7: "Ez a második szünet, a gyertya addigra rég égett." },
+      hints: ["Akinek a kulcsa a portán lóg, az nincs bent az öltözőjében."]
+    },
     kotel: {
       type: "choice", title: "A kötél vége", reward: "kotel", answer: "C",
       body: `<p>A hetes homokzsák kötelének vége ott lóg a korlátnál. Az igazgató szerint elkopott, a zsinórpadlásmester szerint valaki elvágta. Nézd meg alaposan, és válassz.</p>`,
@@ -185,17 +210,17 @@ puzzles: {
     }
   },
 
-  accusation: {
-    questions: [
-      { id: "who", legend: "Ki ölte meg Sárközy Ivánt?", name: "a tettes", from: "suspects", answer: "mimi", proof: ["d-padlas", "d-tudta", "d-hely"] },
-      { id: "how", legend: "Hogyan szakadt el a kötél?", name: "a módszer", answer: "gyertya", proof: ["d-idozito"],
-        options: [{ v: "vagas", label: "Elvágták a záró kettős alatt" }, { v: "gyertya", label: "Gyertyát drótoztak alá az első szünetben, és átégette a kötelet" }, { v: "kopas", label: "Elkopott, és magától szakadt el" }] },
-      { id: "why", legend: "Miért tette?", name: "az indíték", answer: "feltekenyseg", proof: ["level"],
-        options: [{ v: "feltekenyseg", label: "Sárközy másnap mást akart eljegyezni" }, { v: "turne", label: "Hogy megkapja a bécsi turnét" }, { v: "adossag", label: "Hogy ne kelljen visszafizetni a tartozást" }, { v: "gazsi", label: "A dupla gázsi követelése miatt" }] }
-    ]
+    accusation: {
+    story: "A tettes: {}. Az első szünetben felment ide: {}. A hetes zsák kötele alá egy {} drótozott, és ekkor meggyújtotta: {}.\nDélután ő kérte, hogy Iván ide álljon: {}. A zuhanás előtt {}, és félreugrott.\nIndíték: {}.",
+    b: ["mimi", "zsinorpadlas", "gyertya", "t2041", "hetes", "felnezett", "eljegyzes"], who: [0]
   },
 
-  carnation: { letter: "F", found: "Mimi púderdobozában egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„Holnap bejelentik az eljegyzést. A szünetben a zsinórpadlás üres, a kellektárban templomi gyertya van. — F. Sz.”" },
+  plan: { w: 11, h: 8,
+    rooms: { zsinorpadlas: [2, 0, 6, 1.8, "Zsinórpadlás (fent)"], iroda: [8, 0, 3, 2], kellektar: [0, 1.8, 2, 1.7], porta: [0, 3.5, 2, 1.5, "Művészbejáró"], szinpad: [2, 1.8, 6, 3.2], oltozok: [8, 2, 3, 3], sugolyuk: [4.3, 5, 1.4, 1, "Súgó"], _nezoter: [1, 6, 7.4, 2, "Nézőtér"], bufe: [8.6, 6, 2.4, 2] },
+    doors: [[2, 2.3, 2, 3.1], [8, 3, 8, 4], [1, 3.5, 1.6, 3.5], [9, 2, 10, 2]],
+    marks: [[5.15, 3.6, "7 ↓"]],
+    note: "A Corvin Színház metszete és alaprajza egyben: a zsinórpadlás a színpad fölött, a súgólyuk a színpad elején van." },
+carnation: { letter: "F", found: "Mimi púderdobozában egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„⟪ido⟫ Holnap bejelentik az eljegyzést. ⟪fent⟫ A szünetben a zsinórpadlás üres. ⟪tuz⟫ A kellektárban templomi gyertya van. — F. Sz.”" },
 
   ending: {
     heading: "Rácz Mimi volt az.",

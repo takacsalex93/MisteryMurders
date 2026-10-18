@@ -5,7 +5,7 @@
   const KEY = "mm:lang";
   let lang = "hu";
   try { lang = localStorage.getItem(KEY) || (/^hu\b/i.test(navigator.language || "hu") ? "hu" : "en"); } catch (e) {}
-  if (lang !== "en") lang = "hu";
+  lang = "hu"; // az angol változat egyelőre ki van kapcsolva (cases/en/*.js)
   document.documentElement.lang = lang;
 
   const EN = {

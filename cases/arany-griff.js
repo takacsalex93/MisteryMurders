@@ -23,34 +23,43 @@
     { id: "lili", look: { hair: "bob", hat: "headband", clothes: "dress", acc: ["earrings"], lips: true }, name: "Fodor Lili", role: "Primadonna, 27 éves. Vándor sztárja, és a pletykák szerint több is annál.",
       stmt: "„Elemér meg akart szabadulni tőlem, ezt mindenki tudta. De egész este a szobámban voltam. Tizenegy után Bécsbe telefonáltam, fél tizenkettőkor pedig őt hívtam, mert nem vette fel. Akkor szóltam a portásnak.”" },
     { id: "hartmann", look: { hair: "slick", clothes: "suit", acc: ["monocle", "mustache"] }, name: "Hartmann Viktor", role: "Üzlettárs, 48 éves. A varieté pénzügyeit viszi.",
-      stmt: "„Fél tizenegytől éjfélig a bárban ültem, a pultos mindent látott. A varieté könyvei rendben vannak, ha erre gondol. Harminc éve dolgozunk együtt Elemérrel.”" },
+      stmt: "„Fél tizenegytől éjfélig a {{bárban|bar}} {{ültem|ult}}, a pultos mindent látott. A varieté könyvei rendben vannak, ha erre gondol. Harminc éve dolgozunk együtt Elemérrel.”" },
     { id: "margit", look: { hair: "bun", hat: "maid", clothes: "maid", lips: true }, name: "Szabó Margit", role: "Szobalány, 22 éves. Ő takarítja a negyedik emeletet.",
       stmt: "„A tompa puffanást én hallottam, a vasalószobából. Nem mentem be, féltem. A vendégek dolgaihoz soha nem nyúlok.”" },
     { id: "ferenczy", look: { hair: "short", hat: "cap", clothes: "uniform", acc: ["mustache"] }, name: "Ferenczy Pál", role: "Éjszakai portás, 56 éves. Húsz éve áll a pult mögött.",
-      stmt: "„Egész este a pultnál álltam. A negyediken csak törzsvendégek laknak, idegen ma este nem ment fel, arra mérget veszek.”" },
+      stmt: "„Egész este a pultnál álltam, a {{pótkulcs|potkulcs}} végig a táblán lógott. A negyediken csak törzsvendégek laknak, idegen ma este nem ment fel, arra mérget veszek.”" },
     { id: "kardos", look: { hair: "short", hat: "fedora", clothes: "trench" }, name: "Kardos Endre", role: "Fiatal drámaíró, 31 éves. Vándor egyszer bemutatott tőle egy darabot.",
       stmt: "„Az egész estét a New York kávéházban töltöttem, a darabomon dolgoztam. Éjfél után értem haza, száraz lábbal: az eső csak hajnalban eredt el. Vándorral évek óta nem beszéltem.”" }
   ],
 
-  clues: {
-    eso: { t: "Az eső", src: "Porta", x: "A portás szerint háromnegyed tizenegykor szakadt le az eső, és éjfélig zuhogott. Az ernyőtartó azóta tele csöpögő esernyőkkel." },
-    holttest: { t: "A holttest és a díjszobor", src: "412-es szoba", x: "Vándort egy bronz Pallas-szobor ütése ölte meg, a díjat 1930-ban kapta. A szobrot letörölték. Az ajtó belülről zárva, a kulcs a zárban. A szőnyegen nedves, sáros nyomok, pedig Vándor egész este ki sem lépett a szobájából." },
-    szerzodes: { t: "Az ellopott darab", src: "412-es szoba · széf", x: "A széfben „Az utolsó tánc” kézirata. A borítón Vándor neve áll, de alatta, kivakarva, még olvasható az eredeti szerző: Kardos Endre. A darab most fut telt házzal, és minden bevétel Vándoré." },
-    ido: { t: "Az este időrendje", src: "Lift és lépcsőház", x: "Az este sorrendje: Vándor pezsgőt rendel, a pincér felviszi, a lift egy nedves kabátos férfit visz a negyedikre, tompa puffanás a 412-ből (Margit szerint épp negyedet ütött a folyosói óra, negyed tizenkettőt), reteszcsattanás odébb a folyosón, Lili hiába telefonál, a portás benyit." },
-    liftes: { t: "A liftesfiú vallomása", src: "Lift és lépcsőház", x: "„Csuromvizes volt a kabátja, mintha végiggyalogolt volna a rakparton. A kalapját a szemébe húzta, és egy kopott bőr irattartót szorongatott. A negyediken szállt ki, de nem ment a 412 felé, hanem jobbra fordult.”" },
-    derkes: { t: "Derkes Andor nem létezik", src: "Porta · vendégkönyv", x: "A 414-es szobát aznap este készpénzért egy „Derkes Andor” vette ki, és soha többé nem jelent meg a pultnál. A név pontosan Kardos Endre betűiből áll." },
-    kijarat: { t: "Az összekötő ajtó", src: "414-es szoba", x: "A 412 és 414 közötti összekötő ajtón a 412-es oldali retesz nyitva, a 414-es oldali zárva, a küszöbön nedves sárfolt. A 414-es szekrényben egy kopott, nedves bőr irattartó." },
-    tavirat: { t: "Vándor táviratpiszkozata", src: "Lili szobája", x: "„Fodor kisasszony szerződését azonnali hatállyal felbontom, kártérítési per következik.” Vándor táviratának másolata Lili éjjeliszekrényén." },
-    fokonyv: { t: "A titkos főkönyv", src: "Bár", x: "Hartmann aktatáskájában egy második főkönyv: két év alatt negyvenezer pengő tűnt el a varieté kasszájából." },
-    mandzsetta: { t: "Az arany mandzsettagombok", src: "Személyzeti folyosó", x: "Margit kötényzsebében Vándor monogramos arany mandzsettagombjai." },
-    kozpont: { t: "A telefonközpont naplója", src: "Lili vallomása", x: "A szálloda központja szerint Lili 23:00-tól 23:20-ig Béccsel beszélt, 23:25-kor pedig a 412-t hívta, eredménytelenül." }
+    words: {
+    vandor: ["Vándor Elemér", "személy"], derkes: ["Derkes Andor", "személy"],
+    pallas: ["bronz Pallas-szobor", "tárgy"], irattarto: ["bőr irattartó", "tárgy"], potkulcs: ["pótkulcs", "tárgy"], kezirat: ["kézirat", "tárgy"], pezsgo: ["pezsgő", "tárgy"], mandzsetta: ["mandzsettagomb", "tárgy"],
+    sz412: ["412-es szoba", "hely"], sz414: ["414-es szoba", "hely"], osszekoto: ["összekötő ajtó", "hely"], ablak: ["ablak", "hely"], folyoso: ["folyosó", "hely"], bar: ["bár", "hely"],
+    t2245: ["háromnegyed tizenegy", "idő"], t2315: ["negyed tizenkettő", "idő"], t2300: ["23:00", "idő"], ejfel: ["éjfél", "idő"],
+    telefonal: ["Béccsel telefonált", "tett"], vasalt: ["vasalt", "tett"], ult: ["a bárban ült", "tett"],
+    darablopas: ["az ellopott darab", "indíték"], per: ["a felbontott szerződés", "indíték"], sikkasztas: ["sikkasztás", "indíték"], lopas: ["lopás", "indíték"]
   },
 
+  clues: {
+    eso: { t: "Az eső", src: "Porta", x: "A portás szerint {{háromnegyed tizenegykor|t2245}} szakadt le az eső, és {{éjfélig|ejfel}} zuhogott. Az ernyőtartó azóta tele csöpögő esernyőkkel." },
+    holttest: { t: "A holttest és a díjszobor", src: "412-es szoba", x: "{{Vándort|vandor}} egy bronz {{Pallas-szobor|pallas}} ütése ölte meg, a díjat 1930-ban kapta. A szobrot letörölték. Az ajtó belülről zárva, a kulcs a zárban. A szőnyegen nedves, sáros nyomok, pedig Vándor egész este ki sem lépett a szobájából." },
+    szerzodes: { t: "Az ellopott darab", src: "412-es szoba · széf", x: "A széfben „Az utolsó tánc” {{kézirata|kezirat}}. A borítón Vándor neve áll, de alatta, kivakarva, még olvasható az eredeti szerző: Kardos Endre. Az {{ellopott darab|darablopas}} most fut telt házzal, és minden bevétel Vándoré." },
+    ido: { t: "Az este időrendje", src: "Lift és lépcsőház", x: "Az este sorrendje: Vándor {{pezsgőt|pezsgo}} rendel, a pincér felviszi, a lift egy nedves kabátos férfit visz a negyedikre, tompa puffanás a 412-ből (Margit szerint épp negyedet ütött a folyosói óra, {{negyed tizenkettőt|t2315}}), reteszcsattanás odébb a {{folyosón|folyoso}}, Lili hiába telefonál, a portás benyit." },
+    liftes: { t: "A liftesfiú vallomása", src: "Lift és lépcsőház", x: "„Csuromvizes volt a kabátja, mintha végiggyalogolt volna a rakparton. A kalapját a szemébe húzta, és egy kopott {{bőr irattartót|irattarto}} szorongatott. A negyediken szállt ki, de nem ment a {{412|sz412}} felé, hanem jobbra fordult.”" },
+    derkes: { t: "Derkes Andor nem létezik", src: "Porta · vendégkönyv", x: "A {{414-es szobát|sz414}} aznap este készpénzért egy „{{Derkes Andor|derkes}}” vette ki, és soha többé nem jelent meg a pultnál. A név pontosan Kardos Endre betűiből áll." },
+    kijarat: { t: "Az összekötő ajtó", src: "414-es szoba", x: "A 412 és 414 közötti {{összekötő ajtón|osszekoto}} a 412-es oldali retesz nyitva, a 414-es oldali zárva, a küszöbön nedves sárfolt. A 414-es szekrényben egy kopott, nedves {{bőr irattartó|irattarto}}." },
+    tavirat: { t: "Vándor táviratpiszkozata", src: "Lili szobája", x: "„Fodor kisasszony {{szerződését azonnali hatállyal felbontom|per}}, kártérítési per következik.” Vándor táviratának másolata Lili éjjeliszekrényén." },
+    fokonyv: { t: "A titkos főkönyv", src: "Bár", x: "Hartmann aktatáskájában egy második főkönyv: két év alatt negyvenezer pengő {{tűnt el|sikkasztas}} a varieté kasszájából." },
+    mandzsetta: { t: "Az arany mandzsettagombok", src: "Személyzeti folyosó", x: "Margit kötényzsebében Vándor monogramos arany {{mandzsettagombjai|mandzsetta}}." },
+    kozpont: { t: "Lili hívásai", src: "Lili vallomása", x: "A szálloda központja szerint Lili {{23:00|t2300}}-tól 23:20-ig {{Béccsel beszélt|telefonal}}, 23:25-kor pedig a 412-t hívta, eredménytelenül." },
+    hivas: { t: "Hívás a 414-ből", src: "Telefonközpont · napló", x: "A központ naplója szerint 23:05-kor a 414-es szobából a 412-t hívták, egy percig. A 414-ből más hívás egész este nem volt." }
+  },
   contradictions: [
     {"id": "c-kardos", "suspect": "kardos", "clue": ["derkes"], "reveal": "Kardos sokáig hallgat. „Igen, én vettem ki a szobát. Beszélni akartam vele, az ajtón át. Nem engedett be. Aztán elmentem.”"},
     {"id": "c-kardos2", "suspect": "kardos", "clue": ["eso", "liftes"], "reveal": "Kardos keze ökölbe szorul: „Hát jó, eláztam. Gyalog jöttem a kávéházból. Ettől még nem vagyok gyilkos.”"},
     {"id": "c-hartmann", "suspect": "hartmann", "clue": ["fokonyv"], "reveal": "Hartmann leveszi a szemüvegét: „Kölcsönvettem. Vissza akartam tenni. Elemér nem tudott róla. De a bárból egy percre sem mozdultam, a pultos megmondja.”"},
-    {"id": "c-margit", "suspect": "margit", "clue": ["mandzsetta"], "reveal": "Margit sírva fakad: „Délután vettem el, takarításkor. Annával voltam a vasalóban, amikor puffant, ő is megmondja.”"},
+    {"id": "c-margit", "suspect": "margit", "clue": ["mandzsetta"], "reveal": "Margit sírva fakad: „Délután {{vettem el|lopas}}, takarításkor. Annával {{vasaltam|vasalt}}, amikor puffant, ő is megmondja.”"},
     {"id": "c-ferenczy", "suspect": "ferenczy", "clue": ["derkes"], "reveal": "Ferenczy izzad: „Készpénzzel fizetett, jó borravalót adott, nem kérdeztem semmit. Azt mondta, Derkes. Nem gondoltam, hogy baj lesz belőle.”"},
     {"id": "c-lili", "suspect": "lili", "clue": ["tavirat"], "lie": false, "gives": "kozpont", "reveal": "Lili felszegi a fejét: „Igen, perrel fenyegetett. De a központ megmondja: tizenegytől húsz percen át Béccsel beszéltem.”"}
   ],
@@ -58,7 +67,7 @@
     locations: [
     { id: "szoba412", name: "412-es szoba", desc: "Bordó tapéta, félig kiürült pezsgősüveg, a kandallópárkányon színlapok. Itt történt.",
       look: "Bordó tapéta, fülledt meleg. [[Vándor a kandalló előtt fekszik, mellette a bronz Pallas|holttest]]. Az asztalon [[egy félig kiürült pezsgősüveg és két pohár|pezsgo]], a kandallópárkányon bekeretezett színlapok, a falban egy számzáras széf.\n\nAz ablak előtt [[muskátlis cserepek a párkányon|ablak]]. A szoba túlsó falán egy [[keskeny, tapétázott ajtó|ajto]], mintha csak a fal része volna.",
-      decoys: { pezsgo: "Csak az egyik pohárból ittak. A másik tiszta, a pincér hozta fel a tálcán, ahogy szokás.", ablak: "Az ablak belülről zárva, a párkányon érintetlen a korom.", ajto: "Összekötő ajtó a szomszéd szobába. Erről az oldalról nyitva a retesz. Hogy a túloldalon mi van, azt innen nem látod." },
+      decoys: { pezsgo: "Csak az egyik pohárból ittak. A másik tiszta, a pincér hozta fel a tálcán, ahogy szokás.", ablak: "Az {{ablak|ablak}} belülről zárva, a párkányon érintetlen a korom.", ajto: "Összekötő ajtó a szomszéd szobába. Erről az oldalról nyitva a retesz. Hogy a túloldalon mi van, azt innen nem látod." },
       items: [{ clue: "holttest", label: "A holttest", text: "Letérdelsz Vándor mellé." }],
       puzzle: "szef" },
     { id: "lift", name: "Lift és lépcsőház", desc: "Kovácsoltvas liftkalitka, egyenruhás liftesfiú, a lépcsőn vörös szőnyeg.",
@@ -75,6 +84,10 @@
       look: "A 412 szomszédja. [[Bevetetlen ágy|agy]], az asztalon [[egy hamutartó, benne félig szívott cigaretta|cigi]]. Az ablakon csorog az eső.",
       decoys: { agy: "Senki sem feküdt benne. Aki kivette, nem aludni jött.", cigi: "Olcsó Symphonia, a végén harapásnyom. Valaki idegesen várt itt." },
       requires: "anagramma", puzzle: "kijarat" },
+    { id: "kozpont", name: "Telefonközpont", desc: "A kezelőnő fülkéje a porta mögött: dugaszolótábla, fejhallgató, egy vastag napló.",
+      look: "Szűk fülke a porta mögött. [[A dugaszolótábla|tabla]] tele zsinórokkal, a kezelőnő [[fejhallgatója|fejhallgato]] a szék támláján. Az asztalon a hívások naplója, minden kapcsolás percre pontosan.",
+      decoys: { tabla: "Minden szobának saját dugója van. A 412-es és a 414-es egymás mellett.", fejhallgato: "Még langyos. A kezelőnő szerint egész este egyetlen percre sem tette le." },
+      puzzle: "naplo" },
     { id: "lili", name: "Lili szobája", desc: "Virágcsokrok, parfümillat, az éjjeliszekrényen papírok.",
       look: "Virágcsokrok minden asztalon, nehéz parfümillat. [[Az éjjeliszekrényen gyűrött papírok|tavirat]]. A tükör előtt [[egy halom névjegy és szerelmes levél|nevjegy]], a fotelen [[egy flitteres ruha|ruha]].",
       decoys: { nevjegy: "Rajongók, bankárok, egy főhercegi titkár. Lilinek nem Vándor volt az egyetlen pártfogója.", ruha: "A ma esti fellépés ruhája. Lili le sem vetkőzött, amikor visszaért." },
@@ -89,21 +102,16 @@
       items: [{ clue: "mandzsetta", label: "Margit köténye", text: "Valami fémes koccan Margit kötényzsebében." }] }
   ],
 
-  deductions: [
+    deductions: [
     { id: "d-kivul", from: ["holttest", "eso"], t: "Kintről jött", x: "Vándor egész este ki sem lépett a szobájából, mégis friss, sáros nyomok vannak a szőnyegen. Az eső háromnegyed tizenegykor eredt el: a gyilkos kintről, az esőből érkezett.",
-      q: "Mire következtetsz a sáros nyomokból és az esőből?", ans: 2,
-      opts: ["Vándor kiment a teraszra, és sárosan jött vissza.", "A szobalány takarításkor hordta be a sarat.", "A gyilkos kintről, az esőből érkezett, háromnegyed tizenegy után."] },
+      text: "A sáros nyomokat nem ő hozta be, hiszen egész este ki sem lépett a szobájából: {}. Az eső ekkor kezdődött: {}. A gyilkos kintről, az esőből érkezett.", b: ["vandor", "t2245"] },
     { id: "d-szomszed", from: ["liftes", "kijarat"], t: "A szomszéd szobán át", x: "Az ázott férfi a negyediken nem a 412, hanem a 414 felé fordult. Az összekötő ajtó a 412 felől nyitva, a 414 felől zárva, a küszöbön sár. A gyilkos a 414-ből jött át, és oda tért vissza.",
-      q: "Hogyan jutott be és ki a gyilkos?", ans: 0,
-      opts: ["A 414-ből az összekötő ajtón át, és ugyanott vissza.", "A folyosóról, a portás pótkulcsával.", "Vándor engedte be a folyosói ajtón, aztán az ablakon távozott."] },
+      text: "Az ázott férfi ide ment: {}. Vándorhoz ezen át jutott be, és ugyanitt tért vissza: {}.", b: ["sz414", "osszekoto"] },
     { id: "d-tettes", from: ["d-szomszed", "derkes"], t: "A 414 vendége", x: "A gyilkos a 414-ből jött. A 414-et „Derkes Andor” vette ki, és ez a név Kardos Endre betűiből áll.",
-      q: "Ki volt a 414 vendége?", ans: 1,
-      opts: ["Hartmann, aki álnéven bérelt szobát a sikkasztott pénz rejtegetésére.", "Kardos Endre, Derkes Andor álnéven.", "Egy ismeretlen bécsi impresszárió, Lili barátja."] },
+      text: "A 414-es szobát ezen a néven vették ki: {}. A név mögött valójában ő áll: {}.", b: ["derkes", "kardos"] },
     { id: "d-lili", from: ["ido", "kozpont"], t: "Lili alibije", x: "A puffanás negyed tizenkettőkor hallatszott. Lili ekkor már negyedórája Béccsel beszélt a központon át, egészen 23:20-ig.",
-      q: "Mit jelent ez Lilire nézve?", ans: 0,
-      opts: ["Lili nem lehetett a 412-ben, amikor Vándort megölték.", "Lili a telefonhívással akart alibit szerezni, tehát ő a tettes.", "A központ naplója hamis, Lili lefizette a kezelőnőt."] }
+      text: "A puffanás ekkor hallatszott: {}. Ugyanekkor {} {}, tehát nem lehetett a 412-ben.", b: ["t2315", "lili", "telefonal"] }
   ],
-
   events: [
     { id: "margit", after: 3, title: "Sikoly a személyzeti folyosóról",
       text: "Éles sikoly hasít a csendbe. Mire odaérsz, Margit a szennyesledobó előtt áll, falfehéren, a kezét a kötényzsebén tartja. Amikor meglát, kiejti a kezéből a seprűt, és szó nélkül elszalad a vasalószoba felé.\n\nAnna, a másik szobalány, csak a fejét csóválja: „Egész este ilyen. Valamit dugdos.”" },
@@ -117,8 +125,25 @@
     margit: "A mandzsettagombok a zsebében voltak, és ez elég volt. Margitot elítélik, Anna vallomását senki sem hallgatja meg. Huszonkét évesen kerül a márianosztrai fegyházba.",
     ferenczy: "Ő adta ki a szobát, nála volt a pótkulcs. Ferenczyt húsz év szolgálat után letartóztatják; a szálloda a nevét is levakarja a dicsérő levélről."
   },
-puzzles: {
-    szef: {
+  puzzles: {
+        naplo: {
+      type: "log", title: "A központ naplója", reward: "hivas", answer: 3,
+      body: `<p>A kezelőnő minden kapcsolást beírt a naplóba. Egyetlen sor nem illik bele senki vallomásába. Melyik az?</p>`,
+      cols: ["Idő", "Hívó", "Hívott", "Időtartam"],
+      rows: [
+        ["22:41", "412", "Konyha", "1 perc"],
+        ["22:52", "Porta", "307", "2 perc"],
+        ["23:00", "418", "Bécs, távolsági", "20 perc"],
+        ["23:05", "414", "412", "1 perc"],
+        ["23:12", "210", "Porta", "1 perc"],
+        ["23:21", "Porta", "105", "1 perc"],
+        ["23:25", "418", "412", "nem jelentkezik"],
+        ["23:31", "418", "Porta", "1 perc"]
+      ],
+      wrong: { 0: "Ez Vándor pezsgőrendelése.", 2: "Lili bécsi hívása, ahogy mondta.", 6: "Lili hívta Vándort, ahogy mondta.", 7: "Lili lerohan a portára, ahogy mondta." },
+      hints: ["Lili a 418-ban lakik. Kinek a szobájából nem kellett volna ma este senkinek telefonálnia?"]
+    },
+szef: {
       type: "code", title: "A széf", reward: "szerzodes", answers: ["1924"], length: 4,
       body: `<p>A falba süllyesztett széf négyjegyű számzárral nyílik. Hartmann szerint Vándor minden kódot arra az évre állított, amikor a közönség először állva tapsolta.</p>
 <p>A kandallópárkányon három bekeretezett színlap:</p>
@@ -194,17 +219,17 @@ AZ UTOLSÓ TÁNC — Anno MCMXXXIII
     }
   },
 
-  accusation: {
-    questions: [
-      { id: "who", legend: "Ki a gyilkos?", name: "a tettes", from: "suspects", answer: "kardos", proof: ["d-tettes"] },
-      { id: "how", legend: "Hogyan hagyta el a szobát?", name: "a menekülés útja", answer: "ajto", proof: ["d-szomszed", "kijarat"],
-        options: [{ v: "ablak", label: "Az ablakon és a párkányon át" }, { v: "ajto", label: "Az összekötő ajtón a 414-es szobába" }, { v: "potkulcs", label: "A folyosón át, a portás pótkulcsával" }] },
-      { id: "why", legend: "Miért ölt?", name: "az indíték", answer: "darab", proof: ["szerzodes"],
-        options: [{ v: "szerzodes", label: "A felbontott szerződés és a per" }, { v: "sikkasztas", label: "A sikkasztás eltitkolása" }, { v: "darab", label: "Vándor ellopta és a sajátjaként vitte színre a darabját" }, { v: "lopas", label: "Rajtakapták egy lopáson" }] }
-    ]
+    accusation: {
+    story: "A gyilkos: {}. Ezen a néven vette ki a szomszéd szobát: {}. Az esőben, egy {} nevű tárggyal a kezében érkezett.\nA 412-be ezen át jutott be: {}. Vándort egy {} ütésével ölte meg, aztán ugyanott visszament, és a saját oldalán bereteszelte az ajtót.\nIndítéka: {}.",
+    b: ["kardos", "derkes", "irattarto", "osszekoto", "pallas", "darablopas"], who: [0]
   },
 
-  carnation: { letter: "E", found: "A 414-es szoba szekrényében, a nedves irattartóban egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„Vándor szombaton a 412-ben száll meg. A 414 szabad, és összekötő ajtó van köztük. A darabod jogait jó áron megveszem. — F. Sz.”" },
+  plan: { w: 12, h: 8.6,
+    rooms: { szoba412: [0, 0, 3, 3], szoba414: [3, 0, 3, 3], lili: [6, 0, 3, 3], szemelyzet: [9, 0, 3, 3], _folyoso: [0, 3, 12, 1.4, "Negyedik emeleti folyosó"], porta: [0, 5.6, 3, 3], kozpont: [3, 5.6, 2.4, 3], bar: [5.4, 5.6, 3.6, 3], lift: [9.6, 5.6, 2.4, 3] },
+    doors: [[3, 1, 3, 2], [1, 3, 2, 3], [4, 3, 5, 3], [7, 3, 8, 3], [10, 3, 11, 3]],
+    marks: [[3.1, 0.45, "összekötő ajtó"], [0.1, 5.35, "földszint"], [0.1, 0.25, "412"], [3.1, 2.8, "414"], [6.1, 0.25, "418"]],
+    note: "Fent a negyedik emelet, lent a földszint. A lift köti össze a kettőt." },
+  carnation: { letter: "E", found: "A 414-es szoba szekrényében, a nedves irattartóban egy préselt fekete szegfű és egy gépelt cédula. A jobb alsó sarkában pirossal bekarikázva egy betű.", note: "„⟪ido⟫ Szombaton Vándor a 412-ben száll meg. ⟪ajto⟫ A 414 szabad, és összekötő ajtó van köztük. ⟪vevo⟫ A darabod jogait jó áron megveszem. — F. Sz.”" },
 
   ending: {
     heading: "Kardos Endre volt az.",
