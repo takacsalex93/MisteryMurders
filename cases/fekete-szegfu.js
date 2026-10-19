@@ -68,6 +68,7 @@
     dosszie: { t: "Edit titkos dossziéja", src: "Irattár", x: "Megfejtve: „A fekete szegfű: Dr. Fekete Szilárd. Hat cédula, hat gyilkos, hat vétel: a Kendeffy-képek, a Hollós cukrászda, Az utolsó tánc jogai, a Ráday-részvények, a Corvin Színház, a Récsey-birtok. Mindet a Lánchíd Rt. vette meg, áron alul. A Lánchíd Rt. tulajdonosa: Dr. Fekete Szilárd.” Edit ezt akarta {{nyilvánosságra hozni|leleplezes}}." },
     fenykepek: { t: "Száradó fényképek", src: "Sötétkamra", x: "A sötétkamra zsinórján hat fénykép szárad: a Szegfű-villa, a Hollós cukrászda, az Arany Griff, egy hálókocsi a Keleti pályaudvaron, a Corvin Színház zsinórpadlása és a Récsey-birtok pincéje. Mindegyiken egy dátum, mindig néhány nappal a gyilkosság előttről." },
     lanchid: { t: "A cégjegyzék", src: "Irattár", x: "A Lánchíd Rt. cégkivonata: egyedüli részvényese Dr. Fekete Szilárd. Az elmúlt nyolc évben hat nagy vásárlás, mindegyik közvetlenül egy gyilkossági botrány után." },
+    rozsavall: { t: "Rózsa néni beismerése", src: "Rózsa néni vallomása", x: "Rózsa néni szerint Fekete úr fél hétkor a hátsó lépcső felől jött vissza, és száz pengőt adott neki, hogy felejtse el, amit látott." },
     hetedik: { t: "A hetedik cédula", src: "Sötétkamra · jelírással", x: "A fényképek mögött egy cédula, csak jelekkel írva, Fekete saját kézírásával. Megfejtve: „Ma este. Méreg. Fent. Hátsó ajtó. Pénz.” A hetedik cédula, amelyet nem küldött el senkinek: ezt a tervet maga hajtotta végre." }
   },
 contradictions: [
@@ -76,7 +77,7 @@ contradictions: [
     { id: "c-irma", suspect: "irma", clue: ["kesztyu"], reveal: "Irma elsápad: „Jó, itt voltam ötkor. Meg akartam kérdezni Editet, van-e a férjemnek valakije. Azt mondta, sokkal rosszabb a helyzet, de még nem mondhatja el. Fél hatkor hazamentem.”" },
     { id: "c-halmi", suspect: "halmi", clue: ["zseton"], reveal: "Halmi elvörösödik: „A bíróság zárva volt, igen. A kaszinóban {{ruletteztem|rulett}}. Ha Fekete megtudja, kirúg. De Editet nem bántottam.”" },
     { id: "c-pinter", suspect: "pinter", clue: ["kocsma"], reveal: "Pintér a sapkáját gyűri: „Nem zártam be az ajtót, Edit kisasszony benn maradt, minek. Átugrottam egy fröccsre. Hétkor jöttem vissza, akkor találtam meg.”" },
-    { id: "c-rozsa", suspect: "rozsa", clue: ["penz"], reveal: "Rózsa néni összetöri a kezét: „Fekete úr adta. Fél hétkor jött vissza a hátsó lépcsőn, és azt mondta, felejtsem el. {{Lefizetett|lefizette}}, na. Száz pengő, kérem. Nekem az egy havi lakbér.”" }
+    { id: "c-rozsa", suspect: "rozsa", clue: ["penz"], gives: "rozsavall", reveal: "Rózsa néni összetöri a kezét: „Fekete úr adta. Fél hétkor jött vissza a hátsó lépcsőn, és azt mondta, felejtsem el. {{Lefizetett|lefizette}}, na. Száz pengő, kérem. Nekem az egy havi lakbér.”" }
   ],
 
     locations: [
@@ -132,7 +133,7 @@ contradictions: [
     deductions: [
     { id: "d-hamislevel", from: ["bucsu", "tinta"], t: "Nem Edit írta alá", x: "A búcsúlevél aláírása zöldeskék tintával, széles hegyű tollal készült, Edit pedig csak lila tintás, finom hegyű tollat használt. A levelet más írta alá: nem öngyilkosság volt.",
       text: "A(z) {} aláírása ezzel a tollal készült: {}. Edit soha nem használt ilyet, tehát nem ő írta alá.", b: ["bucsu", "toll"] },
-    { id: "d-hatso", from: ["galos", "kulcs"], t: "A hátsó lépcsőn jött", x: "A hátsó ajtó kívülről csak kulccsal nyílik, kulcs Pintérnél és Feketénél van. A nyomok 44-es angol sárcipőtől valók, és Fekete sárcipője vizesen lóg a fogason.",
+    { id: "d-hatso", from: ["galos", "rozsavall"], t: "A hátsó lépcsőn jött", x: "A hátsó ajtó kívülről csak kulccsal nyílik, kulcs Pintérnél és Feketénél van. A nyomok 44-es angol sárcipőtől valók, és Fekete sárcipője vizesen lóg a fogason.",
       text: "Aki este feljött ide: {}, annak kulcsa volt, és ilyen lábbelit viselt: {}. Ő volt az: {}.", b: ["hatso", "galos", "fekete"] },
     { id: "d-ures", from: ["ido", "holttest"], t: "Az üres szék", x: "Edit fél hétkor főzte a teáját, és fél hét és háromnegyed hét között halt meg. Fekete széke a Gerbeaud-ban negyed héttől öt perccel hét előttig üres volt, és az iroda hét percre van.",
       text: "Edit ekkor halt meg: {} után. Fekete széke itt: {} ekkortól üresen állt: {}, egészen eddig: {}.", b: ["t1830", "gerbeaud", "t1815", "t1855"] },

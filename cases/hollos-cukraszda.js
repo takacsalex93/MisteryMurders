@@ -53,10 +53,11 @@
     palinka: { t: "A pálinkásüveg", src: "Portásfülke", x: "Fehér György {{fülkéjében|portasfulke}} egy félig üres {{szilvapálinkás|palinka}} üveg, a pohár felborulva. A székén mély horpadás, a lámpa kanóca tövig égett." },
     vilmatask: { t: "Vilma asszony táskája", src: "Üzlettér", x: "Vilma asszony táskájában az előszerződés másolata, az ő aláírásával mint tanúéval, egy hete keltezve." },
     arlap: { t: "Az árlap", src: "Üzlettér", x: "A falon a tavaszi árlap: „Pisztáciás Hollós-torta, 4 pengő. Titka a selymes pisztáciakrém.”" },
+    kesobb: { t: "Szendrei beismerése", src: "Szendrei vallomása", x: "Szendrei beismeri, hogy nem fél tízkor ment haza, hanem jóval később. {{Tízkor|t2200}} még bent volt, amikor a mester lement a jégkamrába." },
     szalag: { t: "A kasszaszalag", src: "Kassza", x: "A kasszaszalag szerint Anna 21:30-kor lezárta a kasszát. Utána még egyszer ütöttek a gépen, 22:20-kor: „Főcukrász, 1 tál krémalap, saját számlára.”" }
   },
 contradictions: [
-    { id: "c-szendrei", suspect: "szendrei", clue: ["tavozas"],
+    { id: "c-szendrei", suspect: "szendrei", clue: ["tavozas"], gives: "kesobb",
       reveal: "Szendrei elsápad: „Jó… később mentem el. Takarítottam, ennyi. Tízkor a mester lement, én nem láttam többet.”" },
     { id: "c-szendrei2", suspect: "szendrei", clue: ["valtok"],
       reveal: "Szendrei túl gyorsan felel: „Biztos a műhelyben kente össze magát, az a fiú mindenhez hozzáér.”" },
@@ -111,7 +112,7 @@ contradictions: [
     deductions: [
     { id: "d-csel", from: ["kartya", "valtok"], t: "Reggeli nyomok", x: "A kártya száraz az egész éjjel olvadó jég között, a kabát krémje még nedves, pedig a kabát este óta a fogason lóg. Mindkettőt reggel helyezték el, hogy Hollós Bélára terelje a gyanút.",
       text: "A(z) {} száraz az olvadó jég között, és a kabátra is friss krémet {}. Mindkettőt ekkor helyezték el: {}, hogy a gyanú rá essen: {}.", b: ["kartya", "kremkent", "reggel", "hollosbela"] },
-    { id: "d-egyedul", from: ["tavozas", "palinka"], t: "Egyedül a házban", x: "Hollós tízkor ment le a jégkamrába. Ekkor már csak Szendrei és az éjjeliőr volt a házban, és Gyuri bácsi tíz után a pálinkától elaludt. Szendrei fél tizenegyig ébren, egyedül maradt.",
+    { id: "d-egyedul", from: ["kesobb", "palinka"], t: "Egyedül a házban", x: "Hollós tízkor ment le a jégkamrába. Ekkor már csak Szendrei és az éjjeliőr volt a házban, és Gyuri bácsi tíz után a pálinkától elaludt. Szendrei fél tizenegyig ébren, egyedül maradt.",
       text: "Hollós ekkor ment le a jégkamrába: {}. Gyuri bácsi tíz után {}. Ébren egyedül ő maradt a házban: {}, egészen eddig: {}.", b: ["t2200", "elaludt", "szendrei", "t2230"] },
     { id: "d-bela", from: ["der", "retesz"], t: "Melyik Béla?", x: "A mester a BÉLA nevet írta a dérbe. A reteszen este került, egész éjjel száradt, lisztes krém van, és az ilyet csak Szendrei Béla főzte, az ő kötényén van ugyanez.",
       text: "A mester a dérbe ezt írta: BÉLA. A reteszen este került, lisztes {} van, és ugyanilyen folt van ezen: {}. Ennek a gazdája: {}.", b: ["krem", "koteny", "szendrei"] },

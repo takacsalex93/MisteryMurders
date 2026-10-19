@@ -56,11 +56,12 @@
     orak: { t: "A kettős fenekű bőrönd", src: "Utasok csomagjai", x: "Wolf mintakollekciója alatt egy rejtett rekeszben harminc {{vámolatlan|csempeszes}} {{svájci karóra|orak}}." },
     valtok: { t: "Kornélia váltói", src: "Utasok csomagjai", x: "Kornélia kézitáskájában egy levél Rádaytól: „A váltói {{lejártak|tartozas}}. Kassán beszélünk.” Hatezer pengő tartozás." },
     level: { t: "Egy soha el nem küldött levél", src: "Utasok csomagjai", x: "Irén bőröndjében egy levél „Kedves Apám” megszólítással, a címzett Ráday Kristóf. A levél még a borítékban van, lezáratlanul." },
+    bodnarvall: { t: "Bodnár beismerése", src: "Bodnár vallomása", x: "Bodnár szerint Somló úr adta a pénzt. Azt kérte tőle, hogy mondja azt: kettő után még élt a vezérigazgató, és hogy zárja el a fűtést." },
     ujj: { t: "Az ujjnyom a szelepen", src: "Kalauzfülke", x: "A fűtésszelep olajos ujjnyoma Bodnár Lajos ujjlenyomatával egyezik." }
   },
   contradictions: [
     {"id": "c-bodnar", "suspect": "bodnar", "clue": ["holttest"], "reveal": "Bodnár a takaróra néz, és elsápad: „Talán… nem is vittem be. Fáradt voltam, összekeverem.”"},
-    {"id": "c-bodnar2", "suspect": "bodnar", "clue": ["boritek"], "reveal": "Bodnár összeomlik: „Somló úr adta. Azt mondta, csak annyit mondjak, hogy kettő után még élt. És hogy zárjam el a fűtést. Nem tudtam, mire kell!”"},
+    {"id": "c-bodnar2", "suspect": "bodnar", "clue": ["boritek"], "gives": "bodnarvall", "reveal": "Bodnár összeomlik: „Somló úr adta. Azt mondta, csak annyit mondjak, hogy kettő után még élt. És hogy zárjam el a fűtést. Nem tudtam, mire kell!”"},
     {"id": "c-bodnar3", "suspect": "bodnar", "clue": ["futes"], "reveal": "Bodnár keze remeg: „A szelep… magától akadt el. Néha megesik.” A szelephez csak az ő kulcsa illik."},
     {"id": "c-somlo", "suspect": "somlo", "clue": ["boritek"], "reveal": "Somló mosolya megfagy: „Borravaló. Az éjszakai szolgálatért.” Ötszáz pengő borravaló, a másik fele Kassán."},
     {"id": "c-somlo2", "suspect": "somlo", "clue": ["naplo"], "reveal": "Somló sokáig hallgat. „Egy öregember rögeszméi” mondja végül, de a keze reszket."},
@@ -118,7 +119,7 @@
       text: "Valaki a kalauz kulcsával szándékosan {}, hogy a holttest gyorsan kihűljön. Ezt csak itt lehet megtenni: {}.", b: ["fut", "kalauzfulke"] },
     { id: "d-takaro", from: ["holttest", "ido"], t: "A takaró hazugsága", x: "Ráday a veszekedéskor halt meg, még a fűtés elzárása és Somló kártyázása előtt. A takaró érintetlenül, összehajtva fekszik a csomagtartón: 02:10-kor senki sem takarta be.",
       text: "A(z) {} érintetlenül, összehajtva fekszik. Ráday már a veszekedéskor meghalt, jóval ez előtt, amikor a kalauz szerint még élt: {}.", b: ["takaro", "t0210"] },
-    { id: "d-bl", from: ["boritek", "futes"], t: "B. L.", x: "A boríték „B. L.”-nek szól, és a szelep kulcsa Bodnár Lajos zsebében van. Somló pénzzel vette meg a kalauzt.",
+    { id: "d-bl", from: ["boritek", "bodnarvall"], t: "B. L.", x: "A boríték „B. L.”-nek szól, és a szelep kulcsa Bodnár Lajos zsebében van. Somló pénzzel vette meg a kalauzt.",
       text: "Ez a tárgy „B. L.”-nek szól: {}. B. L. valójában: {}, akinél a szelep kulcsa van.", b: ["boritek", "bodnar"] },
     { id: "d-iren", from: ["level", "medal"], t: "Klára lánya", x: "Irén „Kedves Apám” megszólítással írt Rádaynak, aki a szíve fölött Klára, az első felesége fényképét hordta. Irén Ráday és Klára lánya.",
       text: "Csermák Irén apja: {}. Az anyja: {}.", b: ["raday", "klara"] }

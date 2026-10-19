@@ -58,11 +58,12 @@
     andras: { t: "András váltói", src: "Szalon", x: "András zsebében hatezer pengőről szóló {{váltók|valto}}. A cselédek hallották, hogy délután az apja {{kitagadással|orokseg}} fenyegette." },
     rozalia: { t: "Rozália levelei", src: "Konyha", x: "Rozália kötényében András levelei. Gyengéd, {{titkolt szerelem|szerelem}}." },
     barany: { t: "Bárány zsebkendője", src: "Istálló", x: "Bárány intéző zsebkendőjén fekete pincepenész, a kabátja ujján must. Azt állítja, aznap este be sem tette a lábát a pincébe." },
+    baranyvall: { t: "Bárány beismerése", src: "Bárány vallomása", x: "Bárány beismeri: fél kettőkor az asszony kérésére lement a pincébe, és segített a gazdát a lépcső aljára vinni. A gazda akkor már halott volt." },
     mustnaplo: { t: "A mustnapló", src: "Présház", x: "Gáspár mustnaplójában 23:30-kor és 0:30-kor is mérés áll, a saját kézírásával. A présház ajtaja azonban este óta bedrótozva volt, és a drót reggel érintetlen." }
   },
 contradictions: [
     {"id": "c-ilona", "suspect": "ilona", "clue": ["penesz", "hazugsag"], "reveal": "Ilona összeomlik: „Lementem érte fél kettőkor. Ott feküdt a hordók között. Azt hittem, András tette a veszekedés után… Felkeltettem Bárányt, és felvittük a lépcső aljára, hogy baleset legyen.”"},
-    {"id": "c-barany", "suspect": "barany", "clue": ["barany"], "reveal": "Bárány lesüti a szemét: „Az asszony kért meg. A gazda már halott volt, amikor odaértem. Nem nyúltam semmihez, csak cipeltem.”"},
+    {"id": "c-barany", "suspect": "barany", "clue": ["barany"], "gives": "baranyvall", "reveal": "Bárány lesüti a szemét: „Az asszony kért meg. A gazda már halott volt, amikor odaértem. Nem nyúltam semmihez, csak cipeltem.”"},
     {"id": "c-gaspar", "suspect": "gaspar", "clue": ["hol"], "reveal": "Gáspár bicegve hátrál egy lépést: „A kürtőt… a kürtőt csak megnéztem. Ez a dolgom.” A présház ajtaja reggel érintetlen volt."},
     {"id": "c-gaspar2", "suspect": "gaspar", "clue": ["fuzet", "lada"], "reveal": "Gáspár sokáig hallgat. „A gazda sosem értett a borhoz” mondja végül. „Csak a címkéhez.”"},
     {"id": "c-rozalia", "suspect": "rozalia", "clue": ["rozalia"], "reveal": "Rozália elpirul, aztán suttogva mondja: „Kinéztem az ablakon. Egy {{lámpást|lampas}} láttam a kürtőnél, és valaki bicegett. Nem mertem szólni, féltem, hogy Andrást gyanúsítják.”"},
@@ -130,7 +131,7 @@ contradictions: [
       text: "Tizenegy után ezen a helyen: {} ez a személy állt: {}. A füzete szerint pontosan ezt akarta: {}.", b: ["udvar", "gaspar", "lezarta"] },
     { id: "d-ilona", from: ["penesz", "hazugsag"], t: "Ilona lent járt", x: "Ilona azt állítja, ki sem mozdult a szobájából, de a papucsán és a pongyoláján pincepenész van, ami csak odalent tapad meg.",
       text: "Az özvegy, {}, hazudott: éjjel lent járt a pincében, ekkor: {}.", b: ["ilona", "t0130"] },
-    { id: "d-cipelok", from: ["d-ilona", "barany"], t: "Ketten cipelték", x: "Ilona éjjel lent járt, és Bárány zsebkendőjén is pincepenész, a kabátján must. Ketten vitték fel a gazdát a lépcső aljára.",
+    { id: "d-cipelok", from: ["d-ilona", "baranyvall"], t: "Ketten cipelték", x: "Ilona éjjel lent járt, és Bárány zsebkendőjén is pincepenész, a kabátján must. Ketten vitték fel a gazdát a lépcső aljára.",
       text: "A holttestet ketten {}: Ilona és {}.", b: ["cipelte", "barany"] },
     { id: "d-hamis", from: ["lada", "lorenz"], t: "A hamis aszú", x: "Gáspár ládájában hamis „1935, 6 puttonyos” címkék és háromezer pengő, Lorenz pedig ötven palack ilyen aszút vett tőle készpénzért, személyesen.",
       text: "Gáspár ezeket ragasztotta az olcsó borra: {}. A vevő: {}. Ezt titkolta a gazda elől: {}.", b: ["cimke", "lorenz", "hamisasz"] }

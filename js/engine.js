@@ -295,7 +295,7 @@
         <div class="stack" style="gap:6px"><span class="meta">${esc(C.meta)}</span><h1>${esc(C.title)}</h1>${S.master ? `<span class="badge">${T(S.noir ? "Noir mód" : "Mester mód")}</span>` : ""}${S.timed && !S.ended ? `<span class="clock ${budget(C) - S.used < 60 ? "low" : ""}">⏱ ${T("Még {0} a csendőrök érkezéséig", fmtLeft(budget(C) - S.used))}</span>` : ""}</div>
         <span class="stamp">${T(S.ended === "win" ? "Ügy lezárva" : S.ended ? "Elszalasztva" : "Nyomozás folyamatban")}</span>
       </header>
-      <nav class="tabs" role="tablist">${TABS.map(([id, l]) => `<button role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${l}${id === "jegy" && S.clues.length ? `<span class="count">${S.clues.length}</span>` : ""}</button>`).join("")}</nav>
+      <nav class="tabs" role="tablist">${TABS.map(([id, l]) => `<button role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${l}${id === "jegy" && S.clues.length ? `<span class="count">${S.clues.length}</span>` : ""}${id === "vad" && !S.ended && !ready() ? " 🔒" : ""}</button>`).join("")}</nav>
       <main class="sheet" aria-live="polite">${VIEWS[S.tab]()}</main>
       <footer><span>${T("{0}. ügy", C.number)}</span><button data-reset>${T(confirmReset ? "Biztosan? Kattints újra a törléshez" : "Ügy újrakezdése")}</button></footer>
     </div>`;
@@ -405,9 +405,9 @@
     },
 
     tabla: () => `<div class="stack"><span class="eyebrow">${T("A nyomozó parafatáblája")}</span><h2>${T("Tábla")}</h2>
-      <p>${T("Húzd a kártyákat oda, ahová szeretnéd, és köss össze piros fonallal mindent, ami összetartozik. Ha két nyom együtt többet árul el, a fonal megnyit egy következtetést: a táblán megjelenik egy arany kártya, amelyet a szókártyáidból kell kitöltened.")} ${S.clues.length ? "" : T("Még nincs nyomod: a talált nyomok maguktól felkerülnek a táblára.")}</p>
-      <div class="row"><button class="btn ghost small" data-thread aria-pressed="false">${T("Fonal húzása")}</button><button class="btn ghost small" data-tidy>${T("Rendezés")}</button><button class="btn ghost small" data-unthread>${T("Fonalak le")}</button><span class="meta" data-boardhint></span></div>
-      <div class="board-wrap"><div class="board" data-board><svg class="threads" data-threads aria-hidden="true"></svg>${boardCards().map(k => `<div class="pin ${k.kind}" tabindex="0" data-pin="${k.id}" style="left:${k.x}px;top:${k.y}px" aria-label="${esc(k.label)}">${k.html}</div>`).join("")}</div></div></div>`,
+      <p>${T("Kattints egy nyomra, aztán egy másikra: piros fonal köti össze őket. Ha a kettő együtt többet árul el, a fonal megnyit egy következtetést, és megjelenik egy arany kártya, amelyet a szókártyáidból kell kitöltened. A kártyákat húzással rendezheted, a fonalra kattintva levághatod.")} ${S.clues.length ? "" : T("Még nincs nyomod: a talált nyomok maguktól felkerülnek a táblára.")}</p>
+      <div class="row"><button class="btn ghost small" data-tidy>${T("Rendezés")}</button><button class="btn ghost small" data-unthread>${T("Fonalak le")}</button><span class="meta" data-boardhint></span></div>
+      <div class="board-wrap"><div class="board" data-board style="width:${BW}px;height:${BH}px"><svg class="threads" data-threads aria-hidden="true"></svg>${boardCards().map(k => `<div class="pin ${k.kind}" tabindex="0" data-pin="${k.id}" style="left:${k.x}px;top:${k.y}px" aria-label="${esc(k.label)}">${k.html}</div>`).join("")}</div></div></div>`,
 
     vad: () => {
       if (S.ended === "win") return C.reveal && S.rstep < C.reveal.length ? viewReveal() : viewEnding();
@@ -416,6 +416,14 @@
       if (S.ended === "wrong") return viewWrong();
       const left = pids(C).filter(p => !S.solved[p]).length, triesLeft = MAXTRIES(C) - S.tries;
       const A = C.accusation;
+      if (!ready()) {
+        const dn = dedsOf(C).filter(d => S.clues.includes(d.id)).length, dt = dedsOf(C).length, pn = pids(C).length - left;
+        const row = (ok, txt) => `<li class="${ok ? "ok" : ""}">${ok ? "✓" : "○"} ${txt}</li>`;
+        return `<div class="stack"><span class="eyebrow">${T("Még nem állsz készen")}</span><h2>${T("Vádemelés")}</h2>
+          <p>${T("Az ügyész nem enged a gyanúsítottak elé egy megérzéssel. Előbb rakd össze az ügyet: oldd meg a rejtvényeket, és vond le a következtetéseket a Táblán. Néhány következtetéshez előbb szembesítened kell valakit, mert csak a vallomása adja meg a hiányzó nyomot.")}</p>
+          <ul class="checklist">${row(pn === pids(C).length, T("Rejtvények: {0} / {1}", pn, pids(C).length))}${row(dn === dt, T("Levont következtetések: {0} / {1}", dn, dt))}</ul>
+          <div class="row"><button class="btn ghost" data-gotab="tabla">${T("A Táblához")} →</button><button class="btn ghost" data-gotab="gyan">${T("A gyanúsítottakhoz")} →</button></div></div>`;
+      }
       return `<div class="stack"><span class="eyebrow">${T("Mindenki rád vár")}</span><h2>${T("Vádemelés")}</h2>
         <p>${T("Összehívod a ház lakóit, és elmondod, mi történt. Egészítsd ki a történetet a szókártyáidból. Az ügyvéd csak akkor fogadja el, ha minden szó a helyén van.")}</p>
         <p class="meta">${T("Még {0} próbálkozásod van.", triesLeft)}${left && !S.master ? " " + T("{0} rejtvény megoldatlan.", left) : ""}</p>
@@ -550,7 +558,7 @@
     });
     // megnyitott, de még ki nem töltött következtetések
     dedsOf(C).filter(d => S.unl.includes(d.id) && !S.clues.includes(d.id)).forEach((d, i) => {
-      const p = S.board["d:" + d.id] || { x: 600 + (i % 2) * 230, y: 150 + Math.floor(i / 2) * 120 };
+      const p = S.board["d:" + d.id] || { x: 24 + (i % 4) * 240, y: 300 + Math.ceil(S.clues.length / 5) * 140 + Math.floor(i / 4) * 130 };
       out.push({ id: "d:" + d.id, kind: "pin-clue pin-ded open", label: T("Kitöltetlen következtetés"), x: p.x, y: p.y,
         html: `<span class="src">${T("Következtetés")}</span><b>?</b><button class="btn small" data-fill="${d.id}">${T("Kitöltöm")}</button>` });
     });
@@ -711,6 +719,7 @@
       <div class="confront"><select id="rv-proof" aria-label="${T("Bizonyíték")}"><option value="">${T("Felmutatom a bizonyítékot…")}</option>${opts}</select><button class="btn" data-rv>${T("Felmutatom")}</button></div>
       <p class="msg" data-rvmsg></p></div>`;
   }
+  const ready = () => dedsOf(C).every(d => S.clues.includes(d.id)) && pids(C).every(p => S.solved[p]);
   const culpritId = () => [].concat(C.accusation.b[(C.accusation.who || [0])[0]])[0];
   function viewWrong() {
     const s = C.suspects.find(x => x.id === S.accused);
@@ -1011,44 +1020,43 @@
     tabla() {
       bindDed();
       const board = $("[data-board]"); if (!board) return;
-      let threadMode = false, first = null;
-      const hint = $("[data-boardhint]"), tbtn = $("[data-thread]");
-      tbtn.onclick = () => { threadMode = !threadMode; first = null; tbtn.setAttribute("aria-pressed", String(threadMode)); app.querySelectorAll(".pin.sel").forEach(e => e.classList.remove("sel")); hint.textContent = threadMode ? T("Kattints két kártyára, hogy összekösd őket. Fonalra kattintva levághatod.") : ""; };
+      // kattintás: kártya kijelölése, majd a második kártyára kattintva fonal; húzás: áthelyezés
+      let first = null;
+      const hint = $("[data-boardhint]");
       $("[data-tidy]").onclick = () => { S.board = {}; save(); renderCase(); };
       $("[data-unthread]").onclick = () => { S.threads = []; save(); drawThreads(); };
       const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+      const select = (el, id) => {
+        if (!first) { first = id; el.classList.add("sel"); hint.textContent = T("Most kattints arra a kártyára, amelyikkel össze akarod kötni."); return; }
+        app.querySelectorAll(".pin.sel").forEach(e => e.classList.remove("sel"));
+        const a0 = first; first = null; hint.textContent = "";
+        if (a0 === id) return;
+        const i = S.threads.findIndex(([a, b]) => (a === a0 && b === id) || (a === id && b === a0));
+        if (i >= 0) { S.threads.splice(i, 1); save(); drawThreads(); return; }
+        S.threads.push([a0, id]); SND("tick");
+        const r = a0[0] === "c" && id[0] === "c" ? tryPair(a0.slice(2), id.slice(2)) : null;
+        if (r && !r.old) { save(); toast(T("A fonal megnyitott egy következtetést! Töltsd ki az arany kártyán.")); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); return; }
+        if (r && r.old) toast(T("Ezt a kettőt már összekötötted."));
+        else if (a0[0] === "c" && id[0] === "c") toast(T("Összekötötted őket, de együtt nem mondanak újat."));
+        save(); drawThreads();
+      };
       app.querySelectorAll("[data-pin]").forEach(el => {
         const id = el.dataset.pin;
         const place = (x, y) => { x = clamp(x, 0, BW - el.offsetWidth); y = clamp(y, 0, BH - el.offsetHeight); el.style.left = x + "px"; el.style.top = y + "px"; S.board[id] = { x, y }; drawThreads(); };
         el.onpointerdown = e => {
-          if (threadMode) return;
-          e.preventDefault(); el.setPointerCapture(e.pointerId); el.classList.add("drag");
-          const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop;
-          el.onpointermove = ev => place(ox + ev.clientX - sx, oy + ev.clientY - sy);
-          el.onpointerup = () => { el.onpointermove = null; el.classList.remove("drag"); save(); };
+          if (e.target.closest("[data-fill]")) return;
+          e.preventDefault(); el.setPointerCapture(e.pointerId);
+          const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop; let moved = false;
+          el.onpointermove = ev => { if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return; moved = true; el.classList.add("drag"); place(ox + ev.clientX - sx, oy + ev.clientY - sy); };
+          el.onpointerup = () => { el.onpointermove = null; el.onpointerup = null; el.classList.remove("drag"); if (moved) save(); else select(el, id); };
         };
-        el.onclick = () => {
-          if (!threadMode) return;
-          if (!first) { first = id; el.classList.add("sel"); return; }
-          if (first !== id) {
-            const i = S.threads.findIndex(([a, b]) => (a === first && b === id) || (a === id && b === first));
-            if (i >= 0) S.threads.splice(i, 1);
-            else {
-              S.threads.push([first, id]); SND("tick");
-              const a = first.slice(2), b = id.slice(2);
-              const r = first[0] === "c" && id[0] === "c" ? tryPair(a, b) : null;
-              if (r && !r.old) { save(); toast(T("A fonal megnyitott egy következtetést!")); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); const nb = $("[data-thread]"); if (nb) nb.click(); return; }
-            }
-            save(); drawThreads();
-          }
-          app.querySelectorAll(".pin.sel").forEach(e => e.classList.remove("sel")); first = null;
-        };
-        el.onkeydown = e => { const d = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[e.key]; if (d) { e.preventDefault(); place(el.offsetLeft + d[0], el.offsetTop + d[1]); save(); } if (e.key === "Enter" && threadMode) el.click(); };
+        el.onkeydown = e => { const d = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[e.key]; if (d) { e.preventDefault(); place(el.offsetLeft + d[0], el.offsetTop + d[1]); save(); } if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(el, id); } };
       });
       app.querySelectorAll("[data-fill]").forEach(b => { b.onpointerdown = e => e.stopPropagation(); b.onclick = e => { e.stopPropagation(); openDedModal(b.dataset.fill); }; });
       requestAnimationFrame(drawThreads);
     },
     vad() {
+      $$("[data-gotab]").forEach(b => b.onclick = () => go(b.dataset.gotab));
       const rv = $("[data-rv]");
       if (rv) rv.onclick = () => {
         const st = C.reveal[S.rstep], v = $("#rv-proof").value, m = $("[data-rvmsg]");
