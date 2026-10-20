@@ -309,7 +309,8 @@
     bindLang(); notesUI(true);
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
     else checkEvents();
-    SCENE((S.tab === "hely" && S.loc && C.sounds && C.sounds[S.loc]) || C.sound || "home");
+    const sl = S.loc || (worldOn() && S.cur);
+    SCENE((S.tab === "hely" && sl && C.sounds && C.sounds[sl]) || C.sound || "home");
     FX();
   }
   const go = (tab, loc) => { S.tab = tab; S.loc = loc || null; save(); renderCase(); window.scrollTo({ top: 0 }); };
@@ -1124,7 +1125,7 @@
   // a pixelvilág a motor belső függvényeit ezen keresztül éri el
   const WORLD = window.MM_WORLD_ENGINE ? window.MM_WORLD_ENGINE({
     get C() { return C; }, get S() { return S; }, save, T, esc, rich, plain, ART, SND, toast, gain, spend, COST, remaining, itemOf,
-    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch
+    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote
   }) : null;
   window.MM_WORLD = WORLD;
 

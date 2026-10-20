@@ -18,7 +18,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 ## Játékmenet
 
-- **Bejárható pixelvilág (próbaváltozat, egyelőre csak a Szegfű-villa):** felülnézetes, Stardew Valley-stílusú térkép, amelyen a nyomozót nyilakkal/WASD-vel vagy koppintással lehet irányítani. A csillogó tárgyakat E-vel vagy a gombbal lehet megvizsgálni, a gyanúsítottakkal a helyszínen lehet beszélgetni és szembesíteni őket, a rejtvények a tárgyakon nyílnak meg. Első belépéskor a helyiség festménye jelenik meg. A szöveges leírás (📜 Leírás) választhatóan megmarad.
+- **Bejárható pixelvilág (próbaváltozat, egyelőre csak a Szegfű-villa):** felülnézetes, Stardew Valley-stílusú térkép, amelyen a nyomozót nyilakkal/WASD-vel vagy koppintással lehet irányítani. A csillogó tárgyakat E-vel vagy a gombbal lehet megvizsgálni, a gyanúsítottakkal a helyszínen lehet beszélgetni és szembesíteni őket, a rejtvények a tárgyakon nyílnak meg. Első belépéskor a helyiség festménye jelenik meg. A szereplők járkálnak (Lukács a konyha és a hall között, Ilona a folyosón, Szirmai a szivarozóhelyéig), megszólalnak, ha a közelükbe érsz, és egyes beszélgetéseiket ki lehet hallgatni (ezek a Jegyzetlapra kerülnek). Az áramszünet után a villa elsötétül: csak a nyomozó lámpása és a tűz világít, a nedves cipőnyomok a titkárságig vezetnek, és Lukács gyertyával érkezik, amikor odaérsz. Lépéshang padló szerint, ketyegő állóóra, nagyító a vizsgált tárgyakhoz, és látható zárt ajtó. A szöveges leírás (📜 Leírás) választhatóan megmarad.
 - **Egy helyiség egyszerre:** másik helyiségbe csak akkor lehet átmenni, ha az aktuálisban minden nyom megvan (a rejtvény ráér).
 - **Rejtett nyomok:** a helyszínek leírásában kell rábukkanni a nyomokra, csalinyomokkal együtt.
 - **Szókártyák (Golden Idol-módszer):** a szövegekben aláhúzott neveket, tárgyakat, helyeket, időpontokat, tetteket és indítékokat kattintással kell összegyűjteni.
@@ -73,6 +73,6 @@ python3 tools/world/tighten.py <csomag> előnézet.png       # tárgyak pontos k
 python3 tools/world/build_world.py <csomag> <szereplők_ki> szegfu-villa
 ```
 
-A térképleírásban a `rooms` a helyiségek padlóját (helyszín-azonosító, x, y, szélesség, magasság, padló- és falminta), a `doors` az ajtónyílásokat, az `objects` a bútorokat adja meg (`spot` megvizsgálható részlet, `puzzle` rejtvény, `warp` lépcső, `fg` y szerint rendezett, `floor`/`wall` háttérbe sütött), az `npcs` a szereplőket.
+A térképleírásban a `rooms` a helyiségek padlóját (helyszín-azonosító, x, y, szélesség, magasság, padló- és falminta), a `doors` az ajtónyílásokat, az `objects` a bútorokat adja meg (`spot` megvizsgálható részlet, `puzzle` rejtvény, `warp` lépcső, `fg` y szerint rendezett, `floor`/`wall` háttérbe sütött), az `npcs` a szereplőket (`route` útvonal várakozással, `barks` megszólalások, `nick` becenév), a `talks` a kihallgatható beszélgetéseket, a `decals` a lábnyomokat, a `snd` a helyiségek padlóhangját; a tárgyak `light` fényt adnak az áramszünetben.
 
 Grafika: LimeZu (limezu.itch.io).

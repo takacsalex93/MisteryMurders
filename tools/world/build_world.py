@@ -100,7 +100,7 @@ def build(mid, M):
             if kind[y][x] == "d" and (face[y][x - 1] or face[y][x + 1] if 0 < x < W - 1 else False):
                 pass
     # tárgyak: a padló- és falitárgyak, meg a hátsó fal előtti bútorok a háttérbe sülnek, a szabadon állók külön rétegen y szerint rendezve
-    objs, fg, solids, inter, warps = M["objects"], [], [], [], []
+    objs, fg, solids, inter, warps, lights, ticks = M["objects"], [], [], [], [], [], []
     def rect_of(o):
         im = sprite(o["s"]); w, h = im.size
         return im, round(o["x"] * T), round(o["b"] * T) - h, w, h
@@ -114,6 +114,8 @@ def build(mid, M):
         if o.get("warp"):
             wr = o.get("wr") or [0, h - 24, w, 24]
             warps.append({"r": [x + wr[0], y + wr[1], wr[2], wr[3]], "to": o["warp"], "label": o.get("label", "")})
+        if o.get("light"): lights.append([x + w / 2, y + h * .6, o["light"][0], o["light"][1]])
+        if o.get("tick"): ticks.append([x + w / 2, y + h])
         for key in ("spot", "puzzle"):
             if o.get(key): inter.append({"k": key, "id": o[key], "r": [x, y, w, h], "label": o.get("label", "")})
     for o in objs:
@@ -126,12 +128,13 @@ def build(mid, M):
             "walls": ["".join("1" if kind[y][x] == "#" else "0" for x in range(W)) for y in range(H)],
             "reg": ["".join("." if reg[y][x] is None else chr(97 + reg[y][x]) for x in range(W)) for y in range(H)],
             "rooms": [{"loc": None if r[0].startswith("_") else r[0], "label": r[7] if len(r) > 7 else None} for r in rooms],
-            "solids": solids, "fg": fg, "inter": inter, "warps": warps, "npcs": M.get("npcs", [])}
+            "solids": solids, "fg": fg, "inter": inter, "warps": warps, "npcs": M.get("npcs", []),
+            "doors": M["doors"], "snd": M.get("snd", []), "lights": lights, "ticks": ticks, "decals": M.get("decals", []), "talks": M.get("talks", [])}
 
 out = {"case": CASE, "start": SPEC["start"], "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
 for mid, M in SPEC["maps"].items(): out["maps"][mid] = build(mid, M)
 # atlasz a szabadon álló tárgyakból
-names = sorted({f["s"] for m in out["maps"].values() for f in m["fg"]})
+names = sorted({f["s"] for m in out["maps"].values() for f in m["fg"]} | {"door"})
 ims = {n: sprite(n) for n in names}
 AW = 256; x = y = rh = 0; pos = {}
 for n in names:

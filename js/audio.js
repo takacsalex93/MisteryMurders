@@ -190,6 +190,14 @@
     tick: t => burst(t, 0.03, [["bandpass", 3000, 4]], 0.12),
     success: t => { piano(t, 72, 0.12); piano(t + 0.12, 79, 0.12); piano(t + 0.26, 84, 0.14); },
     wrong: t => { tone(t, midi(47), 0.35, 0.09, "triangle"); tone(t, midi(48), 0.35, 0.08, "triangle"); },
+    step_wood: t => { burst(t, 0.07, [["lowpass", 700], ["peaking", 220, 1]], 0.22, master, brown, 0.003); burst(t, 0.02, [["bandpass", 1800, 2]], 0.015); },
+    step_stone: t => { burst(t, 0.045, [["bandpass", 2600, 1.4]], 0.05, master, white, 0.002); burst(t, 0.06, [["lowpass", 500]], 0.12, master, brown, 0.002); },
+    step_tile: t => { burst(t, 0.04, [["bandpass", 1900, 3]], 0.05, master, white, 0.002); },
+    step_gravel: t => { for (let k = 0; k < 3; k++) burst(t + k * 0.018, 0.05, [["bandpass", rnd(2500, 5000), 0.8]], 0.03, master, white, 0.002); },
+    step_carpet: t => { burst(t, 0.08, [["lowpass", 380]], 0.16, master, brown, 0.01); },
+    clock: t => { burst(t, 0.025, [["bandpass", 2200, 6]], 0.05); tone(t, 1760, 0.03, 0.006, "sine"); },
+    door: t => { tone(t, 80, 0.25, 0.25, "sine", master, 45); burst(t, 0.12, [["lowpass", 600]], 0.25, master, brown, 0.003); },
+    stairs: t => { for (let k = 0; k < 4; k++) burst(t + k * 0.11, 0.07, [["lowpass", 650]], 0.2, master, brown, 0.003); },
     stamp: t => { tone(t, 95, 0.3, 0.5, "sine", master, 42); burst(t, 0.1, [["lowpass", 900]], 0.4, master, brown, 0.002); }
   };
 
