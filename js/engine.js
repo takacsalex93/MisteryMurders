@@ -353,6 +353,7 @@
       if (S.loc) return viewLoc(C.locations.find(l => l.id === S.loc));
       return `<div class="stack"><span class="eyebrow">${T("A helyszín alaprajza")}</span><h2>${T("Helyszínek")}</h2>
         <p>${T(S.master ? "Válassz egy helyiséget." : "Válassz egy helyiséget. A rejtvényt rejtő helyszíneket ✦ jelöli.")}</p>
+        ${(() => { const cur = S.cur && C.locations.find(l => l.id === S.cur); return cur && remaining(cur) ? `<p class="warn">${T("Itt tartasz: {0}. Amíg minden nyomát meg nem találod, másik helyiségbe nem mehetsz.", esc(cur.name))} <button class="link" data-gocur>${T("Vissza oda")} →</button></p>` : ""; })()}
         ${planSvg()}
         <div class="grid2">${C.locations.map(l => {
           const locked = l.requires && !S.solved[l.requires];
@@ -432,6 +433,49 @@
         <div class="row"><button class="btn" data-accuse>${T("Kimondom a vádat")}</button></div><p class="msg" data-accmsg></p></div>`;
     }
   };
+
+  let walkRaf = 0, keyH = null;
+  function bindStage(L, examine) {
+    const st = $("[data-stage]"), det = $("[data-det]");
+    let x = (S.walk || {})[L.id] ?? 50, target = null, after = null, near = null;
+    const spots = [...st.querySelectorAll("[data-wspot]")];
+    const setNear = () => {
+      let best = null, bd = 9;
+      spots.forEach(b => { const d = Math.abs(+b.dataset.x - x); if (d < bd) { bd = d; best = b; } });
+      spots.forEach(b => b.classList.toggle("near", b === best));
+      near = best;
+    };
+    const place = () => { det.style.left = x + "%"; setNear(); };
+    const walkTo = (tx, cb) => { target = Math.max(4, Math.min(96, tx)); after = cb || null; det.classList.toggle("left", target < x); det.classList.add("walking"); };
+    cancelAnimationFrame(walkRaf);
+    let last = performance.now();
+    const tick = now => {
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      if (target !== null) {
+        const step = 32 * dt, d = target - x;
+        if (Math.abs(d) <= step) { x = target; target = null; det.classList.remove("walking"); (S.walk = S.walk || {})[L.id] = x; save(); place(); if (after) { const f = after; after = null; f(); } }
+        else { x += Math.sign(d) * step; place(); }
+      }
+      if (document.body.contains(det)) walkRaf = requestAnimationFrame(tick);
+    };
+    walkRaf = requestAnimationFrame(tick);
+    setNear();
+    st.onclick = e => {
+      if (e.target.closest("[data-wspot],[data-exit],.stage-note")) return;
+      const r = st.getBoundingClientRect();
+      walkTo((e.clientX - r.left) / r.width * 100);
+    };
+    spots.forEach(b => b.onclick = e => { e.stopPropagation(); const id = b.dataset.wspot; walkTo(+b.dataset.x, () => examine(id, true)); });
+    st.querySelector("[data-exit]").onclick = e => { e.stopPropagation(); walkTo(4, () => { lastFound = null; go("hely"); }); };
+    if (keyH) document.removeEventListener("keydown", keyH);
+    keyH = e => {
+      if (!document.body.contains(st) || /INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ""))) return;
+      if (e.key === "ArrowLeft" || e.key === "a") { e.preventDefault(); walkTo(x - 12); }
+      else if (e.key === "ArrowRight" || e.key === "d") { e.preventDefault(); walkTo(x + 12); }
+      else if ((e.key === "e" || e.key === "E") && near) { e.preventDefault(); examine(near.dataset.wspot, true); }
+    };
+    document.addEventListener("keydown", keyH);
+  }
 
   /* ---------- összevetés és hiányos mondatok ----------
      Két összetartozó nyom összekötése (a Táblán fonallal, vagy itt) megnyit egy következtetést.
@@ -666,10 +710,48 @@
       return `<span class="spot ${done ? (it ? "got" : "seen") : ""}" role="button" tabindex="0" data-spot="${id}">${txt}</span>`;
     })}</p>`).join("");
   }
+  /* ---------- séta mód: a nyomozó a helyszín képén sétál, a közeli részleteket vizsgálhatja meg ---------- */
+  const spotsOf = l => {
+    const ids = [...(l.look || "").matchAll(/\[\[(.+?)\|(.+?)\]\]/g)].map(m => ({ id: m[2], label: m[1] }));
+    const P = l.spots || {};
+    return ids.map((o, i) => Object.assign(o, { x: (P[o.id] || [])[0] ?? 12 + i * 76 / Math.max(1, ids.length - 1), y: (P[o.id] || [])[1] ?? 58 }));
+  };
+  const remaining = l => (l.items || []).filter(it => !S.clues.includes(it.clue)).length;
+  const DETECTIVE = `<svg viewBox="0 0 40 100" aria-hidden="true"><g class="dt-body">
+    <path class="dt-leg dt-l1" d="M17 66 L15 96"/><path class="dt-leg dt-l2" d="M23 66 L25 96"/>
+    <path d="M10 34 Q20 28 30 34 L33 72 Q20 76 7 72 Z" class="dt-coat"/>
+    <path d="M17 34 L20 52 L23 34" class="dt-shirt"/>
+    <circle cx="20" cy="22" r="7" class="dt-face"/>
+    <path d="M9 18 Q20 13 31 18 L28 15 Q27 7 20 7 Q13 7 12 15 Z" class="dt-hat"/>
+    <path class="dt-arm" d="M30 38 L34 60"/></g></svg>`;
+  function stageHtml(l) {
+    const sp = spotsOf(l), x = (S.walk || {})[l.id] ?? 50, floor = l.floor || 86;
+    return `<div class="stage" data-stage style="--floor:${floor}%">
+      <div class="art">${ART.scene(l, l.name)}</div>
+      ${sp.map(o => { const it = itemOf(l, o.id), done = it ? S.clues.includes(o.id) : S.seen.includes(l.id + ":" + o.id);
+        return `<button class="hs ${done ? (it ? "got" : "seen") : ""}" data-wspot="${o.id}" data-x="${o.x}" style="left:${o.x}%;top:${o.y}%" aria-label="${esc(o.label)}"><span class="hs-dot"></span><span class="hs-label">${esc(o.label)}</span></button>`; }).join("")}
+      <div class="detective" data-det style="left:${x}%;top:${floor}%">${DETECTIVE}</div>
+      <button class="stage-exit" data-exit aria-label="${T("Vissza az alaprajzhoz")}">⟵ ${T("Kijárat")}</button>
+    </div>
+    ${lastFound && lastFound.loc === l.id ? `<div class="stage-note" role="status"><b>${esc(lastFound.title)}</b><p>${esc(lastFound.text)}</p></div>` : ""}
+    <p class="meta">${T("Kattints oda, ahová a nyomozó menjen, vagy használd a nyilakat. Ha valami a közelébe kerül, felvillan: kattints rá, vagy nyomd meg az E betűt.")} ${remaining(l) ? "" : T("Ebben a helyiségben mindent megtaláltál.")}</p>`;
+  }
+  let lastFound = null;
   function viewLoc(l) {
-    let h = `<div class="stack"><button class="link" data-back>← ${T("Vissza az alaprajzhoz")}</button>
-      <div class="art locart">${ART.scene(l, l.name)}</div>
+    const walk = l.look && S.view !== "text";
+    let h = `<div class="stack"><div class="row" style="justify-content:space-between"><button class="link" data-back>← ${T("Vissza az alaprajzhoz")}</button>${l.look ? `<div class="viewsw" role="group"><button class="link" data-view="walk" aria-pressed="${walk}">🚶 ${T("Bejárom")}</button><button class="link" data-view="text" aria-pressed="${!walk}">📜 ${T("Leírás")}</button></div>` : ""}</div>
+      ${walk ? "" : `<div class="art locart">${ART.scene(l, l.name)}</div>`}
       <span class="eyebrow">${T("Helyszín")}</span><h2>${esc(l.name)}</h2>`;
+    if (walk) {
+      h += stageHtml(l);
+      const seen = Object.keys(l.decoys || {}).filter(k => S.seen.includes(l.id + ":" + k));
+      if (seen.length) h += `<div class="seenlist">${seen.map(k => `<p><span class="meta">${T("Megnézted:")}</span> ${rich(l.decoys[k])}</p>`).join("")}</div>`;
+      (l.items || []).filter(it => S.clues.includes(it.clue)).forEach(it => {
+        h += `<div class="item" data-item="${it.clue}"><h3>${esc(it.label)}</h3><p>${rich(it.text)}</p><span class="found">✓ ${T("Nyom feljegyezve:")} ${esc(C.clues[it.clue].t)}</span><p class="typed" data-hl="${esc(plain(C.clues[it.clue].t))}">${rich(C.clues[it.clue].x)}</p></div>`;
+      });
+      if (l.puzzle) h += `<div class="item" data-puzzle="${l.puzzle}">${renderPuzzle(l.puzzle)}</div>`;
+      return h + `</div>`;
+    }
     if (l.look) {
       h += `<p class="meta">${T("Kattints arra a részletre, amit közelebbről megnéznél. Nem minden gyanús dolog nyom.")}</p><div class="look">${lookHtml(l)}</div>`;
       const seen = Object.keys(l.decoys || {}).filter(k => S.seen.includes(l.id + ":" + k));
@@ -975,25 +1057,42 @@
   const BIND = {
     ugy() { $("[data-go]").onclick = () => go("hely", C.intro.start); },
     hely() {
-      $$("[data-loc]").forEach(b => b.onclick = () => go("hely", b.dataset.loc));
-      $$("[data-ploc]").forEach(b => { b.onclick = () => go("hely", b.dataset.ploc); b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go("hely", b.dataset.ploc); } }; });
-      const bk = $("[data-back]"); if (bk) bk.onclick = () => go("hely");
+      // egy helyiségből addig nem lehet másikba menni, amíg minden nyomát meg nem találtad
+      const enter = id => {
+        const cur = S.cur && C.locations.find(l => l.id === S.cur);
+        if (cur && cur.id !== id && remaining(cur)) { SND("wrong"); toast(T("Előbb fejezd be itt: {0}. Valami még elkerülte a figyelmedet.", cur.name)); return; }
+        S.cur = id; lastFound = null; go("hely", id);
+      };
+      $$("[data-loc]").forEach(b => b.onclick = () => enter(b.dataset.loc));
+      $$("[data-ploc]").forEach(b => { b.onclick = () => enter(b.dataset.ploc); b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); enter(b.dataset.ploc); } }; });
+      const bk = $("[data-back]"); if (bk) bk.onclick = () => { lastFound = null; go("hely"); };
+      const cb = $("[data-gocur]"); if (cb) cb.onclick = () => enter(S.cur);
       $$("[data-take]").forEach(b => b.onclick = () => { gain(b.dataset.take); save(); SND("paper"); spend(COST.take); renderCase(); });
       const L = S.loc && C.locations.find(l => l.id === S.loc);
+      if (L) { const cur = S.cur && C.locations.find(l => l.id === S.cur); if (!cur || !remaining(cur)) { S.cur = L.id; save(); } }
+      // egy részlet megvizsgálása; séta módban a talált szöveg a színpadon jelenik meg
+      const examine = (id, walk) => {
+        const it = itemOf(L, id);
+        if (it) {
+          if (S.clues.includes(id)) { if (!walk) app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+          gain(id); save(); SND("paper"); spend(COST.take);
+          if (walk) lastFound = { loc: L.id, title: "✓ " + T("Nyom feljegyezve:") + " " + C.clues[id].t, text: it.text };
+          rerender();
+          if (!walk) app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" });
+          else if (!remaining(L)) toast(T("Ebben a helyiségben mindent megtaláltál."));
+        } else {
+          const key = L.id + ":" + id; if (S.seen.includes(key)) return;
+          S.seen.push(key); save(); SND("tick"); spend(COST.look);
+          if (walk) lastFound = { loc: L.id, title: T("Megnézted:"), text: plain(L.decoys[id]) };
+          rerender();
+        }
+      };
       $$("[data-spot]").forEach(b => {
         b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); b.click(); } };
-        b.onclick = () => {
-          const id = b.dataset.spot, it = itemOf(L, id);
-          if (it) {
-            if (S.clues.includes(id)) { app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
-            gain(id); save(); SND("paper"); spend(COST.take); rerender();
-            app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" });
-          } else {
-            const key = L.id + ":" + id; if (S.seen.includes(key)) return;
-            S.seen.push(key); save(); SND("tick"); spend(COST.look); rerender();
-          }
-        };
+        b.onclick = () => examine(b.dataset.spot, false);
       });
+      $$("[data-view]").forEach(b => b.onclick = () => { S.view = b.dataset.view; save(); rerender(); });
+      if ($("[data-stage]")) bindStage(L, examine);
       $$("[data-hint]").forEach(b => b.onclick = () => { const id = b.dataset.hint; S.hints[id] = (S.hints[id] || 0) + 1; save(); SND("paper"); spend(COST.hint); renderCase(); });
       const box = $("[data-puzzle]");
       if (box && !S.solved[box.dataset.puzzle]) {

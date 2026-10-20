@@ -18,6 +18,8 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 ## Játékmenet
 
+- **Séta mód:** a helyszín képén egy kis nyomozó sétál (kattintás vagy nyilak). A közeli részletek felvillannak, és megvizsgálhatók (E). A helyszínek `spots` mezője adja meg a részletek helyét a képen (x, y százalékban). A szöveges leírás választhatóan megmarad.
+- **Egy helyiség egyszerre:** másik helyiségbe csak akkor lehet átmenni, ha az aktuálisban minden nyom megvan (a rejtvény ráér).
 - **Rejtett nyomok:** a helyszínek leírásában kell rábukkanni a nyomokra, csalinyomokkal együtt.
 - **Szókártyák (Golden Idol-módszer):** a szövegekben aláhúzott neveket, tárgyakat, helyeket, időpontokat, tetteket és indítékokat kattintással kell összegyűjteni.
 - **Tábla és következtetések:** két összetartozó nyomot a Táblán piros fonallal (vagy a Jegyzetfüzetben) összekötve megnyílik egy hiányos mondat, amelyet a szókártyákból kell kiegészíteni. Csak a teljesen helyes mondat fogadható el; a visszajelzés legfeljebb annyi, hány szó hibás.
