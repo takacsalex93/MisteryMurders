@@ -1,0 +1,10 @@
+{
+ "detektiv": {"body": "03", "outfit": "18_02", "hair": "06_04", "acc": ["08_Detective_Hat_03"]},
+ "baro": {"body": "02", "outfit": "06_01", "hair": "08_05", "acc": ["12_Mustache_05"]},
+ "matild": {"body": "01", "outfit": "28_01", "hair": "15_04"},
+ "gabor": {"body": "02", "outfit": "22_01", "hair": "02_04"},
+ "szirmai": {"body": "04", "outfit": "05_01", "hair": "01_05", "acc": ["15_Glasses_01", "12_Mustache_05"]},
+ "ilona": {"body": "01", "outfit": "21_01", "hair": "11_03", "acc": ["15_Glasses_02"]},
+ "lukacs": {"body": "05", "outfit": "06_02", "hair": "12_05", "acc": ["12_Mustache_01"]},
+ "kertesz": {"body": "06", "outfit": "10_05", "hair": "19_05", "acc": ["13_Beard_02"]}
+}

@@ -1,0 +1,471 @@
+{
+"clock": [
+"2_LivingRoom_16x16.png",
+224,
+243,
+16,
+37
+],
+"clock2": [
+"2_LivingRoom_16x16.png",
+241,
+249,
+15,
+31
+],
+"fireplace": [
+"2_LivingRoom_16x16.png",
+64,
+384,
+32,
+40
+],
+"stove_iron": [
+"2_LivingRoom_16x16.png",
+192,
+560,
+32,
+24
+],
+"wardrobe_old": [
+"2_LivingRoom_16x16.png",
+114,
+68,
+27,
+39
+],
+"wardrobe_glass": [
+"2_LivingRoom_16x16.png",
+146,
+80,
+27,
+27
+],
+"vanity": [
+"2_LivingRoom_16x16.png",
+66,
+76,
+28,
+30
+],
+"dresser_old": [
+"2_LivingRoom_16x16.png",
+114,
+116,
+27,
+39
+],
+"sofa_grey": [
+"2_LivingRoom_16x16.png",
+16,
+453,
+48,
+27
+],
+"sofa_brown": [
+"2_LivingRoom_16x16.png",
+112,
+454,
+32,
+26
+],
+"armchair": [
+"2_LivingRoom_16x16.png",
+177,
+600,
+14,
+15
+],
+"armchair_grey": [
+"2_LivingRoom_16x16.png",
+177,
+569,
+14,
+14
+],
+"lamp_red": [
+"2_LivingRoom_16x16.png",
+226,
+123,
+12,
+17
+],
+"floorlamp": [
+"2_LivingRoom_16x16.png",
+176,
+152,
+15,
+24
+],
+"worldmap": [
+"2_LivingRoom_16x16.png",
+160,
+361,
+32,
+19
+],
+"globe": [
+"2_LivingRoom_16x16.png",
+193,
+360,
+13,
+14
+],
+"drinkshelf": [
+"2_LivingRoom_16x16.png",
+160,
+390,
+32,
+34
+],
+"bush": [
+"2_LivingRoom_16x16.png",
+215,
+357,
+18,
+18
+],
+"bush2": [
+"2_LivingRoom_16x16.png",
+241,
+357,
+14,
+20
+],
+"plant_a": [
+"2_LivingRoom_16x16.png",
+167,
+9,
+18,
+31
+],
+"plant_b": [
+"2_LivingRoom_16x16.png",
+192,
+8,
+16,
+31
+],
+"palm": [
+"2_LivingRoom_16x16.png",
+213,
+0,
+23,
+31
+],
+"plant_pot": [
+"2_LivingRoom_16x16.png",
+2,
+86,
+12,
+14
+],
+"frame_s1": [
+"2_LivingRoom_16x16.png",
+2,
+426,
+13,
+15
+],
+"frame_s2": [
+"2_LivingRoom_16x16.png",
+18,
+426,
+13,
+15
+],
+"frame_s3": [
+"2_LivingRoom_16x16.png",
+34,
+426,
+13,
+15
+],
+"bookcase_a": [
+"5_Classroom_and_library_16x16.png",
+0,
+361,
+48,
+49
+],
+"bookcase_b": [
+"5_Classroom_and_library_16x16.png",
+50,
+361,
+60,
+49
+],
+"bookcase_c": [
+"5_Classroom_and_library_16x16.png",
+117,
+361,
+71,
+49
+],
+"bookcase_dark": [
+"5_Classroom_and_library_16x16.png",
+0,
+306,
+48,
+40
+],
+"lectern": [
+"5_Classroom_and_library_16x16.png",
+232,
+236,
+17,
+30
+],
+"globe2": [
+"5_Classroom_and_library_16x16.png",
+209,
+17,
+13,
+21
+],
+"door": [
+"1_Generic_16x16.png",
+33,
+651,
+14,
+21
+],
+"door_light": [
+"1_Generic_16x16.png",
+17,
+651,
+14,
+21
+],
+"phone": [
+"1_Generic_16x16.png",
+199,
+665,
+9,
+13
+],
+"window": [
+"1_Generic_16x16.png",
+163,
+695,
+25,
+19
+],
+"window_red": [
+"1_Generic_16x16.png",
+134,
+775,
+35,
+25
+],
+"stairs": [
+"1_Generic_16x16.png",
+168,
+864,
+32,
+64
+],
+"rug_brown": [
+"1_Generic_16x16.png",
+112,
+352,
+64,
+32
+],
+"rug_purple": [
+"1_Generic_16x16.png",
+196,
+339,
+56,
+58
+],
+"rug_red": [
+"1_Generic_16x16.png",
+48,
+355,
+32,
+26
+],
+"rug_green": [
+"1_Generic_16x16.png",
+96,
+387,
+32,
+26
+],
+"rug_blue": [
+"1_Generic_16x16.png",
+48,
+403,
+32,
+26
+],
+"rug_small": [
+"1_Generic_16x16.png",
+148,
+169,
+24,
+18
+],
+"table_dark": [
+"1_Generic_16x16.png",
+16,
+545,
+32,
+37
+],
+"table_light": [
+"1_Generic_16x16.png",
+96,
+545,
+32,
+37
+],
+"table_round": [
+"1_Generic_16x16.png",
+81,
+81,
+14,
+14
+],
+"table_wood": [
+"1_Generic_16x16.png",
+16,
+81,
+32,
+37
+],
+"sofa_red": [
+"1_Generic_16x16.png",
+96,
+176,
+32,
+26
+],
+"drawers": [
+"1_Generic_16x16.png",
+48,
+324,
+16,
+23
+],
+"hooks": [
+"1_Generic_16x16.png",
+0,
+779,
+15,
+14
+],
+"chair_d": [
+"1_Generic_16x16.png",
+0,
+181,
+16,
+24
+],
+"chair_b": [
+"1_Generic_16x16.png",
+32,
+181,
+16,
+24
+],
+"landscape1": [
+"1_Generic_16x16.png",
+5,
+218,
+21,
+13
+],
+"landscape2": [
+"1_Generic_16x16.png",
+66,
+219,
+28,
+13
+],
+"counter": [
+"12_Kitchen_16x16.png",
+48,
+112,
+64,
+11
+],
+"stove": [
+"12_Kitchen_16x16.png",
+128,
+178,
+16,
+25
+],
+"ktable": [
+"12_Kitchen_16x16.png",
+57,
+240,
+30,
+42
+],
+"bottle": [
+"12_Kitchen_16x16.png",
+164,
+179,
+5,
+10
+],
+"bed_a": [
+"4_Bedroom_16x16.png",
+144,
+7,
+32,
+54
+],
+"bed_b": [
+"4_Bedroom_16x16.png",
+144,
+72,
+32,
+52
+],
+"wardrobe_big": [
+"4_Bedroom_16x16.png",
+192,
+7,
+64,
+35
+],
+"nightstand": [
+"4_Bedroom_16x16.png",
+96,
+164,
+16,
+23
+],
+"grandpiano": [
+"6_Music_and_sport_16x16.png",
+1,
+204,
+27,
+39
+],
+"phone_w": [
+"1_Generic_16x16.png",
+167,
+665,
+9,
+13
+],
+"armchair_red": [
+"1_Generic_16x16.png",
+128,
+176,
+16,
+26
+],
+"vases": [
+"2_LivingRoom_16x16.png",
+1,
+364,
+47,
+15
+]
+}

@@ -18,7 +18,7 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 ## Játékmenet
 
-- **Séta mód:** a helyszín képén egy kis nyomozó sétál (kattintás vagy nyilak). A közeli részletek felvillannak, és megvizsgálhatók (E). A helyszínek `spots` mezője adja meg a részletek helyét a képen (x, y százalékban). A szöveges leírás választhatóan megmarad.
+- **Bejárható pixelvilág (próbaváltozat, egyelőre csak a Szegfű-villa):** felülnézetes, Stardew Valley-stílusú térkép, amelyen a nyomozót nyilakkal/WASD-vel vagy koppintással lehet irányítani. A csillogó tárgyakat E-vel vagy a gombbal lehet megvizsgálni, a gyanúsítottakkal a helyszínen lehet beszélgetni és szembesíteni őket, a rejtvények a tárgyakon nyílnak meg. Első belépéskor a helyiség festménye jelenik meg. A szöveges leírás (📜 Leírás) választhatóan megmarad.
 - **Egy helyiség egyszerre:** másik helyiségbe csak akkor lehet átmenni, ha az aktuálisban minden nyom megvan (a rejtvény ráér).
 - **Rejtett nyomok:** a helyszínek leírásában kell rábukkanni a nyomokra, csalinyomokkal együtt.
 - **Szókártyák (Golden Idol-módszer):** a szövegekben aláhúzott neveket, tárgyakat, helyeket, időpontokat, tetteket és indítékokat kattintással kell összegyűjteni.
@@ -36,6 +36,9 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 
 - `index.html` — az oldal váza, itt kell felvenni az új ügyeket
 - `js/engine.js` — a játékmotor (nézetek, mentés, rejtvénytípusok)
+- `js/world.js` — a bejárható pixelvilág (vászon, mozgás, útkeresés, párbeszédablakok)
+- `cases/<ügy>.world.js` — generált térképadat; a `tools/world/build_world.py` készíti a `tools/world/<ügy>.json` leírásból
+- `images/world/` — a térképek összerakott háttérképei, a tárgyatlasz és a szereplők mozgásfázisai
 - `css/style.css` — megjelenés, világos és sötét mód
 - `js/art.js` — kóddal rajzolt art deco illusztrációk (tartalék, ha nincs képfájl)
 - `js/audio.js` — kóddal szintetizált háttérhangok és effektek, hangfájlok nélkül
@@ -59,3 +62,17 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 5. Angol változathoz készíts egy `cases/en/<ügy>.js` fájlt ugyanazokkal az azonosítókkal.
 
 Szerver és telepítés nem kell, a játékállás a böngészőben mentődik.
+
+### Pixelvilág építése
+
+A grafika [LimeZu Modern Interiors](https://limezu.itch.io/moderninteriors) csomagjából készül (a karaktergenerátorral együtt). A licenc nem engedi a nyers csomag terjesztését, ezért a repóba csak a kész, összerakott képek kerülnek; a csomag a repón kívül marad.
+
+```
+python3 tools/chars.py <csomag> <szereplők_ki>            # szereplők a tools/characters.json alapján
+python3 tools/world/tighten.py <csomag> előnézet.png       # tárgyak pontos kivágása (tools/world/sprites.json)
+python3 tools/world/build_world.py <csomag> <szereplők_ki> szegfu-villa
+```
+
+A térképleírásban a `rooms` a helyiségek padlóját (helyszín-azonosító, x, y, szélesség, magasság, padló- és falminta), a `doors` az ajtónyílásokat, az `objects` a bútorokat adja meg (`spot` megvizsgálható részlet, `puzzle` rejtvény, `warp` lépcső, `fg` y szerint rendezett, `floor`/`wall` háttérbe sütött), az `npcs` a szereplőket.
+
+Grafika: LimeZu (limezu.itch.io).

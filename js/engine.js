@@ -289,6 +289,7 @@
   const TABS = [["ugy", "Ügyirat"], ["hely", "Helyszínek"], ["gyan", "Gyanúsítottak"], ["jegy", "Jegyzetfüzet"], ["tabla", "Tábla"], ["vad", "Vádemelés"]].map(([a, b]) => [a, T(b)]);
   function renderCase() {
     document.title = C.title;
+    if (S.tab !== "hely" || !worldOn()) document.querySelectorAll(".wdlg").forEach(e => e.remove());
     app.innerHTML = `<div class="wrap ${S.master ? "master" : ""}">
       <div class="topnav"><a class="link" href="#">← ${T("Összes ügy")}</a>${langSwitch()}</div>
       <header class="case">
@@ -336,6 +337,27 @@
 
   const pips = () => `<div class="progress">${pids(C).map(p => `<span class="pip ${S.solved[p] ? "done" : ""}">${S.solved[p] ? "✓ " : ""}${esc(C.puzzles[p].title)}</span>`).join("")}</div>`;
 
+  const clueOpts = () => S.clues.map(k => `<option value="${k}">${isDed(k) ? "◆ " : ""}${esc(plain(C.clues[k].t))}</option>`).join("");
+  function susCard(s, opts) {
+    const legacy = !C.contradictions; opts = opts || clueOpts();
+    let notes = "", liar = false;
+    if (legacy) {
+      const ex = s.extra && (S.solved[s.extra.after] || S.clues.includes(s.extra.after));
+      if (ex) { notes = `<p class="note">${esc(s.extra.text)}</p>`; liar = s.extra.lie; }
+    } else {
+      const found = contra(C, s.id).filter(k => S.conf.includes(k.id));
+      liar = found.some(k => k.lie !== false);
+      notes = found.map(k => `<p class="note">${rich(k.reveal)}</p>`).join("");
+    }
+    const tool = legacy || S.ended ? "" : S.clues.length
+      ? `<div class="confront"><select id="cf-${s.id}" aria-label="${T("Nyom a szembesítéshez")}"><option value="">${T("Szembesítés nyommal…")}</option>${opts}</select><button class="btn ghost small" data-cf="${s.id}">${T("Szembesítem")}</button></div><p class="msg" data-cfmsg="${s.id}"></p>`
+      : `<p class="meta">${T("Még nincs nyomod, amivel szembesíthetnéd.")}</p>`;
+    const qs = ((C.interviews || {})[s.id] || []).filter(q => (!q.after || S.clues.includes(q.after)) && (!q.afterConf || S.conf.includes(q.afterConf)));
+    const asked = qs.filter(q => S.asked.includes(s.id + ":" + q.id)), open = S.ended ? [] : qs.filter(q => !S.asked.includes(s.id + ":" + q.id));
+    const talk = qs.length ? `<div class="talk">${asked.map(q => `<p class="qa"><b>${esc(q.q)}</b> ${rich(q.a)}</p>`).join("")}${open.length ? `<div class="asks">${open.map(q => `<button class="btn ghost small ask" data-ask="${s.id}:${q.id}">${esc(q.q)}</button>`).join("")}</div>` : ""}</div>` : "";
+    return `<div class="suspect">${liar ? `<span class="stamp anim">${T("Hazudott")}</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${rich(s.stmt)}</p>${talk}${notes}${tool}</div>`;
+  }
+
   const VIEWS = {
     ugy: () => `<div class="stack">
       ${coverOf(C)}
@@ -350,8 +372,9 @@
     </div>`,
 
     hely: () => {
+      if (worldOn()) return WORLD.html();
       if (S.loc) return viewLoc(C.locations.find(l => l.id === S.loc));
-      return `<div class="stack"><span class="eyebrow">${T("A helyszín alaprajza")}</span><h2>${T("Helyszínek")}</h2>
+      return `<div class="stack"><div class="row" style="justify-content:space-between"><span class="eyebrow">${T("A helyszín alaprajza")}</span>${viewSwitch()}</div><h2>${T("Helyszínek")}</h2>
         <p>${T(S.master ? "Válassz egy helyiséget." : "Válassz egy helyiséget. A rejtvényt rejtő helyszíneket ✦ jelöli.")}</p>
         ${(() => { const cur = S.cur && C.locations.find(l => l.id === S.cur); return cur && remaining(cur) ? `<p class="warn">${T("Itt tartasz: {0}. Amíg minden nyomát meg nem találod, másik helyiségbe nem mehetsz.", esc(cur.name))} <button class="link" data-gocur>${T("Vissza oda")} →</button></p>` : ""; })()}
         ${planSvg()}
@@ -366,28 +389,10 @@
     },
 
     gyan: () => {
-      const legacy = !C.contradictions;
-      const opts = S.clues.map(k => `<option value="${k}">${isDed(k) ? "◆ " : ""}${esc(plain(C.clues[k].t))}</option>`).join("");
+      const legacy = !C.contradictions, opts = clueOpts();
       return `<div class="stack"><span class="eyebrow">${T("Kihallgatási jegyzőkönyvek")}</span><h2>${T("Gyanúsítottak")}</h2>
       <p>${T(legacy ? "Mindenki mond valamit, és mindenki elhallgat valamit." : "Válassz egy nyomot a jegyzetfüzetből, és szembesítsd vele azt, akinek a vallomásával ütközik. A téves szembesítés pontlevonással jár.")}</p>
-      <div class="grid2">${C.suspects.map(s => {
-        let notes = "", liar = false;
-        if (legacy) {
-          const ex = s.extra && (S.solved[s.extra.after] || S.clues.includes(s.extra.after));
-          if (ex) { notes = `<p class="note">${esc(s.extra.text)}</p>`; liar = s.extra.lie; }
-        } else {
-          const found = contra(C, s.id).filter(k => S.conf.includes(k.id));
-          liar = found.some(k => k.lie !== false);
-          notes = found.map(k => `<p class="note">${rich(k.reveal)}</p>`).join("");
-        }
-        const tool = legacy || S.ended ? "" : S.clues.length
-          ? `<div class="confront"><select id="cf-${s.id}" aria-label="${T("Nyom a szembesítéshez")}"><option value="">${T("Szembesítés nyommal…")}</option>${opts}</select><button class="btn ghost small" data-cf="${s.id}">${T("Szembesítem")}</button></div><p class="msg" data-cfmsg="${s.id}"></p>`
-          : `<p class="meta">${T("Még nincs nyomod, amivel szembesíthetnéd.")}</p>`;
-        const qs = ((C.interviews || {})[s.id] || []).filter(q => (!q.after || S.clues.includes(q.after)) && (!q.afterConf || S.conf.includes(q.afterConf)));
-        const asked = qs.filter(q => S.asked.includes(s.id + ":" + q.id)), open = S.ended ? [] : qs.filter(q => !S.asked.includes(s.id + ":" + q.id));
-        const talk = qs.length ? `<div class="talk">${asked.map(q => `<p class="qa"><b>${esc(q.q)}</b> ${rich(q.a)}</p>`).join("")}${open.length ? `<div class="asks">${open.map(q => `<button class="btn ghost small ask" data-ask="${s.id}:${q.id}">${esc(q.q)}</button>`).join("")}</div>` : ""}</div>` : "";
-        return `<div class="suspect">${liar ? `<span class="stamp anim">${T("Hazudott")}</span>` : ""}<div class="head"><div class="art portrait">${ART.portrait(s)}</div><div class="who"><h3>${esc(s.name)}</h3><span class="role">${esc(s.role)}</span></div></div><p>${rich(s.stmt)}</p>${talk}${notes}${tool}</div>`;
-      }).join("")}</div></div>`;
+      <div class="grid2">${C.suspects.map(s => susCard(s, opts)).join("")}</div></div>`;
     },
 
     jegy: () => {
@@ -434,48 +439,6 @@
     }
   };
 
-  let walkRaf = 0, keyH = null;
-  function bindStage(L, examine) {
-    const st = $("[data-stage]"), det = $("[data-det]");
-    let x = (S.walk || {})[L.id] ?? 50, target = null, after = null, near = null;
-    const spots = [...st.querySelectorAll("[data-wspot]")];
-    const setNear = () => {
-      let best = null, bd = 9;
-      spots.forEach(b => { const d = Math.abs(+b.dataset.x - x); if (d < bd) { bd = d; best = b; } });
-      spots.forEach(b => b.classList.toggle("near", b === best));
-      near = best;
-    };
-    const place = () => { det.style.left = x + "%"; setNear(); };
-    const walkTo = (tx, cb) => { target = Math.max(4, Math.min(96, tx)); after = cb || null; det.classList.toggle("left", target < x); det.classList.add("walking"); };
-    cancelAnimationFrame(walkRaf);
-    let last = performance.now();
-    const tick = now => {
-      const dt = Math.min(.05, (now - last) / 1000); last = now;
-      if (target !== null) {
-        const step = 32 * dt, d = target - x;
-        if (Math.abs(d) <= step) { x = target; target = null; det.classList.remove("walking"); (S.walk = S.walk || {})[L.id] = x; save(); place(); if (after) { const f = after; after = null; f(); } }
-        else { x += Math.sign(d) * step; place(); }
-      }
-      if (document.body.contains(det)) walkRaf = requestAnimationFrame(tick);
-    };
-    walkRaf = requestAnimationFrame(tick);
-    setNear();
-    st.onclick = e => {
-      if (e.target.closest("[data-wspot],[data-exit],.stage-note")) return;
-      const r = st.getBoundingClientRect();
-      walkTo((e.clientX - r.left) / r.width * 100);
-    };
-    spots.forEach(b => b.onclick = e => { e.stopPropagation(); const id = b.dataset.wspot; walkTo(+b.dataset.x, () => examine(id, true)); });
-    st.querySelector("[data-exit]").onclick = e => { e.stopPropagation(); walkTo(4, () => { lastFound = null; go("hely"); }); };
-    if (keyH) document.removeEventListener("keydown", keyH);
-    keyH = e => {
-      if (!document.body.contains(st) || /INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ""))) return;
-      if (e.key === "ArrowLeft" || e.key === "a") { e.preventDefault(); walkTo(x - 12); }
-      else if (e.key === "ArrowRight" || e.key === "d") { e.preventDefault(); walkTo(x + 12); }
-      else if ((e.key === "e" || e.key === "E") && near) { e.preventDefault(); examine(near.dataset.wspot, true); }
-    };
-    document.addEventListener("keydown", keyH);
-  }
 
   /* ---------- összevetés és hiányos mondatok ----------
      Két összetartozó nyom összekötése (a Táblán fonallal, vagy itt) megnyit egy következtetést.
@@ -710,48 +673,15 @@
       return `<span class="spot ${done ? (it ? "got" : "seen") : ""}" role="button" tabindex="0" data-spot="${id}">${txt}</span>`;
     })}</p>`).join("");
   }
-  /* ---------- séta mód: a nyomozó a helyszín képén sétál, a közeli részleteket vizsgálhatja meg ---------- */
-  const spotsOf = l => {
-    const ids = [...(l.look || "").matchAll(/\[\[(.+?)\|(.+?)\]\]/g)].map(m => ({ id: m[2], label: m[1] }));
-    const P = l.spots || {};
-    return ids.map((o, i) => Object.assign(o, { x: (P[o.id] || [])[0] ?? 12 + i * 76 / Math.max(1, ids.length - 1), y: (P[o.id] || [])[1] ?? 58 }));
-  };
   const remaining = l => (l.items || []).filter(it => !S.clues.includes(it.clue)).length;
-  const DETECTIVE = `<svg viewBox="0 0 40 100" aria-hidden="true"><g class="dt-body">
-    <path class="dt-leg dt-l1" d="M17 66 L15 96"/><path class="dt-leg dt-l2" d="M23 66 L25 96"/>
-    <path d="M10 34 Q20 28 30 34 L33 72 Q20 76 7 72 Z" class="dt-coat"/>
-    <path d="M17 34 L20 52 L23 34" class="dt-shirt"/>
-    <circle cx="20" cy="22" r="7" class="dt-face"/>
-    <path d="M9 18 Q20 13 31 18 L28 15 Q27 7 20 7 Q13 7 12 15 Z" class="dt-hat"/>
-    <path class="dt-arm" d="M30 38 L34 60"/></g></svg>`;
-  function stageHtml(l) {
-    const sp = spotsOf(l), x = (S.walk || {})[l.id] ?? 50, floor = l.floor || 86;
-    return `<div class="stage" data-stage style="--floor:${floor}%">
-      <div class="art">${ART.scene(l, l.name)}</div>
-      ${sp.map(o => { const it = itemOf(l, o.id), done = it ? S.clues.includes(o.id) : S.seen.includes(l.id + ":" + o.id);
-        return `<button class="hs ${done ? (it ? "got" : "seen") : ""}" data-wspot="${o.id}" data-x="${o.x}" style="left:${o.x}%;top:${o.y}%" aria-label="${esc(o.label)}"><span class="hs-dot"></span><span class="hs-label">${esc(o.label)}</span></button>`; }).join("")}
-      <div class="detective" data-det style="left:${x}%;top:${floor}%">${DETECTIVE}</div>
-      <button class="stage-exit" data-exit aria-label="${T("Vissza az alaprajzhoz")}">⟵ ${T("Kijárat")}</button>
-    </div>
-    ${lastFound && lastFound.loc === l.id ? `<div class="stage-note" role="status"><b>${esc(lastFound.title)}</b><p>${esc(lastFound.text)}</p></div>` : ""}
-    <p class="meta">${T("Kattints oda, ahová a nyomozó menjen, vagy használd a nyilakat. Ha valami a közelébe kerül, felvillan: kattints rá, vagy nyomd meg az E betűt.")} ${remaining(l) ? "" : T("Ebben a helyiségben mindent megtaláltál.")}</p>`;
-  }
-  let lastFound = null;
+  /* ---------- bejárható pixelvilág (js/world.js), ha az ügyhöz van térkép ---------- */
+  const WDATA = () => window.MM_WORLDS && C && window.MM_WORLDS[C.id];
+  const worldOn = () => !!(WDATA() && WORLD) && S.view !== "text";
+  const viewSwitch = () => WDATA() && WORLD ? `<div class="viewsw" role="group"><button class="link" data-view="world" aria-pressed="${worldOn()}">🎮 ${T("Bejárás")}</button><button class="link" data-view="text" aria-pressed="${!worldOn()}">📜 ${T("Leírás")}</button></div>` : "";
   function viewLoc(l) {
-    const walk = l.look && S.view !== "text";
-    let h = `<div class="stack"><div class="row" style="justify-content:space-between"><button class="link" data-back>← ${T("Vissza az alaprajzhoz")}</button>${l.look ? `<div class="viewsw" role="group"><button class="link" data-view="walk" aria-pressed="${walk}">🚶 ${T("Bejárom")}</button><button class="link" data-view="text" aria-pressed="${!walk}">📜 ${T("Leírás")}</button></div>` : ""}</div>
-      ${walk ? "" : `<div class="art locart">${ART.scene(l, l.name)}</div>`}
+    let h = `<div class="stack"><div class="row" style="justify-content:space-between"><button class="link" data-back>← ${T("Vissza az alaprajzhoz")}</button>${viewSwitch()}</div>
+      <div class="art locart">${ART.scene(l, l.name)}</div>
       <span class="eyebrow">${T("Helyszín")}</span><h2>${esc(l.name)}</h2>`;
-    if (walk) {
-      h += stageHtml(l);
-      const seen = Object.keys(l.decoys || {}).filter(k => S.seen.includes(l.id + ":" + k));
-      if (seen.length) h += `<div class="seenlist">${seen.map(k => `<p><span class="meta">${T("Megnézted:")}</span> ${rich(l.decoys[k])}</p>`).join("")}</div>`;
-      (l.items || []).filter(it => S.clues.includes(it.clue)).forEach(it => {
-        h += `<div class="item" data-item="${it.clue}"><h3>${esc(it.label)}</h3><p>${rich(it.text)}</p><span class="found">✓ ${T("Nyom feljegyezve:")} ${esc(C.clues[it.clue].t)}</span><p class="typed" data-hl="${esc(plain(C.clues[it.clue].t))}">${rich(C.clues[it.clue].x)}</p></div>`;
-      });
-      if (l.puzzle) h += `<div class="item" data-puzzle="${l.puzzle}">${renderPuzzle(l.puzzle)}</div>`;
-      return h + `</div>`;
-    }
     if (l.look) {
       h += `<p class="meta">${T("Kattints arra a részletre, amit közelebbről megnéznél. Nem minden gyanús dolog nyom.")}</p><div class="look">${lookHtml(l)}</div>`;
       const seen = Object.keys(l.decoys || {}).filter(k => S.seen.includes(l.id + ":" + k));
@@ -1053,57 +983,11 @@
   };
   function renderPuzzle(pid) { const p = C.puzzles[pid]; return `<h3>✦ ${esc(p.title)}</h3>${PUZ[p.type].render(pid, p)}`; }
 
-  /* ---------- eseménykezelők ---------- */
-  const BIND = {
-    ugy() { $("[data-go]").onclick = () => go("hely", C.intro.start); },
-    hely() {
-      // egy helyiségből addig nem lehet másikba menni, amíg minden nyomát meg nem találtad
-      const enter = id => {
-        const cur = S.cur && C.locations.find(l => l.id === S.cur);
-        if (cur && cur.id !== id && remaining(cur)) { SND("wrong"); toast(T("Előbb fejezd be itt: {0}. Valami még elkerülte a figyelmedet.", cur.name)); return; }
-        S.cur = id; lastFound = null; go("hely", id);
-      };
-      $$("[data-loc]").forEach(b => b.onclick = () => enter(b.dataset.loc));
-      $$("[data-ploc]").forEach(b => { b.onclick = () => enter(b.dataset.ploc); b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); enter(b.dataset.ploc); } }; });
-      const bk = $("[data-back]"); if (bk) bk.onclick = () => { lastFound = null; go("hely"); };
-      const cb = $("[data-gocur]"); if (cb) cb.onclick = () => enter(S.cur);
-      $$("[data-take]").forEach(b => b.onclick = () => { gain(b.dataset.take); save(); SND("paper"); spend(COST.take); renderCase(); });
-      const L = S.loc && C.locations.find(l => l.id === S.loc);
-      if (L) { const cur = S.cur && C.locations.find(l => l.id === S.cur); if (!cur || !remaining(cur)) { S.cur = L.id; save(); } }
-      // egy részlet megvizsgálása; séta módban a talált szöveg a színpadon jelenik meg
-      const examine = (id, walk) => {
-        const it = itemOf(L, id);
-        if (it) {
-          if (S.clues.includes(id)) { if (!walk) app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
-          gain(id); save(); SND("paper"); spend(COST.take);
-          if (walk) lastFound = { loc: L.id, title: "✓ " + T("Nyom feljegyezve:") + " " + C.clues[id].t, text: it.text };
-          rerender();
-          if (!walk) app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" });
-          else if (!remaining(L)) toast(T("Ebben a helyiségben mindent megtaláltál."));
-        } else {
-          const key = L.id + ":" + id; if (S.seen.includes(key)) return;
-          S.seen.push(key); save(); SND("tick"); spend(COST.look);
-          if (walk) lastFound = { loc: L.id, title: T("Megnézted:"), text: plain(L.decoys[id]) };
-          rerender();
-        }
-      };
-      $$("[data-spot]").forEach(b => {
-        b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); b.click(); } };
-        b.onclick = () => examine(b.dataset.spot, false);
-      });
-      $$("[data-view]").forEach(b => b.onclick = () => { S.view = b.dataset.view; save(); rerender(); });
-      if ($("[data-stage]")) bindStage(L, examine);
-      $$("[data-hint]").forEach(b => b.onclick = () => { const id = b.dataset.hint; S.hints[id] = (S.hints[id] || 0) + 1; save(); SND("paper"); spend(COST.hint); renderCase(); });
-      const box = $("[data-puzzle]");
-      if (box && !S.solved[box.dataset.puzzle]) {
-        const pid = box.dataset.puzzle, p = C.puzzles[pid], m = box.querySelector("[data-msg]");
-        PUZ[p.type].bind(pid, p, box, t => { SND("wrong"); if (spend(COST.wrong)) return renderCase(); m.className = "msg bad"; m.textContent = t; updateClock(); });
-      }
-    },
-    gyan() {
-      $$("[data-ask]").forEach(b => b.onclick = () => { S.asked.push(b.dataset.ask); save(); SND("paper"); spend(COST.ask); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); });
-      $$("[data-cf]").forEach(b => b.onclick = () => {
-        const sid = b.dataset.cf, sel = $("#cf-" + sid), m = app.querySelector(`[data-cfmsg="${sid}"]`), clue = sel.value;
+  function bindGyan(root) {
+    const q = sel => root.querySelectorAll(sel);
+    q("[data-ask]").forEach(b => b.onclick = () => { S.asked.push(b.dataset.ask); save(); SND("paper"); spend(COST.ask); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); });
+    q("[data-cf]").forEach(b => b.onclick = () => {
+        const sid = b.dataset.cf, sel = root.querySelector("#cf-" + sid), m = root.querySelector(`[data-cfmsg="${sid}"]`), clue = sel.value;
         const s = C.suspects.find(x => x.id === sid), first = s.short || (LANG === "en" ? s.name.split(" ")[0] : s.name.split(" ").slice(-1)[0]);
         if (!clue) { m.className = "msg bad"; m.textContent = T("Előbb válassz egy nyomot."); return; }
         const hit = contra(C, sid).find(k => !S.conf.includes(k.id) && has(k.clue, clue));
@@ -1114,7 +998,56 @@
         updateClock();
         m.className = "msg bad"; m.textContent = `${first} ${REBUFF[(S.wrongConf + sid.length) % REBUFF.length]}`;
       });
+  }
+  function bindPuzzleIn(root) {
+    root.querySelectorAll("[data-hint]").forEach(b => b.onclick = () => { const id = b.dataset.hint; S.hints[id] = (S.hints[id] || 0) + 1; save(); SND("paper"); spend(COST.hint); renderCase(); });
+    const box = root.querySelector("[data-puzzle]");
+    if (box && !S.solved[box.dataset.puzzle]) {
+      const pid = box.dataset.puzzle, p = C.puzzles[pid], m = box.querySelector("[data-msg]");
+      PUZ[p.type].bind(pid, p, box, t => { SND("wrong"); if (spend(COST.wrong)) return renderCase(); m.className = "msg bad"; m.textContent = t; updateClock(); });
+    }
+  }
+
+  /* ---------- eseménykezelők ---------- */
+  const BIND = {
+    ugy() { $("[data-go]").onclick = () => go("hely", C.intro.start); },
+    hely() {
+      // egy helyiségből addig nem lehet másikba menni, amíg minden nyomát meg nem találtad
+      const enter = id => {
+        const cur = S.cur && C.locations.find(l => l.id === S.cur);
+        if (cur && cur.id !== id && remaining(cur)) { SND("wrong"); toast(T("Előbb fejezd be itt: {0}. Valami még elkerülte a figyelmedet.", cur.name)); return; }
+        S.cur = id; go("hely", id);
+      };
+      $$("[data-loc]").forEach(b => b.onclick = () => enter(b.dataset.loc));
+      $$("[data-ploc]").forEach(b => { b.onclick = () => enter(b.dataset.ploc); b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); enter(b.dataset.ploc); } }; });
+      const bk = $("[data-back]"); if (bk) bk.onclick = () => go("hely");
+      const cb = $("[data-gocur]"); if (cb) cb.onclick = () => enter(S.cur);
+      $$("[data-take]").forEach(b => b.onclick = () => { gain(b.dataset.take); save(); SND("paper"); spend(COST.take); renderCase(); });
+      const L = S.loc && C.locations.find(l => l.id === S.loc);
+      if (L) { const cur = S.cur && C.locations.find(l => l.id === S.cur); if (!cur || !remaining(cur)) { S.cur = L.id; save(); } }
+      // egy részlet megvizsgálása; séta módban a talált szöveg a színpadon jelenik meg
+      const examine = id => {
+        const it = itemOf(L, id);
+        if (it) {
+          if (S.clues.includes(id)) { app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" }); return; }
+          gain(id); save(); SND("paper"); spend(COST.take);
+          rerender();
+          app.querySelector(`[data-item="${id}"]`)?.scrollIntoView({ block: "center", behavior: "smooth" });
+        } else {
+          const key = L.id + ":" + id; if (S.seen.includes(key)) return;
+          S.seen.push(key); save(); SND("tick"); spend(COST.look);
+          rerender();
+        }
+      };
+      $$("[data-spot]").forEach(b => {
+        b.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); b.click(); } };
+        b.onclick = () => examine(b.dataset.spot);
+      });
+      $$("[data-view]").forEach(b => b.onclick = () => { S.view = b.dataset.view; S.loc = null; save(); rerender(); });
+      if (worldOn()) WORLD.mount($("[data-world]"));
+      bindPuzzleIn(app);
     },
+    gyan() { bindGyan(app); },
     jegy() { bindDed(); },
     tabla() {
       bindDed();
@@ -1187,6 +1120,13 @@
       };
     }
   };
+
+  // a pixelvilág a motor belső függvényeit ezen keresztül éri el
+  const WORLD = window.MM_WORLD_ENGINE ? window.MM_WORLD_ENGINE({
+    get C() { return C; }, get S() { return S; }, save, T, esc, rich, plain, ART, SND, toast, gain, spend, COST, remaining, itemOf,
+    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch
+  }) : null;
+  window.MM_WORLD = WORLD;
 
   route();
 })();

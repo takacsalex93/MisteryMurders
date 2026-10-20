@@ -1,0 +1,135 @@
+{
+ "case": "szegfu-villa",
+ "start": ["fsz", 6.5, 10.3],
+ "chars": ["detektiv", "baro", "matild", "gabor", "szirmai", "ilona", "lukacs", "kertesz"],
+ "maps": {
+  "fsz": {
+   "name": "Földszint", "w": 40, "h": 23,
+   "rooms": [
+    ["konyvtar", 1, 3, 12, 9, [8, 10], [11, 6]],
+    ["hall", 14, 3, 12, 9, [12, 4], [0, 8]],
+    ["szalon", 27, 3, 12, 9, [0, 26], [22, 2]],
+    ["titkarsag", 1, 15, 10, 7, [0, 16], [11, 14]],
+    ["_konyha", 12, 15, 14, 7, [8, 14], [22, 22], "Konyha"],
+    ["uveghaz", 27, 15, 12, 7, [4, 32], [22, 30]]
+   ],
+   "doors": [[13, 8, 1, 2], [26, 8, 1, 2], [4, 12, 2, 3], [18, 12, 2, 3], [32, 12, 2, 3]],
+   "objects": [
+    {"s": "rug_purple", "x": 4.6, "b": 9.6, "floor": true},
+    {"s": "bookcase_b", "x": 1.1, "b": 4.2},
+    {"s": "fireplace", "x": 5.3, "b": 3.9, "spot": "kandallo"},
+    {"s": "emptyframe", "x": 7.7, "b": 2.6, "spot": "keret", "wall": true},
+    {"s": "bookcase_c", "x": 8.5, "b": 4.2},
+    {"s": "table_round", "x": 7.2, "b": 7.8, "fg": true},
+    {"s": "glass", "x": 7.55, "b": 7.25, "fg": true, "z": 0.6},
+    {"s": "armchair_red", "x": 6.0, "b": 8.1, "fg": true, "spot": "holttest", "label": "A báró a karosszékben"},
+    {"s": "table_dark", "x": 10.6, "b": 10.5, "fg": true, "puzzle": "desk", "label": "Az íróasztal számzára"},
+    {"s": "lamp_red", "x": 11.2, "b": 8.9, "fg": true, "z": 1.7},
+    {"s": "globe", "x": 1.4, "b": 7.2, "fg": true},
+    {"s": "lectern", "x": 1.3, "b": 11.0, "fg": true},
+    {"s": "plant_a", "x": 11.6, "b": 5.6, "fg": true},
+    {"glint": "mandzsetta", "x": 6.6, "b": 9.0, "label": "Valami csillog a szőnyegen"},
+
+    {"s": "rug_brown", "x": 17.2, "b": 9.0, "floor": true},
+    {"s": "clock", "x": 15.0, "b": 4.1, "spot": "ora", "label": "Az állóóra"},
+    {"s": "drawers", "x": 18.0, "b": 4.2},
+    {"s": "phone", "x": 18.2, "b": 3.2, "z": 1.1, "spot": "telefon", "label": "A telefon és a kapcsolási jegyzék"},
+    {"s": "hooks", "x": 20.0, "b": 2.4, "wall": true},
+    {"s": "bag", "x": 20.1, "b": 3.7, "spot": "taska", "label": "Dr. Szirmai orvosi táskája"},
+    {"s": "umbrella", "x": 21.1, "b": 4.0, "spot": "ernyo", "label": "Egy ázott esernyő"},
+    {"s": "stairs", "x": 23.4, "b": 4.15, "warp": ["em", 4.8, 13.4], "nosolid": true, "label": "Fel az emeletre"},
+    {"s": "plant_b", "x": 14.3, "b": 11.6, "fg": true},
+    {"s": "palm", "x": 24.4, "b": 11.6, "fg": true},
+
+    {"s": "rug_red", "x": 31.0, "b": 9.2, "floor": true},
+    {"s": "drinkshelf", "x": 27.3, "b": 4.2},
+    {"s": "window_red", "x": 30.3, "b": 2.8, "wall": true},
+    {"s": "wardrobe_glass", "x": 34.6, "b": 4.2},
+    {"s": "clock2", "x": 37.2, "b": 4.1},
+    {"s": "grandpiano", "x": 27.6, "b": 9.0, "fg": true, "spot": "zongora", "label": "A zongora"},
+    {"s": "sofa_grey", "x": 30.6, "b": 7.2, "fg": true},
+    {"s": "table_light", "x": 31.5, "b": 10.6, "fg": true, "puzzle": "alibi", "label": "A vallomások jegyzőkönyve"},
+    {"s": "papers", "x": 32.0, "b": 9.1, "fg": true, "z": 1.6},
+    {"s": "table_round", "x": 35.4, "b": 8.2, "fg": true},
+    {"s": "ashtray", "x": 35.6, "b": 7.7, "fg": true, "z": 0.6, "spot": "hamutal", "label": "Hamutál a dohányzóasztalon"},
+    {"s": "plant_a", "x": 37.6, "b": 11.6, "fg": true},
+
+    {"s": "bookcase_dark", "x": 1.2, "b": 16.0},
+    {"s": "wardrobe_old", "x": 7.0, "b": 16.2, "puzzle": "type", "label": "A zárt szekrény és az írógépek"},
+    {"s": "stove_iron", "x": 8.7, "b": 16.0, "spot": "hamu", "label": "A kályha"},
+    {"s": "table_wood", "x": 3.5, "b": 20.3, "fg": true},
+    {"s": "typewriter", "x": 4.0, "b": 18.6, "fg": true, "z": 1.8, "spot": "rem", "label": "Az új Remington"},
+    {"s": "chair_b", "x": 4.0, "b": 21.2, "fg": true, "nosolid": true},
+    {"s": "basket", "x": 1.3, "b": 21.0, "fg": true, "spot": "kosar", "label": "A papírkosár"},
+
+    {"s": "counter", "x": 12.2, "b": 15.4},
+    {"s": "stove", "x": 16.4, "b": 15.9},
+    {"s": "counter", "x": 21.4, "b": 15.4},
+    {"s": "ktable", "x": 18.4, "b": 20.0, "fg": true},
+    {"s": "chair_d", "x": 17.3, "b": 19.4, "fg": true, "nosolid": true},
+
+    {"s": "drinkshelf", "x": 36.5, "b": 16.4, "spot": "darazs", "label": "A vegyszerespolc"},
+    {"s": "bush", "x": 27.3, "b": 16.4, "fg": true}, {"s": "bush2", "x": 28.5, "b": 16.4, "fg": true},
+    {"s": "plant_b", "x": 29.6, "b": 16.6, "fg": true}, {"s": "palm", "x": 34.6, "b": 16.6, "fg": true},
+    {"s": "bush", "x": 27.3, "b": 21.8, "fg": true}, {"s": "plant_a", "x": 28.5, "b": 21.8, "fg": true},
+    {"s": "bush2", "x": 37.8, "b": 21.8, "fg": true}, {"s": "bush", "x": 36.6, "b": 21.8, "fg": true},
+    {"s": "table_light", "x": 30.6, "b": 20.4, "fg": true, "puzzle": "ujj", "label": "Az ujjlenyomatok"},
+    {"s": "table_round", "x": 34.4, "b": 20.4, "fg": true},
+    {"s": "plant_pot", "x": 34.45, "b": 19.7, "fg": true, "z": 0.8, "spot": "orchidea", "label": "Frissen vágott orchideák"},
+    {"glint": "szivar", "x": 33.6, "b": 15.9, "label": "Szivarhamu a kavicson"}
+   ],
+   "npcs": [
+    {"id": "baro", "x": 6.5, "y": 8.15, "dir": "down", "sit": 10, "dy": -4, "static": true},
+    {"id": "gabor", "x": 29.4, "y": 10.4, "dir": "up"},
+    {"id": "szirmai", "x": 35.9, "y": 10.2, "dir": "left"},
+    {"id": "lukacs", "x": 21.5, "y": 17.6, "dir": "down"},
+    {"id": "kertesz", "x": 32.5, "y": 17.4, "dir": "down", "spot": "kertesz"}
+   ]
+  },
+  "em": {
+   "name": "Emelet", "w": 36, "h": 17,
+   "rooms": [
+    ["emelet", 1, 3, 8, 6, [0, 20], [22, 28], "Matild szobája"],
+    ["emelet", 10, 3, 7, 6, [4, 4], [0, 6], "Ilona szobája"],
+    ["emelet", 18, 3, 8, 6, [12, 26], [11, 6], "A báró hálója"],
+    ["vendeg", 27, 3, 8, 6, [0, 24], [22, 20]],
+    ["emelet", 1, 12, 34, 4, [4, 22], [11, 12], "Folyosó"]
+   ],
+   "doors": [[4, 9, 2, 3], [12, 9, 2, 3], [21, 9, 2, 3], [30, 9, 2, 3]],
+   "objects": [
+    {"s": "stairs", "x": 1.2, "b": 15.95, "warp": ["fsz", 22.5, 5.4], "wr": [2, 6, 30, 58], "nosolid": true, "label": "Le a földszintre"},
+    {"s": "window", "x": 33.0, "b": 11.4, "wall": true, "spot": "ablak", "label": "A nyitott ablak"},
+    {"s": "rug_small", "x": 15.0, "b": 15.4, "floor": true},
+    {"s": "plant_b", "x": 25.6, "b": 13.4},
+    {"s": "landscape2", "x": 8.0, "b": 11.2, "wall": true},
+    {"s": "landscape1", "x": 17.0, "b": 11.2, "wall": true},
+
+    {"s": "bed_b", "x": 1.3, "b": 5.9},
+    {"s": "vanity", "x": 4.3, "b": 4.3, "spot": "levelk", "label": "Matild fiókos szekrénye"},
+    {"s": "wardrobe_old", "x": 6.9, "b": 4.3},
+    {"s": "rug_blue", "x": 4.0, "b": 8.4, "floor": true},
+
+    {"s": "bed_a", "x": 10.2, "b": 5.9, "puzzle": "cipher", "label": "A zsebnaptár a párna alatt"},
+    {"s": "nightstand", "x": 12.4, "b": 4.3},
+    {"s": "drawers", "x": 15.6, "b": 4.3, "spot": "ilonaszoba", "label": "Ilona szobája"},
+    {"s": "chair_d", "x": 14.5, "b": 8.2, "fg": true},
+
+    {"s": "bed_b", "x": 24.0, "b": 5.9},
+    {"s": "wardrobe_big", "x": 18.2, "b": 4.3},
+    {"s": "wardrobe_glass", "x": 22.25, "b": 4.3, "spot": "gyogyszer", "label": "A gyógyszeres szekrény"},
+    {"s": "rug_red", "x": 20.4, "b": 8.6, "floor": true},
+
+    {"s": "bed_a", "x": 32.6, "b": 5.9},
+    {"s": "nightstand", "x": 31.4, "b": 4.3},
+    {"s": "bottle", "x": 31.8, "b": 3.3, "z": 1.1, "spot": "whisky", "label": "Egy félig üres whiskysüveg"},
+    {"s": "chair_b", "x": 28.0, "b": 5.6, "fg": true},
+    {"s": "coat", "x": 28.05, "b": 5.0, "fg": true, "z": 0.7, "spot": "zalog", "label": "Gábor kabátja"},
+    {"s": "suitcase", "x": 28.4, "b": 8.4, "fg": true, "spot": "borond", "label": "A nyitott bőrönd"}
+   ],
+   "npcs": [
+    {"id": "matild", "x": 6.0, "y": 7.2, "dir": "left"},
+    {"id": "ilona", "x": 13.0, "y": 13.8, "dir": "down"}
+   ]
+  }
+ }
+}
