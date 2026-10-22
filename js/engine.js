@@ -599,7 +599,14 @@
   const errMsg = n => S.master ? T("Nem stimmel.") : n <= 2 ? T("{0} szó nem stimmel. Hogy melyik, azt neked kell kitalálnod.", n) : T("Több szó sem stimmel.");
   function dedForm(d) {
     return `<div class="dq" data-dform="${d.id}"><p class="meta">${T("Összekötve:")} ${d.from.map(f => esc(plain((C.clues[[].concat(f).find(x => S.clues.includes(x)) || [].concat(f)[0]] || {}).t || "?"))).join(" + ")}</p>
-      ${sentence(d.id, d.text, d.b)}<div class="row"><button class="btn small" data-dok="${d.id}">${T("Ez a következtetésem")}</button></div><p class="msg" data-dmsg="${d.id}"></p></div>`;
+      ${sentence(d.id, d.text, d.b)}${dedSources(d)}<div class="row"><button class="btn small" data-dok="${d.id}">${T("Ez a következtetésem")}</button></div><p class="msg" data-dmsg="${d.id}"></p></div>`;
+  }
+  // a két összekötött nyom szövege, hogy a hiányzó szókártyák itt helyben is összegyűjthetők legyenek
+  function dedSources(d) {
+    if (S.noir) return "";
+    const ks = d.from.map(f => [].concat(f).find(x => S.clues.includes(x))).filter(Boolean);
+    const miss = d.b.some(x => ![].concat(x).some(haveWord));
+    return `<details class="dsrc" ${miss ? "open" : ""}><summary>${T("Hiányzik egy szókártya? A két nyom szövege")}</summary>${ks.map(k => `<p><b>${esc(C.clues[k].t)}:</b> ${rich(C.clues[k].x)}</p>`).join("")}<p class="meta">${T("Kattints az aláhúzott szavakra, és bekerülnek a legördülő listába.")}</p></details>`;
   }
   function wordBank() {
     const mine = Object.keys(C.W).filter(haveWord);
@@ -671,6 +678,8 @@
     ov.querySelector("[data-close]").onclick = close;
     ov.onclick = e => { if (e.target === ov) close(); };
     bindSentences(ov, close);
+    // új szókártya után frissül az ablak, a már kiválasztott szavak megmaradnak
+    ov.addEventListener("click", e => { if (e.target.closest("[data-word]")) setTimeout(() => { if (!ov.isConnected) return; const card = ov.querySelector(".intro-card"); card.innerHTML = `<span class="eyebrow">${T("Következtetés")}</span>${dedForm(d)}<div class="row"><button class="link" data-close>${T("Bezárás")}</button></div>`; card.querySelector("[data-close]").onclick = close; bindSentences(ov, close); }, 0); });
   }
 
   /* ---------- nyomozótábla ---------- */

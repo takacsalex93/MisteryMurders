@@ -462,3 +462,4 @@ figcaption{font-family:var(--type);font-size:12px;color:var(--muted)}
 .boards [data-blist]{max-width:640px}
 .casecard .solvers:empty{display:none}
 .boards .chip,.boards .chip.on{cursor:pointer;font-size:14px;padding:5px 12px}.boards .chip.on{background:var(--accent);color:var(--paper)}
+.dsrc{margin:8px 0;font-size:.95em}.dsrc summary{cursor:pointer;font-family:var(--type);font-size:13px;color:var(--accent)}.dsrc p{margin:6px 0}
