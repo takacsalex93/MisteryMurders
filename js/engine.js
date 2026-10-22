@@ -124,7 +124,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false, SKEY = null;
   function save() { try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
@@ -300,6 +300,7 @@
         <p>${esc(c.teaser)}</p>
         ${st.ended === "win" ? `<span class="meta">${T("{0} pont", score(st))} · ${rank(score(st), st)}</span>` : ""}
         ${started && !st.ended ? `<span class="meta">${T("{0}/{1} rejtvény · {2}/{3} nyom", done, total, st.clues.length, Object.keys(c.clues).length)}</span>` : ""}
+        <span class="meta solvers" data-solvers="${c.id}"></span>
         <div class="row"><a class="btn" href="#${c.id}">${label} →</a></div>
       </article>`;
     };
@@ -317,6 +318,7 @@
       </header>
       ${dailyCard()}
       ${weeklySection()}
+      ${boardSection()}
       ${window.MM_OFFICE && window.MM_WORLDS && window.MM_WORLDS.iroda ? `<section class="office"><canvas data-office aria-label="${T("A nyomozó irodája")}"></canvas><p class="meta">${T("Az irodád. A megoldott ügyek emlékei a polcra kerülnek, a fekete szegfű cédulái a parafatáblára. Kattints egy tárgyra, és újra elolvashatod az ügyét.")}</p>${badgeGrid()}</section>` : ""}
       ${sections}
       ${FINALE ? threadSection() : ""}
@@ -337,7 +339,7 @@
     const oc = app.querySelector("[data-office]");
     if (oc) window.MM_OFFICE.mount(oc, { won: CASES.filter(wonCase).map(c => c.id), titles: Object.fromEntries(CASES.map(c => [c.id, c.title])),
       thread: THREAD.map(c => ({ won: wonCase(c), letter: (c.carnation || {}).letter || "?" })) });
-    bindLang(); bindGloss(); SCENE("home"); FX();
+    bindLang(); bindGloss(); bindBoards(); SCENE("home"); FX();
   }
 
   function dailyCard() {
@@ -424,6 +426,7 @@
     if (S.ended) newBadges();
     const dc = document.querySelector("[data-dcopy]");
     if (dc) dc.onclick = () => { const t = dailyShareText(), m = document.querySelector("[data-dmsg]"); try { navigator.clipboard.writeText(t).then(() => { m.className = "msg ok"; m.textContent = T("Kimásolva, beillesztheted bárhová."); }); } catch (e) { m.textContent = T("Jelöld ki és másold ki a fenti szöveget."); } };
+    bindOnline();
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
     else checkEvents();
     const sl = S.loc || (worldOn() && S.cur);
@@ -857,6 +860,7 @@
       ${revealOnly ? "" : missedHtml()}
       ${stats}</div>
       ${revealOnly ? "" : dailyBox()}
+      ${revealOnly ? "" : onlineBox()}
       ${!revealOnly && C.sequel ? `<div class="sequel"><span class="eyebrow">${T("Utóirat")}</span>${C.sequel.map(p => `<p>${esc(p)}</p>`).join("")}<p class="meta">${T("A második évad hamarosan.")}</p></div>` : ""}
       <div class="row"><a class="btn" href="#">${T("Vissza az ügyekhez")}</a>${revealOnly ? `<button class="btn ghost" data-restart>${T("Újrakezdem az ügyet")}</button>` : `<button class="btn ghost" data-share>${T("Eredménykártya")}</button>`}</div></div>`;
   }
@@ -928,6 +932,71 @@
       <p>${all ? T("Semmi sem maradt rejtve. A ház minden titka napvilágra került, és a vádirat egyetlen kérdést sem hagyott nyitva.")
         : names.length ? T("Nem mindenki titka került napvilágra. {0} elhallgatott valamit, amire sosem kérdeztél rá, és ez a titok velük együtt távozott a házból.", names.join(", ")) : T("Minden hazugságot leleplezted, de nem minden következtetést vontál le.")}</p>
       ${dt ? `<p class="meta">${T("Levont következtetések: {0} / {1}", dn, dt)} · ${T("{0}/{1} ellentmondás", S.conf.length, contra(C).length)}</p>` : ""}</div>`;
+  }
+  /* ---------- közös ranglista (js/online.js; ha nincs beállítva, semmi sem látszik belőle) ---------- */
+  const ON = window.MM_ONLINE && window.MM_ONLINE.enabled ? window.MM_ONLINE : null;
+  const runOf = st => st.daily ? "daily:" + st.daily : C.weekly ? "weekly" : "normal";
+  function onlineBox() {
+    if (!ON || S.ended !== "win") return "";
+    const form = !S.submitted ? `<p>${T("Tedd fel az eredményed a közös ranglistára, és nézd meg, hogyan teljesítettek a többiek.")}</p>
+      <div class="row"><input class="nick" data-nick maxlength="24" placeholder="${T("Becenév")}" value="${esc(ON.nick())}" aria-label="${T("Becenév")}"><button class="btn" data-submit>${T("Felteszem")}</button><button class="link" data-noboard>${T("Most nem")}</button></div>
+      <p class="meta">${T("Csak a beceneved, a pontszámod, a próbálkozások, a súgók és az idő kerül fel. Ne add meg a valódi neved, ha nem szeretnéd.")}</p><p class="msg" data-onmsg></p>` : "";
+    return `<div class="onlinebox"><span class="eyebrow">${T(S.daily ? "A mai kihívás ranglistája" : "Ranglista: {0}", S.daily ? "" : C.title)}</span>${form}<div data-oblist>${S.submitted ? `<p class="meta">${T("Betöltés…")}</p>` : ""}</div></div>`;
+  }
+  function boardHtml(rows, kind) {
+    if (!rows.length) return `<p class="meta">${T("Még senki sem került fel. Légy te az első!")}</p>`;
+    const me = ON.me(), mi = rows.findIndex(r => r.player_id === me);
+    const line = (r, i) => `<li class="${r.player_id === me ? "me" : ""}"><span class="pos">${i + 1}.</span><b>${esc(r.player)}</b>${kind === "tot"
+      ? `<span class="meta">${T("{0} ügy", r.solved)}</span><span class="pts">${T("{0} pont", r.points)}</span>`
+      : `<span class="meta">${T("{0}. vádra", r.tries)} · ${r.hints ? T("{0} súgó", r.hints) : T("súgó nélkül")}${r.minutes ? " · " + T("{0} perc", r.minutes) : ""}${r.mode && r.mode !== "normal" ? " · " + T(r.mode === "noir" ? "Noir" : "Mester") : ""}</span><span class="pts">${T("{0} pont", r.score)}</span>`}</li>`;
+    let h = rows.slice(0, 10).map(line).join("");
+    if (mi >= 10) h += `<li class="gap">…</li>` + line(rows[mi], mi);
+    return `<ol class="lboard">${h}</ol><p class="meta">${T("{0} nyomozó a listán", rows.length)}${mi >= 0 ? " · " + T("a te helyed: {0}.", mi + 1) : ""}</p>`;
+  }
+  function loadBoard(el, p, kind) {
+    if (!el) return;
+    el.innerHTML = `<p class="meta">${T("Betöltés…")}</p>`;
+    p.then(rows => { el.innerHTML = boardHtml(rows, kind); }).catch(() => { el.innerHTML = `<p class="meta">${T("A ranglista most nem érhető el. Próbáld újra később.")}</p>`; });
+  }
+  function bindOnline() {
+    if (!ON || S.ended !== "win") return;
+    const list = document.querySelector("[data-oblist]"), runId = runOf(S);
+    if (S.submitted) { loadBoard(list, ON.board(C.id, runId)); return; }
+    const sub = document.querySelector("[data-submit]"), m = document.querySelector("[data-onmsg]"), inp = document.querySelector("[data-nick]");
+    if (!sub) return;
+    document.querySelector("[data-noboard]").onclick = () => { S.submitted = "skip"; save(); renderCase(); };
+    inp.onkeydown = e => { if (e.key === "Enter") sub.click(); };
+    sub.onclick = () => {
+      const n = inp.value.trim();
+      if (n.length < 2) { m.className = "msg bad"; m.textContent = T("A becenév legalább 2 karakter legyen."); return; }
+      ON.setNick(n); sub.disabled = true; m.className = "msg"; m.textContent = T("Küldés…");
+      const vi = C.variants && C.variants.length ? C.variants[S.variant % C.variants.length].id : null;
+      ON.submit({ player: n, case_id: C.id, run: runId, score: score(S), tries: Math.max(1, Math.min(5, S.tries || 1)), hints: hintsUsed(S), minutes: Math.min(5000, Math.round(S.min || 0)) || null, mode: S.noir ? "noir" : S.master ? "master" : "normal", timed: !!S.timed, variant: vi ? String(vi) : null })
+        .then(ok => { if (!ok) throw 0; S.submitted = 1; save(); SND("stamp"); renderCase(); })
+        .catch(() => { sub.disabled = false; m.className = "msg bad"; m.textContent = T("Nem sikerült elküldeni. Ellenőrizd a netet, és próbáld újra."); });
+    };
+  }
+  function boardSection() {
+    if (!ON) return "";
+    const opts = CASES.filter(c => !c.finale || unlocked(c)).map(c => `<option value="${c.id}">${esc(c.title)}</option>`).join("");
+    return `<section class="level boards"><div class="level-head"><h2>${T("Ranglista")}</h2><p>${T("Nézd meg, hogyan teljesítettek a többi nyomozók. Ha megoldasz egy ügyet, a végén felteheted az eredményed.")}</p></div>
+      <div class="btabs" role="tablist"><button class="chip on" data-btab="napi">${T("Mai kihívás")}</button><button class="chip" data-btab="ossz">${T("Összesített")}</button><button class="chip" data-btab="ugy">${T("Ügyenként")}</button><select data-bcase hidden aria-label="${T("Ügy")}">${opts}</select></div>
+      <div data-blist></div></section>`;
+  }
+  function bindBoards() {
+    if (!ON) return;
+    const el = document.querySelector("[data-blist]"); if (!el) return;
+    const sel = document.querySelector("[data-bcase]");
+    const show = t => {
+      document.querySelectorAll("[data-btab]").forEach(b => b.classList.toggle("on", b.dataset.btab === t)); sel.hidden = t !== "ugy";
+      if (t === "napi") { const d = daily(); loadBoard(el, ON.board(d.id, "daily:" + d.key)); }
+      else if (t === "ossz") loadBoard(el, ON.totals(), "tot");
+      else { const c = CASES.find(x => x.id === sel.value); loadBoard(el, ON.board(sel.value, c && c.weekly ? "weekly" : "normal")); }
+    };
+    document.querySelectorAll("[data-btab]").forEach(b => b.onclick = () => show(b.dataset.btab));
+    sel.onchange = () => show("ugy");
+    show("napi");
+    ON.counts().then(cn => document.querySelectorAll("[data-solvers]").forEach(x => { const n = cn[x.dataset.solvers]; if (n) x.textContent = "👥 " + T("{0} nyomozó oldotta meg", n); })).catch(() => {});
   }
   function dailyBox() {
     if (!S.daily) return "";

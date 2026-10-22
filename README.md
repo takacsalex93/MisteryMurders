@@ -88,3 +88,14 @@ A térképleírásban a `rooms` a helyiségek padlóját (helyszín-azonosító,
 Az ügyenkénti óra, idővonal, árnyalak, gyülekezőhely és titkok a `tools/world/src/extras.py`-ban vannak; a címoldali iroda a `tools/world/src/iroda.py`.
 
 Grafika: LimeZu (limezu.itch.io).
+
+## Közös ranglista (opcionális, ingyenes Supabase)
+
+Ha be van állítva, a megoldott ügy végén a játékos becenévvel felteheti az eredményét, a címoldalon pedig megjelenik a **Ranglista** (mai kihívás, összesített, ügyenként), az ügykártyákon pedig az, hogy hány nyomozó oldotta meg. Beállítás nélkül ebből semmi sem látszik, a játék ugyanúgy működik.
+
+1. Regisztrálj a https://supabase.com oldalon (ingyenes), és hozz létre egy új projektet (*New project*; a régió legyen pl. Frankfurt).
+2. A projektben nyisd meg az **SQL Editor**-t → *New query*, másold be a `supabase.sql` teljes tartalmát, és nyomd meg a **Run** gombot.
+3. **Project Settings → API** (vagy *Data API*): másold ki a **Project URL**-t és az **anon public** kulcsot.
+4. Írd be őket a `js/online.js` elejére (`url` és `key`), majd töltsd fel a változást.
+
+Az anon kulcs nyilvános, ez így rendben van: a tábla sorszintű szabályai csak az olvasást és új eredmény beküldését engedik, módosítást és törlést nem, és egy játékos ügyenként legfeljebb 20 eredményt küldhet. Mivel bárki küldhet adatot, egy ügyes csaló beírhat hamis pontszámot; ha ilyen történik, a Supabase *Table Editor*-ában a sor kézzel törölhető.
