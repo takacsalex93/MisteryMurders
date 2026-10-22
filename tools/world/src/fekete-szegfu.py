@@ -50,7 +50,7 @@ iroda = {
   o("stairs", 21.0, 15.9, warp=["fsz", 5.0, 6.0], label="Le a főlépcsőn a kapuhoz", nosolid=True),
   o("plant_b", 14.4, 15.4), o("plant_b", 27.6, 15.4),
   o("stairs", 37.6, 19.95, warp=["fsz", 30.5, 6.0], label="Le a hátsó lépcsőn az udvarra", nosolid=True),
-  glint("galos", 35.4, 18.6, "Nedves nyomok a lépcsőfokokon"),
+  glint("galos", 35.4, 18.6, "Nedves nyomok a lépcsőfokokon"), glint("fenyeget", 32.6, 19.4, "Egy összegyűrt, gépelt levél"),
   o("irondoor", 31.0, 16.4, spot="kulcs", label="A vasajtó"),
   o("gasmeter", 33.6, 13.6, wall=True, spot="gazora", label="A gázóra")],
  "npcs": [

@@ -33,7 +33,8 @@ window.MM_WORLD_ENGINE = function (A) {
     const all = Object.values(W().maps).flatMap(x => x.npcs), here = m === W().maps[W().gather.map];
     return m.npcs.filter(n => !isSus(n)).concat(here ? all.filter(isSus) : []);
   }
-  const walkers = m => npcsOn(m).filter(n => !n.static);
+  const downed = n => (S().dead || []).includes(n.id);
+  const walkers = m => npcsOn(m).filter(n => !n.static && !downed(n));
   const pos = n => NS[n.id] || { x: n.x * TS, y: n.y * TS, dir: n.dir };
   const npcBox = n => { const p = pos(n); return [p.x - 6, p.y - 5, 12, 5]; };
   function blocked(m, x, y, skipNpc) {
@@ -63,12 +64,13 @@ window.MM_WORLD_ENGINE = function (A) {
   function targets() {
     const m = map(), out = [];
     m.inter.forEach(t => {
+      if (t.k === "secret" && t.nalt > 1 && (([...t.id].reduce((a, c) => a + c.charCodeAt(0), 0) + (S().seed || 0)) % t.nalt) !== t.alt) return;
       if (t.k === "secret") { out.push({ kind: "secret", id: t.id, r: t.r, label: t.label || T("Valami rejtett"), done: (S().secrets || []).includes(t.id), glint: t.glint, hidden: true }); return; }
       if (t.k === "puzzle") { if (!C().puzzles[t.id]) return; out.push({ kind: "puzzle", id: t.id, r: t.r, label: t.label || C().puzzles[t.id].title, done: !!S().solved[t.id], glint: t.glint }); }
       else out.push({ kind: "spot", id: t.id, r: t.r, label: t.label, done: itemState(t.id).done, glint: t.glint });
     });
     npcsOn(m).forEach(n => {
-      const p = pos(n), r = n.lie ? [p.x - 16, p.y - 12, 32, 16] : [p.x - 8, p.y - 28, 16, 28], s = sus(n.id);
+      const p = pos(n), r = (n.lie || downed(n)) ? [p.x - 16, p.y - 12, 32, 16] : [p.x - 8, p.y - 28, 16, 28], s = sus(n.id);
       // akinél nyom van (pl. a kertész), azt előbb meg kell vizsgálni; utána, ha gyanúsított, beszélgetni is lehet vele
       if (n.spot && (!s || !itemState(n.spot).done)) out.push({ kind: "spot", id: n.spot, r, label: n.label || who(n.id), done: itemState(n.spot).done, npc: n.static ? null : n });
       else if (s && !n.static) {
@@ -132,7 +134,7 @@ window.MM_WORLD_ENGINE = function (A) {
       const r1 = roomAt(m, nx, ny), r0 = roomAt(m, P.x, P.y);
       if (r1 && r1.loc && r1.loc !== S().cur) {
         // ha már ebben a helyiségben áll (pl. a szöveges nézetből tért vissza), nem zárjuk ki
-        const msg = r0 && r0.loc === r1.loc ? null : lockMsg(r1.loc); if (msg) { say(msg); path = null; pending = null; return false; }
+        const msg = chase || (r0 && r0.loc === r1.loc) ? null : lockMsg(r1.loc); if (msg) { say(msg); path = null; pending = null; return false; }
         P.x = nx; P.y = ny; enterLoc(r1.loc); return true;
       }
       P.x = nx; P.y = ny; return true;
@@ -176,6 +178,7 @@ window.MM_WORLD_ENGINE = function (A) {
     walkers(m).forEach(n => {
       const s = NS[n.id]; s.moving = false;
       const close = Math.hypot(P.x - s.x, P.y - s.y) < 30, nerv = nervous(n) && n.route && !gathering();
+      if (chase && chase.sid === n.id) return;
       if (gathering()) { if (close) faceTo(s, P.x, P.y); else s.dir = s.gdir || "down"; return; }
       if ((dlg && dlg.kind === "npc" && dlg.id === n.id) || (close && !nerv)) { if (close) faceTo(s, P.x, P.y); return; }
       if (!n.route) { s.dir = n.dir; return; }
@@ -221,6 +224,13 @@ window.MM_WORLD_ENGINE = function (A) {
   const hm = s2 => { const [h, mm] = s2.split(":").map(Number); return h * 60 + mm; };
   function elapsed() { return (S().min || 0) + Math.floor((S().wsec || 0) / 8); }
   function clockStr() { const c = W().clock; if (!c) return ""; const t = (hm(c) + elapsed()) % 1440; return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); }
+  function updDanger() {
+    const dg = W().danger, st = S(); if (!dg || st.ended) return;
+    st.dead = st.dead || []; if (st.dead.includes(dg.npc) || st.seen.includes(dg.unless)) return;
+    let at = hm(dg.at) - hm(W().clock); if (at < 0) at += 1440;
+    if (elapsed() < at) return;
+    st.dead.push(dg.npc); A.save(); SFX("stamp"); window.dispatchEvent(new CustomEvent("mm:lightning")); A.toast(dg.msg);
+  }
   function updClock(now) {
     const el = root && root.querySelector(".w-clock"); if (el && W().clock) { const c = clockStr(); if (el.dataset.t !== c) { el.dataset.t = c; el.textContent = "🕰 " + c; } }
     const st = S(); st.wtl = st.wtl || [];
@@ -265,6 +275,25 @@ window.MM_WORLD_ENGINE = function (A) {
     });
     A.toast(T("Mindenki összegyűlt: {0}. Menj oda, és mutass rá a tettesre.", g.label)); banner(g.label); SFX("stamp");
   }
+  // hajsza: akire rámutattál, és tényleg ő a tettes, a kijárat felé menekül; el kell kapni
+  let chase = null;
+  function startChase(sid) {
+    const c = W().chase, n = NS[sid];
+    const pts = bfs((px, py) => Math.hypot(px - c.x * TS, py - c.y * TS) <= 6 ? 0 : Math.hypot(px - c.x * TS, py - c.y * TS), n.x, n.y, true);
+    chase = { sid, pts: pts || [[c.x * TS, c.y * TS]], t: 0 };
+    banner(T("Menekül!")); SFX("wrong"); A.toast(T("{0} a kijárat felé rohan! Kapd el!", who(sid)));
+  }
+  function updChase(dt) {
+    if (!chase) return;
+    const n = NS[chase.sid]; if (!n) { chase = null; return; }
+    chase.t += dt;
+    const end = res => { S().chase = res; A.save(); const sid = chase.sid; chase = null; A.toast(res === "caught" ? T("Elkaptad! A csendőrök átveszik.") : T("Kicsúszott a kezeid közül… de a kapuban a csendőrök elfogták.")); SFX(res === "caught" ? "stamp" : "wrong"); setTimeout(() => A.pointAt(sid), 1300); };
+    if (chase.t > 1.2 && Math.hypot(P.x - n.x, P.y - n.y) < 16) return end("caught");
+    if (!chase.pts.length) return end("escaped");
+    const [tx, ty] = chase.pts[0], dx = tx - n.x, dy = ty - n.y, d = Math.hypot(dx, dy), stp = (chase.t < 1.2 ? 92 : 54) * dt;
+    if (d <= stp) { n.x = tx; n.y = ty; chase.pts.shift(); } else { n.x += dx / d * stp; n.y += dy / d * stp; }
+    n.moving = true; n.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
+  }
   // gondolatbuborék: ha két nyomod összefügg, a nyomozó elgondolkodik
   function updThought() {
     const pend = A.pendingDed ? A.pendingDed() : [], st = S(); st.wth = st.wth || [];
@@ -278,10 +307,10 @@ window.MM_WORLD_ENGINE = function (A) {
 
   /* ---------- útkeresés 8 pixeles rácson ---------- */
   const G = 8;
-  function bfs(goal) {
+  function bfs(goal, sx, sy, free) {
     const m = map(), gw = Math.floor(m.w * TS / G), gh = Math.floor(m.h * TS / G);
-    const ok = (i, j) => i >= 0 && j >= 0 && i < gw && j < gh && !blocked(m, i * G + 4, j * G + 4, true) && !lockedAt(m, i * G + 4, j * G + 4);
-    const si = Math.floor(P.x / G), sj = Math.floor(P.y / G), prev = new Int32Array(gw * gh).fill(-2);
+    const ok = (i, j) => i >= 0 && j >= 0 && i < gw && j < gh && !blocked(m, i * G + 4, j * G + 4, true) && (free || !lockedAt(m, i * G + 4, j * G + 4));
+    const si = Math.floor((sx ?? P.x) / G), sj = Math.floor((sy ?? P.y) / G), prev = new Int32Array(gw * gh).fill(-2);
     const q = [si + sj * gw]; prev[q[0]] = -1; let best = -1, bd = 1e9;
     for (let h = 0; h < q.length; h++) {
       const c = q[h], i = c % gw, j = (c - i) / gw, d = goal(i * G + 4, j * G + 4);
@@ -308,6 +337,7 @@ window.MM_WORLD_ENGINE = function (A) {
 
   /* ---------- interakciók ---------- */
   function interact(t) {
+    if (chase) return;
     keys.clear(); path = null; pending = null;
     const cx = t.r[0] + t.r[2] / 2, cy = t.r[1] + t.r[3] / 2;
     P.dir = Math.abs(cx - P.x) > Math.abs(cy - P.y) ? (cx > P.x ? "right" : "left") : (cy > P.y ? "down" : "up");
@@ -346,7 +376,8 @@ window.MM_WORLD_ENGINE = function (A) {
         return `${head}<p>${A.rich(it.text)}</p><span class="found">✓ ${T("Nyom feljegyezve:")} ${esc(k.t)}</span><p class="typed">${A.rich(k.x)}</p>
           <p class="meta">${rest ? T("Ebben a helyiségben még {0} nyom vár rád.", rest) : T("Ebben a helyiségben minden nyomot megtaláltál. Mehetsz tovább.")}</p>${close}`;
       }
-      return `${head}<p>${A.rich(L.decoys[id])}</p><p class="meta">${T("Nem tűnik nyomnak. De ki tudja.")}</p>${close}`;
+      const dg = W().danger, dead = dg && dg.spot === id && (st.dead || []).includes(dg.npc);
+      return `${head}<p>${A.rich(dead ? dg.text : L.decoys[id])}</p><p class="meta">${dead ? T("Elkéstél. Amit tudott, már nem mondja el senkinek.") : T("Nem tűnik nyomnak. De ki tudja.")}</p>${close}`;
     }
     if (kind === "npc") return `${gathering() ? `<div class="accuse-box"><span class="eyebrow">${T("Mindenki rád figyel")}</span><p>${T("Ha biztos vagy benne, hogy ő a tettes, most mutass rá. Utána el kell mondanod, hogyan történt.")}</p><button class="btn" data-point="${id}">${T("Rámutatok: ő volt!")}</button></div>` : ""}${A.susCard(sus(id))}${close}`;
     if (kind === "help") return helpHtml();
@@ -392,7 +423,8 @@ window.MM_WORLD_ENGINE = function (A) {
     const zb = card.querySelector("[data-zoom]"); if (zb) zoomInto(zb, id, kind);
     card.querySelectorAll("[data-point]").forEach(b => b.onclick = () => {
       if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = T("Biztos vagy benne? Ha ártatlan, nincs visszaút. Kattints újra!"); b.classList.add("danger"); return; }
-      const sid = b.dataset.point, ov = document.querySelector(".wdlg"); if (ov) ov.remove(); dlg = null; A.pointAt(sid);
+      const sid = b.dataset.point, ov = document.querySelector(".wdlg"); if (ov) ov.remove(); dlg = null;
+      if (W().chase && A.culprit && sid === A.culprit() && !S().chase) startChase(sid); else A.pointAt(sid);
     });
     if (kind === "npc") A.bindGyan(card);
     if (kind === "puzzle") A.bindPuzzleIn(card);
@@ -533,7 +565,7 @@ window.MM_WORLD_ENGINE = function (A) {
     list.forEach(o => {
       if (o.f) { const r = w.sprites[o.f.s]; if (r && at.complete) g.drawImage(at, r[0], r[1], r[2], r[3], o.f.x, o.f.y, r[2], r[3]); }
       else if (o.n) {
-        const p = pos(o.n); drawChar(g, o.n.id, p.x, p.y, p.dir, p.moving, t, { sit: o.n.sit, dy: o.n.dy, still: o.n.static, lie: o.n.lie, ph: o.n.x * 3 });
+        const p = pos(o.n); drawChar(g, o.n.id, p.x, p.y, p.dir, p.moving, t, { sit: o.n.sit, dy: o.n.dy, still: o.n.static || downed(o.n), lie: o.n.lie || downed(o.n), ph: o.n.x * 3 });
         if (!still && nervous(o.n) && Math.sin(t * 3 + p.x) > .3) { g.fillStyle = "#9fd4ff"; g.fillRect(Math.round(p.x) + 5, Math.round(p.y) - 27, 2, 3); g.fillRect(Math.round(p.x) + 5, Math.round(p.y) - 28, 1, 1); }
       }
       else if (o.sh) drawShadow(g, t);
@@ -660,7 +692,8 @@ window.MM_WORLD_ENGINE = function (A) {
     if (!dlg) S().wsec = (S().wsec || 0) + dt;
     if (gathering() && !S().wgath) startGather();
     updNpcs(dt); updBark(now); updTalk(now); updShadow(dt); sounds(now, moved);
-    if (now > (updClock.n || 0)) { updClock.n = now + 500; updClock(now); updThought(); }
+    if (now > (updClock.n || 0)) { updClock.n = now + 500; updClock(now); updThought(); updDanger(); }
+    updChase(dt);
     const n2 = dlg ? null : findNear();
     if ((n2 && n2.id) !== (near && near.id)) { near = n2; hud(); } else near = n2;
     actButton();
@@ -700,9 +733,10 @@ window.MM_WORLD_ENGINE = function (A) {
   /* ---------- a motor felé ---------- */
   function ensure() {
     const st = S();
-    if (P && P.case === C().id) return;
+    const rk = C().id + "|" + (st.daily || "") + "|" + (st.seed || 0);
+    if (P && P.case === rk) return;
     const sp = st.wpos && W().maps[st.wpos.map] ? st.wpos : null, s0 = W().start;
-    P = { case: C().id, map: sp ? sp.map : s0[0], x: sp ? sp.x : s0[1] * TS, y: sp ? sp.y : s0[2] * TS, dir: (sp && sp.dir) || "down", moving: false };
+    P = { case: rk, map: sp ? sp.map : s0[0], x: sp ? sp.x : s0[1] * TS, y: sp ? sp.y : s0[2] * TS, dir: (sp && sp.dir) || "down", moving: false };
     initNpcs(); dlg = null; path = null; pending = null; bark = null; talk = null;
     unstick();
   }

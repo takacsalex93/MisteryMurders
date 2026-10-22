@@ -32,6 +32,12 @@ Klasszikus, Agatha Christie modorában írt böngészős krimik, magyarul és an
 - **Szembesítés, kihallgatás, leleplezés, váratlan fordulatok, Hajnalig mód, eredménykártya.**
 - Az angol változat (`cases/en/*.js`) egyelőre ki van kapcsolva.
 
+- **Napi kihívás (`#napi`):** minden nap ugyanaz az ügy és szabály mindenkinek (Hajnalig, Mester, Noir vagy Egyetlen vád), külön mentéssel; a végén Wordle-szerű, megosztható eredmény, és sorozatszámláló.
+- **Heti rejtély:** rövid, egyhelyiséges esetek (`weekly` dátummal, a címoldal a megjelenés hetétől mutatja), mindegyik több változattal: a `variants` felülírja a nyomokat, ellentmondásokat, következtetéseket, rejtvényt, vádat és befejezést, induláskor sorsolódik.
+- **Kitüntetések és rangok:** 16 kitüntetés a címoldali irodában, rang a megoldott ügyek pontjaiból.
+- **Izgalmak:** rámutatás után a tettes a kijárat felé menekül (el lehet kapni), az Éjszakai gyorsban a pincért leütik, ha nem érsz oda időben, és két ügyben hamis bizonyíték vár (`trap` ellentmondás). A titkok helye játékonként változik.
+- **Második évad:** a záró ügy utóirata és a címoldali előzetes.
+
 ## Felépítés
 
 - `index.html` — az oldal váza, itt kell felvenni az új ügyeket

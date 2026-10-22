@@ -42,6 +42,7 @@
   },
 
   clues: {
+    nevtelen: { t: "Névtelen cédula", src: "Büfé", x: "Gépelt cédula, aláírás nélkül: „Bodó pontosan tudja, mikor esik a hetes zsák. Kérdezzék meg, hol volt a szünetben.”" },
     holttest: { t: "A színpadon", src: "Színpad", x: "{{Sárközy|sarkozy}} a {{hetes jelzésnél|hetes}} fekszik, mellette a szétrepedt {{homokzsák|homokzsak}}. A zsákot tartó {{kötél|kotel}} vége fentről lóg le. A zsák {{22:41|t2241}}-kor zuhant le. Rácz Mimi a jelzéstől egy lépésre balra állt." },
     kotel: { t: "Az elégett kötél", src: "Zsinórpadlás", x: "A kötelet nem elvágták, és nem is kopott el: átégett. A vége megpörkölődött, alatta viaszcseppek, és a korláthoz drótozva egy {{templomi gyertya|gyertya}} csonkja." },
     gyertya: { t: "Mikor gyújtották meg a gyertyát?", src: "Kellektár", x: "A gyertyát {{20:41|t2041}}-kor gyújtották meg. {{Az első szünet|szunet}} 20:35-től 20:55-ig tartott." },
@@ -57,6 +58,8 @@
     kulcs: { t: "A kulcsnapló", src: "Művészbejáró", x: "A porta kulcsnaplója szerint Rácz Mimi 20:33-kor leadta az öltözője kulcsát, és csak 20:54-kor vette fel újra. Az egész első szünetben nem volt az öltözőjében." }
   },
 contradictions: [
+    { id: "c-trap", suspect: "bodo", clue: "nevtelen", lie: false, trap: true,
+      reveal: "Bodó elvörösödik, aztán felnevet: „Ezt nem én írtam. Nézze a betűket: a színházban egyetlen írógép van, az igazgatói irodában, oda nekem nincs kulcsom. Valaki rám akarta terelni a gyanút.” A cédula hamis nyom volt." },
     {"id": "c-mimi", "suspect": "mimi", "clue": ["szunet"], "reveal": "Mimi felcsattan: „Jó, nem az {{öltözőben|oltozo}} voltam! Csak… friss levegőt akartam.” Hogy hol, azt nem mondja meg."},
     {"id": "c-mimi2", "suspect": "mimi", "clue": ["felnezett", "sugo"], "reveal": "Mimi elsápad: „Bárki felnéz, ha recseg valami!”"},
     {"id": "c-kalman", "suspect": "kalman", "clue": ["level"], "gives": "hetes", "reveal": "Kálmán leül: „A lányom… Igen, tudtam az eljegyzésről. És a hetes jelzést nem én találtam ki. Mimi kérte délután, hogy Iván ott álljon, mert ott szebb a fény.”"},
@@ -80,9 +83,10 @@ contradictions: [
       decoys: { kardok: "Fából vannak, ezüstre festve. Egyik sem vág.", lista: "„Templomi gyertya, 7 db — III. felvonás.” Valaki áthúzta a hetest, és odaírta: 6." },
       requires: "kotel", puzzle: "gyertya" },
     { id: "bufe", spots: { rend: [82, 35], vass: [90, 50] }, name: "Büfé", desc: "Vörös plüss, pezsgőspoharak, a falon a szünetek rendje. A büfés még a pultnál áll.",
-      look: "Vörös plüss, pezsgőspoharak, a falon [[a szünetek rendje|rend]]. A büfés még a pultnál áll. A fogason [[Vass Tibor kabátja, a zsebéből papír kandikál ki|vass]].",
+      look: "Vörös plüss, pezsgőspoharak, a falon [[a szünetek rendje|rend]]. A büfés még a pultnál áll. A fogason [[Vass Tibor kabátja, a zsebéből papír kandikál ki|vass]]. A pulton, egy pohár alatt [[egy összehajtott, gépelt cédula|nevtelen]].",
       decoys: { rend: "I. szünet: 20:35–20:55. II. szünet: 21:50–22:05. A záró kettős 22:38-kor kezdődik." },
-      items: [{ clue: "vass", label: "Vass Tibor kabátja", text: "Kihúzod a papírt a zsebből." }],
+      items: [
+        { clue: "nevtelen", label: "A gépelt cédula", text: "Kihúzod a pohár alól." },{ clue: "vass", label: "Vass Tibor kabátja", text: "Kihúzod a papírt a zsebből." }],
       puzzle: "szunet" },
     { id: "sugolyuk", spots: { sugo: [12, 55], pletyka: [55, 72], lampa: [65, 52] }, name: "Súgólyuk", desc: "Szűk kis odú a színpad elején, egy lámpa, egy szék és a súgópéldány.",
       look: "Szűk kis odú a színpad elején, innen a színészek arcát látni, nem a hátukat. [[Lengyel Klára|sugo]] a széken ül, szívesen beszél. [[A súgópéldány alatt egy gépelt kézirat|pletyka]], a margón javítások. [[A kis lámpa|lampa]] zöld ernyővel.",

@@ -624,6 +624,14 @@
      "label": "Az első szünet"
     },
     {
+     "s": "papers",
+     "x": 38.0,
+     "b": 24.9,
+     "z": 0.6,
+     "spot": "nevtelen",
+     "label": "Egy gépelt cédula egy pohár alatt"
+    },
+    {
      "s": "table_round",
      "x": 33.0,
      "b": 29.0,

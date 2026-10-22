@@ -1,0 +1,263 @@
+{
+ "case": "heti-kering",
+ "start": [
+  "m",
+  22.0,
+  9.0
+ ],
+ "chars": [
+  "detektiv",
+  "zsuzsa",
+  "hegedus",
+  "tornai",
+  "moldovan"
+ ],
+ "maps": {
+  "m": {
+   "name": "A Gellért szálló",
+   "w": 30,
+   "h": 13,
+   "rooms": [
+    [
+     "tancterem",
+     1,
+     3,
+     18,
+     9,
+     [
+      0,
+      26
+     ],
+     [
+      22,
+      2
+     ]
+    ],
+    [
+     "terasz",
+     20,
+     3,
+     9,
+     9,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      4
+     ],
+     "Terasz"
+    ]
+   ],
+   "snd": [
+    "wood",
+    "gravel"
+   ],
+   "doors": [
+    [
+     19,
+     6,
+     1,
+     3
+    ]
+   ],
+   "weather": {
+    "terasz": "snow"
+   },
+   "objects": [
+    {
+     "s": "window_red",
+     "x": 3.0,
+     "b": 2.8,
+     "wall": true
+    },
+    {
+     "s": "window_red",
+     "x": 8.0,
+     "b": 2.8,
+     "wall": true
+    },
+    {
+     "s": "grandpiano",
+     "x": 14.0,
+     "b": 6.0,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 14.4,
+     "b": 4.2,
+     "fg": true,
+     "z": 1.9,
+     "spot": "kotta",
+     "label": "A zongorán: kotta és egy levél"
+    },
+    {
+     "s": "drums",
+     "x": 10.6,
+     "b": 5.0,
+     "spot": "dob",
+     "label": "A dobos felszerelése"
+    },
+    {
+     "s": "mic",
+     "x": 12.6,
+     "b": 5.0
+    },
+    {
+     "s": "table_round",
+     "x": 17.2,
+     "b": 8.6,
+     "fg": true
+    },
+    {
+     "s": "glass",
+     "x": 17.45,
+     "b": 8.1,
+     "fg": true,
+     "z": 0.6,
+     "spot": "pohar",
+     "label": "Moldován pezsgőspohara"
+    },
+    {
+     "s": "table_round",
+     "x": 4.0,
+     "b": 7.0,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 4.0,
+     "b": 10.6,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 9.0,
+     "b": 10.6,
+     "fg": true
+    },
+    {
+     "s": "bottle",
+     "x": 4.2,
+     "b": 6.5,
+     "fg": true,
+     "z": 0.6
+    },
+    {
+     "s": "papers",
+     "x": 4.15,
+     "b": 10.1,
+     "fg": true,
+     "z": 0.6,
+     "puzzle": "alibi",
+     "label": "A vallomások"
+    },
+    {
+     "s": "rug_purple",
+     "x": 7.4,
+     "b": 9.4,
+     "floor": true
+    },
+    {
+     "s": "plant_a",
+     "x": 1.3,
+     "b": 4.8
+    },
+    {
+     "s": "palm",
+     "x": 17.2,
+     "b": 4.8
+    },
+    {
+     "s": "bush",
+     "x": 20.4,
+     "b": 4.4
+    },
+    {
+     "s": "bush2",
+     "x": 27.4,
+     "b": 4.4
+    },
+    {
+     "s": "bench_wood",
+     "x": 23.0,
+     "b": 4.4
+    },
+    {
+     "glint": "legyezo",
+     "x": 26.0,
+     "b": 7.0,
+     "label": "Egy elejtett tolllegyező"
+    },
+    {
+     "glint": "konfetti",
+     "x": 22.4,
+     "b": 10.6,
+     "label": "Konfetti és egy elgurult trombita"
+    },
+    {
+     "glint": "korlat",
+     "x": 25.4,
+     "b": 4.8,
+     "label": "A zúzmarás korlát"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "moldovan",
+     "x": 23.6,
+     "y": 7.6,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "Moldován a hóban"
+    },
+    {
+     "id": "zsuzsa",
+     "x": 8.0,
+     "y": 8.0,
+     "dir": "right",
+     "barks": [
+      "Öt évig táncoltam vele. Öt évig!",
+      "Hideg van… olyan hideg van."
+     ]
+    },
+    {
+     "id": "hegedus",
+     "x": 12.6,
+     "y": 7.4,
+     "dir": "right",
+     "barks": [
+      "A zenekar vár. Az újév nem vár.",
+      "Ismeri a Hajnali keringőt? Mindenki ismeri."
+     ]
+    },
+    {
+     "id": "tornai",
+     "x": 3.0,
+     "y": 5.4,
+     "dir": "right",
+     "route": [
+      [
+       3,
+       5.4,
+       5
+      ],
+      [
+       7,
+       5.4,
+       5
+      ]
+     ],
+     "barks": [
+      "Botrány. A Gellértben! Szilveszterkor!",
+      "Kérem, a vendégeket ne zaklassa."
+     ]
+    }
+   ]
+  }
+ }
+}

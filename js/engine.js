@@ -6,12 +6,24 @@
   const CASES = (window.MM_CASES || []).slice().sort((a, b) => a.number - b.number);
   CASES.forEach(c => {
     Object.assign(c, (window.MM_EXTRAS || {})[c.id] || {}); I.apply(c);
+    c._raw = { clues: Object.assign({}, c.clues), words: Object.assign({}, c.words || {}) };
     // a következtetések a nyomok közé kerülnek: bizonyítékként, szembesítéshez is használhatók
     (c.deductions || []).forEach(d => { c.clues[d.id] = { t: d.t, x: d.x, src: T("Következtetés"), ded: true }; });
     // szókártyák: a gyanúsítottak nevei mindig megvannak, a többit a szövegekből kell összegyűjteni
     c.W = Object.assign({}, c.words || {});
     c.suspects.forEach(s => { if (!c.W[s.id]) c.W[s.id] = [s.short || s.name, "személy"]; });
   });
+  // változó tettes: az ügy egyik előre megírt változata; a sorsolás a mentésben marad
+  function withVariant(base, vi) {
+    if (!base.variants || !base.variants.length) return base;
+    const v = base.variants[vi % base.variants.length], { id: vid, ...vv } = v, c = Object.assign({}, base, vv);
+    c.clues = Object.assign({}, base._raw.clues, v.clues || {});
+    c.words = Object.assign({}, base._raw.words, v.words || {});
+    c.suspects = base.suspects.map(x => Object.assign({}, x, (v.suspectsPatch || {})[x.id] || {}));
+    (c.deductions || []).forEach(d => { c.clues[d.id] = { t: d.t, x: d.x, src: T("Következtetés"), ded: true }; });
+    c.W = Object.assign({}, c.words); c.suspects.forEach(x => { if (!c.W[x.id]) c.W[x.id] = [x.short || x.name, "személy"]; });
+    c.variantId = vid; return c;
+  }
   const app = document.getElementById("app");
   const $ = s => app.querySelector(s);
   const $$ = s => app.querySelectorAll(s);
@@ -112,15 +124,17 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
-  let C = null, S = null, confirmReset = false;
-  function save() { try { localStorage.setItem(KEY(C.id), JSON.stringify(S)); } catch (e) {} }
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  let C = null, S = null, confirmReset = false, SKEY = null;
+  function save() { try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
+  const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
   function gain(id) { if (id && !S.clues.includes(id)) S.clues.push(id); }
   function solve(pid) { S.solved[pid] = true; gain(C.puzzles[pid].reward); save(); SND("success"); }
   const hintsUsed = st => Object.values(st.hints).reduce((a, b) => a + b, 0);
   const pids = c => Object.keys(c.puzzles);
-  const MAXTRIES = c => c.maxTries || 3;
-  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0) - 4 * (st.rmiss || 0) - 3 * (st.wrongDed || 0));
+  const MAXTRIES = c => (S && S.onetry) ? 1 : c.maxTries || 3;
+  const score = st => Math.max(0, 100 - 20 * Math.max(0, st.tries - 1) - 6 * hintsUsed(st) - 4 * (st.wrongConf || 0) - 4 * (st.rmiss || 0) - 3 * (st.wrongDed || 0)
+    - 5 * (st.traps || 0) - 5 * (st.chase === "escaped" ? 1 : 0) - 5 * (st.dead || []).length);
   const isDed = k => C.clues[k] && C.clues[k].ded;
   const rawIds = c => Object.keys(c.clues).filter(k => !c.clues[k].ded);
   const dedsOf = c => c.deductions || [];
@@ -191,11 +205,82 @@
   /* ---------- útvonal ---------- */
   function route() {
     const id = (location.hash || "").slice(1);
+    if (id === "napi") {
+      const d = daily(), base = CASES.find(x => x.id === d.id);
+      SKEY = "mm3:" + d.id + "@" + d.key; S = loadKey(SKEY);
+      if (!S.daily) Object.assign(S, { daily: d.key, timed: d.rule.id === "timed", mode: d.rule.id === "master" || d.rule.id === "noir" ? d.rule.id : "normal", master: d.rule.id === "master" || d.rule.id === "noir", noir: d.rule.id === "noir", onetry: d.rule.id === "onetry", used: 0 });
+      if (S.variant === undefined) S.variant = Math.floor(Math.random() * 97);
+      if (S.seed === undefined) S.seed = Math.floor(Math.random() * 1e6);
+      C = withVariant(base, S.variant); save(); renderCase(); window.scrollTo({ top: 0 }); return;
+    }
     const c = CASES.find(x => x.id === id);
     if (c && !unlocked(c)) { location.hash = ""; return; }
-    if (c) { C = c; S = loadState(c.id); renderCase(); }
-    else { C = null; S = null; renderHome(); }
+    if (c) {
+      SKEY = KEY(c.id); S = loadState(c.id);
+      if (S.variant === undefined) S.variant = Math.floor(Math.random() * 97);
+      if (S.seed === undefined) S.seed = Math.floor(Math.random() * 1e6);
+      C = withVariant(c, S.variant); renderCase();
+    }
+    else { C = null; S = null; SKEY = null; renderHome(); }
     window.scrollTo({ top: 0 });
+  }
+  /* ---------- kitüntetések és rangok ---------- */
+  function badges() {
+    const sts = CASES.map(c => ({ c, st: loadState(c.id) })), won = sts.filter(x => x.st.ended === "win");
+    const main = CASES.filter(c => !c.finale && !c.weekly), log = Object.values(dailyLog()), dwins = log.filter(x => x.ended === "win").length;
+    const secretsAll = x => { const w = window.MM_WORLDS && window.MM_WORLDS[x.c.id]; return w && w.secrets && w.secrets.length && w.secrets.every(k => (x.st.secrets || []).includes(k.id)); };
+    const B = [
+      ["elso", "🔎", "Első ügy", "Oldj meg egy ügyet.", won.length > 0],
+      ["sugo", "🧠", "Súgó nélkül", "Oldj meg egy ügyet egyetlen súgó nélkül.", won.some(x => !hintsUsed(x.st))],
+      ["elsore", "⚖️", "Elsőre jó vád", "Az első vádad legyen hibátlan.", won.some(x => x.st.tries === 1)],
+      ["titok", "✶", "Minden titok", "Találd meg egy ügy mindhárom titkát.", sts.some(secretsAll)],
+      ["hazug", "🎭", "Hazugságvadász", "Leplezd le egy ügyben az összes hazugságot.", won.some(x => contra(x.c).every(k => x.st.conf.includes(k.id)))],
+      ["hajnal", "⏱", "Hajnal előtt", "Oldj meg egy ügyet időre.", won.some(x => x.st.timed)],
+      ["mester", "🎩", "Mesterdetektív", "Oldj meg egy ügyet Mester módban.", won.some(x => x.st.master && !x.st.noir)],
+      ["noir", "🌑", "Noir", "Oldj meg egy ügyet Noir módban.", won.some(x => x.st.noir)],
+      ["hibatlan", "💯", "Hibátlan", "Érj el 100 pontot.", won.some(x => score(x.st) === 100)],
+      ["elkap", "🏃", "Elkaptad", "Kapd el a menekülő tettest.", sts.some(x => x.st.chase === "caught")],
+      ["csapda", "🪤", "Nem dőltél be", "Oldj meg egy hamis bizonyítékos ügyet úgy, hogy nem dőlsz be neki.", won.some(x => contra(x.c).some(k => k.trap) && !x.st.traps)],
+      ["szal", "🥀", "A fekete szegfű nyomában", "Oldd meg mind a hat ügyet.", main.every(c => loadState(c.id).ended === "win")],
+      ["finale", "🗝", "A kör bezárul", "Oldd meg a záró ügyet.", !!FINALE && loadState(FINALE.id).ended === "win"],
+      ["heti", "📰", "Heti rejtély", "Oldj meg egy heti rejtélyt.", won.some(x => x.c.weekly)],
+      ["napi", "📅", "Napi nyomozó", "Teljesíts egy napi kihívást.", dwins > 0],
+      ["sorozat", "🔥", "Három nap egymás után", "Teljesítsd a napi kihívást három egymást követő napon.", dailyStreak() >= 3]
+    ];
+    return B.map(([id, ico, t, d, got]) => ({ id, ico, t: T(t), d: T(d), got: !!got }));
+  }
+  function newBadges() {
+    let seen = []; try { seen = JSON.parse(localStorage.getItem("mm:ach")) || []; } catch (e) {}
+    const now = badges().filter(b => b.got && !seen.includes(b.id));
+    if (!now.length) return;
+    try { localStorage.setItem("mm:ach", JSON.stringify(seen.concat(now.map(b => b.id)))); } catch (e) {}
+    now.forEach((b, i) => setTimeout(() => toast(`${b.ico} ${T("Új kitüntetés:")} ${b.t}`), 600 + i * 2400));
+  }
+  const RANKS = [[0, "Újonc"], [100, "Segédnyomozó"], [250, "Nyomozó"], [450, "Felügyelő"], [650, "Főfelügyelő"], [800, "Legenda"]];
+  function career() {
+    const pts = CASES.reduce((n, c) => { const st = loadState(c.id); return n + (st.ended === "win" ? score(st) : 0); }, 0) + Object.values(dailyLog()).reduce((n, x) => n + Math.round((x.score || 0) / 4), 0);
+    let i = 0; while (i + 1 < RANKS.length && pts >= RANKS[i + 1][0]) i++;
+    return { pts, rank: T(RANKS[i][1]), next: RANKS[i + 1] ? RANKS[i + 1][0] : null, nextName: RANKS[i + 1] ? T(RANKS[i + 1][1]) : "" };
+  }
+  /* ---------- napi kihívás: minden nap ugyanaz az ügy és szabály mindenkinek ---------- */
+  const RULES = [{ id: "timed", t: "Hajnalig, időre" }, { id: "master", t: "Mester mód: súgó és jelölés nélkül" }, { id: "noir", t: "Noir mód" }, { id: "onetry", t: "Egyetlen vád: nincs második esély" }];
+  function daily(dt) {
+    const now = dt || new Date(), key = now.getFullYear() + String(now.getMonth() + 1).padStart(2, "0") + String(now.getDate()).padStart(2, "0");
+    let h = 0; for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const pool = CASES.filter(c => !c.finale && !c.weekly);
+    return { key, id: pool[h % pool.length].id, rule: Object.assign({}, RULES[(h >> 3) % RULES.length], { t: T(RULES[(h >> 3) % RULES.length].t) }), label: now.toLocaleDateString("hu-HU") };
+  }
+  const dailyLog = () => { try { return JSON.parse(localStorage.getItem("mm:daily")) || {}; } catch (e) { return {}; } };
+  function dailyStreak() {
+    const log = dailyLog(); let n = 0; const d = new Date();
+    for (;;) { const k = daily(d).key; if (log[k] && log[k].ended === "win") { n++; d.setDate(d.getDate() - 1); } else break; }
+    return n;
+  }
+  function dailyShareText() {
+    const d = daily(), base = CASES.find(x => x.id === d.id), sc = score(S);
+    const pz = pids(C).map(p => !S.solved[p] ? "⬛" : (S.hints[p] ? "🟨" : "🟩")).join("");
+    const raw = rawIds(C), got = raw.filter(k => S.clues.includes(k)).length;
+    return `${T("Rejtélyes gyilkosságok")} · ${T("Napi kihívás")} ${d.label}\n🏛 ${base.title} · ${d.rule.t}\n${S.ended === "win" ? "⚖️ " + T("{0}. vádra", S.tries) : "❌ " + T("elszalasztva")} · 🔎 ${got}/${raw.length} · 💡 ${hintsUsed(S)}\n${pz}\n🏅 ${sc} ${T("pont")}${S.timed ? " · ⏱ " + fmtLeft(budget(C) - S.used) : ""}\n${location.origin + location.pathname}#napi`;
   }
   window.addEventListener("hashchange", route);
 
@@ -219,7 +304,7 @@
       </article>`;
     };
     const sections = LEVELS.map(([lvl, desc]) => {
-      const list = CASES.filter(c => c.difficulty === lvl);
+      const list = CASES.filter(c => c.difficulty === lvl && !c.weekly);
       if (!list.length) return "";
       return `<section class="level"><div class="level-head"><h2>${T(lvl)}</h2><p>${esc(desc)}</p></div><div class="cases">${list.map(card).join("")}</div></section>`;
     }).join("");
@@ -228,8 +313,11 @@
         <div class="topnav"><span class="meta">${T("Klasszikus krimik a böngészőben")}</span>${langSwitch()}</div>
         <h1>${T("Rejtélyes gyilkosságok")}</h1>
         <p>${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
+        ${(() => { const k = career(); return `<p class="career"><span class="stamp">${esc(k.rank)}</span> <span class="meta">${T("{0} pont", k.pts)}${k.next !== null ? " · " + T("még {0} pont: {1}", k.next - k.pts, k.nextName) : ""}</span></p>`; })()}
       </header>
-      ${window.MM_OFFICE && window.MM_WORLDS && window.MM_WORLDS.iroda ? `<section class="office"><canvas data-office aria-label="${T("A nyomozó irodája")}"></canvas><p class="meta">${T("Az irodád. A megoldott ügyek emlékei a polcra kerülnek, a fekete szegfű cédulái a parafatáblára. Kattints egy tárgyra, és újra elolvashatod az ügyét.")}</p></section>` : ""}
+      ${dailyCard()}
+      ${weeklySection()}
+      ${window.MM_OFFICE && window.MM_WORLDS && window.MM_WORLDS.iroda ? `<section class="office"><canvas data-office aria-label="${T("A nyomozó irodája")}"></canvas><p class="meta">${T("Az irodád. A megoldott ügyek emlékei a polcra kerülnek, a fekete szegfű cédulái a parafatáblára. Kattints egy tárgyra, és újra elolvashatod az ügyét.")}</p>${badgeGrid()}</section>` : ""}
       ${sections}
       ${FINALE ? threadSection() : ""}
       <section class="howto">
@@ -252,6 +340,23 @@
     bindLang(); bindGloss(); SCENE("home"); FX();
   }
 
+  function dailyCard() {
+    const d = daily(), base = CASES.find(x => x.id === d.id), st = loadKey("mm3:" + d.id + "@" + d.key), streak = dailyStreak();
+    const status = st.ended === "win" ? T("Teljesítve: {0} pont", score(st)) : st.ended ? T("Ma nem sikerült") : st.introSeen ? T("Folyamatban") : "";
+    return `<section class="daily"><div><span class="eyebrow">${T("Napi kihívás")} · ${esc(d.label)}</span><h2>${esc(base.title)}</h2><p><b>${T("A mai szabály:")}</b> ${esc(d.rule.t)}</p>
+      <p class="meta">${T("Mindenki ugyanazt kapja ma. Holnap új ügy és új szabály jön.")}${streak ? " · 🔥 " + T("{0} nap egymás után", streak) : ""}</p></div>
+      <div class="dstat">${status ? `<span class="stamp">${esc(status)}</span>` : ""}<a class="btn" href="#napi">${T(st.ended ? "Megnézem" : st.introSeen ? "Folytatom" : "Elfogadom a kihívást")} →</a></div></section>`;
+  }
+  function weeklySection() {
+    const today = new Date(), wk = CASES.filter(c => c.weekly && new Date(c.weekly) <= today).sort((a, b) => b.weekly.localeCompare(a.weekly));
+    if (!wk.length) return "";
+    const card = (c, cur) => { const st = loadState(c.id); return `<article class="casecard weekly ${cur ? "current" : ""}">${st.ended === "win" ? `<span class="stamp">${T("Megoldva")}</span>` : ""}<span class="eyebrow">${cur ? T("E heti rejtély") : T("Korábbi hét")} · ${esc(c.weeklyLabel || "")}</span><h2>${esc(c.title)}</h2><p>${esc(c.teaser)}</p><div class="row"><a class="btn" href="#${c.id}">${T(st.ended === "win" ? "Újrajátszom" : st.clues.length ? "Folytatom" : "Nyomozás indítása")} →</a></div></article>`; };
+    return `<section class="level weeklies"><div class="level-head"><h2>${T("Heti rejtély")}</h2><p>${T("Minden héten egy új, rövid eset egyetlen helyszínnel. Minden újrakezdésnél másik változat jöhet: más lehet a tettes.")}</p></div><div class="cases">${wk.map((c, i) => card(c, i === 0)).join("")}</div></section>`;
+  }
+  function badgeGrid() {
+    const b = badges();
+    return `<div class="badges"><span class="eyebrow">${T("Kitüntetések: {0} / {1}", b.filter(x => x.got).length, b.length)}</span><div class="bgrid">${b.map(x => `<div class="badge ${x.got ? "got" : ""}" title="${esc(x.d)}"><span class="bico">${x.got ? x.ico : "?"}</span><b>${esc(x.t)}</b><span class="meta">${esc(x.d)}</span></div>`).join("")}</div></div>`;
+  }
   function threadSection() {
     const n = THREAD.filter(wonCase).length, open = n === THREAD.length;
     const st = loadState(FINALE.id);
@@ -263,10 +368,11 @@
       : `<article class="casecard finale locked"><span class="eyebrow">${T("{0}. ügy", FINALE.number)} · ${T("Zárás")}</span><h2>${T("Lezárt ügy")}</h2>
           <p>${T("Mind a hat ügy végén egy préselt fekete szegfű és egy cédula vár. Ha mindet megtalálod, kiderül, ki áll mögöttük.")}</p>
           <span class="meta">${T("{0} / {1} cédula", n, THREAD.length)}</span></article>`;
+    const s2 = st.ended === "win" ? `<article class="casecard finale locked season2"><span class="eyebrow">${T("2. évad")}</span><h2>${T("A vörös pecsét")}</h2><p>${T("Fekete Szilárd a börtönben hallgat. De a cellájában valaki egy vörös viaszpecsétes levelet hagyott. Hamarosan.")}</p></article>` : "";
     return `<section class="level thread"><div class="level-head"><h2>${T("A titkos szál")}</h2><p>${T("Hat gyilkosság, hat cédula, egy aláírás: F. Sz.")}</p></div>
       <div class="cnotes">${THREAD.map(c => noteCard(c, wonCase(c))).join("")}</div>
       ${glossary()}
-      <div class="cases">${finaleCard}</div></section>`;
+      <div class="cases">${finaleCard}${s2}</div></section>`;
   }
   // a cédulákon látott jelek szótára: a jelentést a játékos következteti ki, a játék csak csoportosan ellenőrzi
   function glossary() {
@@ -310,10 +416,14 @@
     $$("[data-tab]").forEach(b => b.onclick = () => { S.tab = b.dataset.tab; S.loc = null; confirmReset = false; save(); renderCase(); });
     $("[data-reset]").onclick = () => {
       if (!confirmReset) { confirmReset = true; renderCase(); return; }
-      confirmReset = false; S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 });
+      confirmReset = false; const dl = S.daily; S = fresh(); if (dl) S.daily = undefined; save(); route();
     };
     BIND[S.tab] && BIND[S.tab]();
     bindCoach(); bindLang(); notesUI(true);
+    if (S.daily && S.ended && !S.dailyRec) { const log = dailyLog(); log[S.daily] = { id: C.id, ended: S.ended, score: S.ended === "win" ? score(S) : 0 }; try { localStorage.setItem("mm:daily", JSON.stringify(log)); } catch (e) {} S.dailyRec = 1; save(); }
+    if (S.ended) newBadges();
+    const dc = document.querySelector("[data-dcopy]");
+    if (dc) dc.onclick = () => { const t = dailyShareText(), m = document.querySelector("[data-dmsg]"); try { navigator.clipboard.writeText(t).then(() => { m.className = "msg ok"; m.textContent = T("Kimásolva, beillesztheted bárhová."); }); } catch (e) { m.textContent = T("Jelöld ki és másold ki a fenti szöveget."); } };
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
     else checkEvents();
     const sl = S.loc || (worldOn() && S.cur);
@@ -623,6 +733,10 @@
     const finish = () => { clearInterval(t); box.textContent = full; choose.hidden = false; ov.querySelector("[data-skip]").hidden = true; const b = ov.querySelector("[data-mode]"); if (b) b.focus(); };
     if (reduce) finish(); else t = setInterval(() => { i += 2; box.textContent = full.slice(0, i); if (i % 6 === 0) SND("tick"); if (i >= full.length) finish(); }, 28);
     ov.querySelector("[data-skip]").onclick = finish;
+    if (S.daily) {
+      const d = daily(); choose.innerHTML = `<p class="meta">${T("Napi kihívás · {0}", d.label)}</p><p><b>${T("A mai szabály:")}</b> ${esc(d.rule.t)}</p><div class="row"><button class="btn" data-dstart>${T("Indulás")}</button></div><p class="meta">${T("Mindenki ugyanazt az ügyet kapja ma, ugyanazzal a szabállyal. A végén megoszthatod az eredményedet.")}</p>`;
+      choose.querySelector("[data-dstart]").onclick = () => { S.introSeen = true; save(); ov.remove(); renderCase(); };
+    }
     ov.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { S.introSeen = true; S.timed = b.dataset.mode === "timed"; const lv = (ov.querySelector("input[name=lvl]:checked") || {}).value || "normal"; S.mode = lv; S.master = lv !== "normal"; S.noir = lv === "noir"; S.used = 0; save(); ov.remove(); renderCase(); });
     requestAnimationFrame(() => ov.classList.add("on"));
   }
@@ -742,6 +856,8 @@
       ${revealOnly ? "" : aftermath()}
       ${revealOnly ? "" : missedHtml()}
       ${stats}</div>
+      ${revealOnly ? "" : dailyBox()}
+      ${!revealOnly && C.sequel ? `<div class="sequel"><span class="eyebrow">${T("Utóirat")}</span>${C.sequel.map(p => `<p>${esc(p)}</p>`).join("")}<p class="meta">${T("A második évad hamarosan.")}</p></div>` : ""}
       <div class="row"><a class="btn" href="#">${T("Vissza az ügyekhez")}</a>${revealOnly ? `<button class="btn ghost" data-restart>${T("Újrakezdem az ügyet")}</button>` : `<button class="btn ghost" data-share>${T("Eredménykártya")}</button>`}</div></div>`;
   }
   function viewReveal() {
@@ -813,8 +929,12 @@
         : names.length ? T("Nem mindenki titka került napvilágra. {0} elhallgatott valamit, amire sosem kérdeztél rá, és ez a titok velük együtt távozott a házból.", names.join(", ")) : T("Minden hazugságot leleplezted, de nem minden következtetést vontál le.")}</p>
       ${dt ? `<p class="meta">${T("Levont következtetések: {0} / {1}", dn, dt)} · ${T("{0}/{1} ellentmondás", S.conf.length, contra(C).length)}</p>` : ""}</div>`;
   }
+  function dailyBox() {
+    if (!S.daily) return "";
+    return `<div class="dailybox"><span class="eyebrow">${T("Napi kihívás")}</span><pre class="typed" data-dtext>${esc(dailyShareText())}</pre><div class="row"><button class="btn" data-dcopy>${T("Eredmény másolása")}</button><a class="btn ghost" href="#">${T("Vissza a címoldalra")}</a></div><p class="msg" data-dmsg></p></div>`;
+  }
   function viewLose() {
-    return `<div class="stack"><div class="ending lost"><span class="stamp" style="align-self:flex-start">${T("Elszalasztva")}</span>
+    return `<div class="stack">${dailyBox()}<div class="ending lost"><span class="stamp" style="align-self:flex-start">${T("Elszalasztva")}</span>
       <h2>${T(S.ended === "timeout" ? "Megérkeztek a csendőrök." : "A tettes kicsúszott a kezeid közül.")}</h2>
       <p>${T(S.ended === "timeout" ? "Kifutottál az időből. Hajnalban megérkeztek a csendőrök, és a bizonyítékok hiányában mindenkit elengedtek. A gyilkos még aznap reggel eltűnt." : "Harmadszor sem állt meg a vád. Reggel megérkeztek a csendőrök, de a bizonyítékok addigra összekuszálódtak, és a gyilkos szabadon távozott. Ilyen is előfordul a legjobbakkal.")}</p>
       <p>${T("Újrakezdheted az ügyet tiszta lappal, vagy megnézheted, mi történt valójában.")}</p></div>
@@ -1057,6 +1177,7 @@
         const s = C.suspects.find(x => x.id === sid), first = s.short || (LANG === "en" ? s.name.split(" ")[0] : s.name.split(" ").slice(-1)[0]);
         if (!clue) { m.className = "msg bad"; m.textContent = T("Előbb válassz egy nyomot."); return; }
         const hit = contra(C, sid).find(k => !S.conf.includes(k.id) && has(k.clue, clue));
+        if (hit && hit.trap) { S.conf.push(hit.id); S.traps = (S.traps || 0) + 1; save(); SND("wrong"); toast(T("Bedőltél egy hamis bizonyítéknak!")); spend(COST.confront); renderCase(); return; }
         if (hit) { S.conf.push(hit.id); S.wrongBy[sid] = 0; if (hit.gives) gain(hit.gives); save(); SND(hit.lie === false ? "success" : "stamp"); spend(COST.confront); renderCase(); return; }
         if (contra(C, sid).some(k => S.conf.includes(k.id) && has(k.clue, clue))) { m.className = "msg"; m.textContent = T("Ezt már tisztáztátok."); return; }
         S.wrongConf = (S.wrongConf || 0) + 1; S.wrongBy[sid] = (S.wrongBy[sid] || 0) + 1;
@@ -1168,7 +1289,7 @@
         m.className = "msg bad"; m.textContent = T("{0} felnevet: „Ez semmit sem bizonyít!” A teremben morajlás támad.", who ? (who.short || (LANG === "en" ? who.name.split(" ")[0] : who.name.split(" ").slice(-1)[0])) : T("Valaki"));
       };
       $$("[data-share]").forEach(b => b.onclick = shareCard);
-      $$("[data-restart]").forEach(b => b.onclick = () => { S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 }); });
+      $$("[data-restart]").forEach(b => b.onclick = () => { S = fresh(); save(); route(); });
       $$("[data-reveal]").forEach(b => b.onclick = () => { S.ended = "reveal"; save(); renderCase(); window.scrollTo({ top: 0 }); });
       const btn = $("[data-accuse]"); if (!btn) return;
       bindSentences(app);
@@ -1193,9 +1314,10 @@
   // a pixelvilág a motor belső függvényeit ezen keresztül éri el
   const WORLD = window.MM_WORLD_ENGINE ? window.MM_WORLD_ENGINE({
     get C() { return C; }, get S() { return S; }, save, T, esc, rich, plain, ART, SND, toast, gain, spend, COST, remaining, itemOf,
-    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote, updateCoach, ready: () => ready(), pointAt, go, pendingDed: () => dedsOf(C).filter(d => !S.clues.includes(d.id) && !S.unl.includes(d.id) && haveAny(d.from[0]) && haveAny(d.from[1])).map(d => d.id)
+    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote, updateCoach, ready: () => ready(), pointAt, go, culprit: () => culpritId(), pendingDed: () => dedsOf(C).filter(d => !S.clues.includes(d.id) && !S.unl.includes(d.id) && haveAny(d.from[0]) && haveAny(d.from[1])).map(d => d.id)
   }) : null;
   window.MM_WORLD = WORLD;
+  window.MM_DEBUG = { C: () => C, S: () => S };
 
   route();
 })();

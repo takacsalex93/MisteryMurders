@@ -403,5 +403,74 @@
     "08_Detective_Hat_03"
    ]
   }
+ },
+ "heti-oras": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "kun": {
+   "body": "03",
+   "outfit": "10_02",
+   "hair": "02_04"
+  },
+  "bardos": {
+   "body": "02",
+   "outfit": "26_02",
+   "hair": "03_05",
+   "acc": [
+    "16_Monocle_01"
+   ]
+  },
+  "szalai": {
+   "body": "01",
+   "outfit": "28_04",
+   "hair": "15_03"
+  },
+  "oras": {
+   "body": "04",
+   "outfit": "18_03",
+   "hair": "08_05",
+   "acc": [
+    "15_Glasses_01"
+   ]
+  }
+ },
+ "heti-kering": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "zsuzsa": {
+   "body": "01",
+   "outfit": "24_03",
+   "hair": "16_04"
+  },
+  "hegedus": {
+   "body": "02",
+   "outfit": "06_01",
+   "hair": "01_04"
+  },
+  "tornai": {
+   "body": "03",
+   "outfit": "27_02",
+   "hair": "03_05",
+   "acc": [
+    "12_Mustache_04"
+   ]
+  },
+  "moldovan": {
+   "body": "02",
+   "outfit": "06_02",
+   "hair": "02_02"
+  }
  }
 }

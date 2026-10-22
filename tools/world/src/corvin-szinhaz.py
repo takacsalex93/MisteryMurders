@@ -55,7 +55,7 @@ fsz = {
   # büfé
   o("counter", 31.4, 25.4), o("counter", 35.4, 25.4), o("glass", 32.0, 24.9, z=0.6), o("glass", 33.0, 24.9, z=0.6), o("bottle", 36.4, 24.9, z=0.6),
   o("notice", 40.0, 23.6, wall=True, spot="rend", label="A szünetek rendje"),
-  o("papers", 34.0, 24.9, z=0.6, puzzle="szunet", label="Az első szünet"),
+  o("papers", 34.0, 24.9, z=0.6, puzzle="szunet", label="Az első szünet"), o("papers", 38.0, 24.9, z=0.6, spot="nevtelen", label="Egy gépelt cédula egy pohár alatt"),
   o("table_round", 33.0, 29.0, fg=True), o("table_round", 38.0, 29.0, fg=True),
   o("coatrack", 41.4, 29.6, fg=True, spot="vass", label="Vass Tibor kabátja")],
  "npcs": [

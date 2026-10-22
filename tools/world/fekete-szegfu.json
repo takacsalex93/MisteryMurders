@@ -516,6 +516,12 @@
      "label": "Nedves nyomok a lépcsőfokokon"
     },
     {
+     "glint": "fenyeget",
+     "x": 32.6,
+     "b": 19.4,
+     "label": "Egy összegyűrt, gépelt levél"
+    },
+    {
      "s": "irondoor",
      "x": 31.0,
      "b": 16.4,

@@ -112,6 +112,9 @@ while True:
     solved |= new
 miss = set(LOC) - vis
 if miss: errs.append("a zárak miatt soha nem érhető el: " + ", ".join(sorted(miss)))
+for key in ("chase", "gather"):
+    g = D.get(key)
+    if g and blocked(D["maps"][g["map"]], g["x"] * TS, g["y"] * TS): errs.append(f"{key}: a pont ({g['x']}, {g['y']}) foglalt")
 # az ügy minden helyszíne, részlete és rejtvénye szerepel-e a térképen
 have_loc = {r["loc"] for m in D["maps"].values() for r in m["rooms"] if r["loc"]}
 have_spot = {t["id"] for m in D["maps"].values() for t in m["inter"] if t["k"] == "spot"} | {n["spot"] for m in D["maps"].values() for n in m["npcs"] if n.get("spot")}

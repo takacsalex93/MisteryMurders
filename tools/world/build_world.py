@@ -11,11 +11,13 @@ SPR = json.load(open(os.path.join(HERE, "sprites_px.json")))
 # hangulati kiegészítők és titkok (tools/world/src/extras.py)
 sys.path.insert(0, os.path.join(HERE, "src")); from extras import EXTRAS
 _X = EXTRAS.get(CASE, {})
-for k in ("clock", "timeline", "shadows", "gather", "fx"):
+for k in ("clock", "timeline", "shadows", "gather", "fx", "chase", "danger"):
     if k in _X: SPEC[k] = _X[k]
-SPEC["secrets"] = [{k: v for k, v in sc.items() if k not in ("map", "x", "b")} for sc in _X.get("secrets", [])]
+SPEC["secrets"] = [{k: v for k, v in sc.items() if k not in ("map", "x", "b", "alts")} for sc in _X.get("secrets", [])]
 for sc in _X.get("secrets", []):
-    SPEC["maps"][sc["map"]]["objects"].append({"glint": sc["id"], "x": sc["x"], "b": sc["b"], "label": sc["title"], "secret": True})
+    spots = [[sc["map"], sc["x"], sc["b"]]] + sc.get("alts", [])
+    for i, (mp, x, b) in enumerate(spots):
+        SPEC["maps"][mp]["objects"].append({"glint": sc["id"], "x": x, "b": b, "label": sc["title"], "secret": True, "alt": i, "nalt": len(spots)})
 TS = os.path.join(RAW, "1_Interiors/16x16/Theme_Sorter")
 RB = os.path.join(RAW, "1_Interiors/16x16/Room_Builder_subfiles")
 FLOORS = Image.open(os.path.join(RB, "Room_Builder_Floors_16x16.png")).convert("RGBA")
@@ -132,7 +134,7 @@ def build(mid, M):
     for o in objs:
         if "glint" in o:
             x, y = round(o["x"] * T), round(o["b"] * T) - 10
-            inter.append({"k": "secret" if o.get("secret") else "puzzle" if o.get("puzzle") else "spot", "id": o["glint"], "r": [x - 4, y - 2, 14, 12], "label": o.get("label", ""), "glint": True})
+            inter.append({"k": "secret" if o.get("secret") else "puzzle" if o.get("puzzle") else "spot", "id": o["glint"], "r": [x - 4, y - 2, 14, 12], "label": o.get("label", ""), "glint": True, **({"alt": o["alt"], "nalt": o["nalt"]} if "nalt" in o else {})})
     img.save(os.path.join(OUT_IMG, mid + ".png"), optimize=True)
     rid = [r[0] for r in rooms]
     return {"name": M["name"], "w": W, "h": H, "bg": f"images/world/{CASE}/{mid}.png",
@@ -144,7 +146,7 @@ def build(mid, M):
             "doors": M["doors"], "snd": M.get("snd", []), "windows": wins, "lights": lights, "ticks": ticks, "decals": M.get("decals", []), "talks": M.get("talks", [])}
 
 out = {"case": CASE, "start": SPEC["start"], "dark": SPEC.get("dark"), "clock": SPEC.get("clock"), "timeline": SPEC.get("timeline", []),
-       "shadows": SPEC.get("shadows", []), "gather": SPEC.get("gather"), "secrets": SPEC.get("secrets", []), "fx": SPEC.get("fx"), "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
+       "shadows": SPEC.get("shadows", []), "gather": SPEC.get("gather"), "chase": SPEC.get("chase"), "danger": SPEC.get("danger"), "secrets": SPEC.get("secrets", []), "fx": SPEC.get("fx"), "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
 for mid, M in SPEC["maps"].items(): out["maps"][mid] = build(mid, M)
 # atlasz a szabadon álló tárgyakból
 names = sorted({f["s"] for m in out["maps"].values() for f in m["fg"]} | {"door"})

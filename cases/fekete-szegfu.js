@@ -7,6 +7,9 @@
   cover: "generic",
   number: 7,
   finale: true,
+  sequel: [
+    "Három nappal később a Gyűjtőfogház igazgatója személyesen telefonált. Fekete Szilárd cellájában, a priccs alatt egy levelet találtak, amelyet senki sem vitt be neki: vörös viaszpecsét, benne egy préselt, vérvörös szegfű.",
+    "A levélben egyetlen gépelt mondat állt: „A fekete szegfű csak a tanítvány volt.”"],
   requiresAll: ["szegfu-villa", "hollos-cukraszda", "arany-griff", "ejszakai-gyors", "corvin-szinhaz", "tokaji-pince"],
   title: "A fekete szegfű",
   meta: "Budapest, Andrássy út · 1939. március 15. · Ügyszám 1939/301",
@@ -49,6 +52,7 @@
   },
 
   clues: {
+    fenyeget: { t: "Fenyegető levél", src: "Hátsó lépcső", x: "Gépelt levél, alatta Halmi Tamás aláírása: „Edit, ha beszél, megbánja.”" },
     holttest: { t: "Edit az íróasztalnál", src: "Titkárság", x: "{{Varga Edit|edit}} az íróasztalra borulva. Előtte kihűlt {{teáscsésze|tea}}, keserűmandula-szaggal. Az orvos szerint cián, a halál {{fél hét|t1830}} és háromnegyed hét között állt be. Pintér szerint Edit minden este fél hétkor {{főzött magának teát|teat}}." },
     bucsu: { t: "A búcsúlevél", src: "Titkárság", x: "Gépelt {{levél|bucsu}} Edit írógépén: „Nem bírom tovább. Bocsássatok meg.” Alatta tintával aláírva: Varga Edit. Az aláírás tintája zöldeskék, a vonal széles." },
     szegfu: { t: "Fekete szegfű a vázában", src: "Titkárság", x: "Edit asztalán egy vázában egyetlen friss, sötét, szinte fekete szegfű. A virágos szerint ilyet Pesten csak egy úr hord a gomblyukában, minden áldott nap." },
@@ -72,6 +76,8 @@
     hetedik: { t: "A hetedik cédula", src: "Sötétkamra · jelírással", x: "A fényképek mögött egy cédula, csak jelekkel írva, Fekete saját kézírásával. Megfejtve: „Ma este. Méreg. Fent. Hátsó ajtó. Pénz.” A hetedik cédula, amelyet nem küldött el senkinek: ezt a tervet maga hajtotta végre." }
   },
 contradictions: [
+    { id: "c-trap", suspect: "halmi", clue: "fenyeget", lie: false, trap: true,
+      reveal: "Halmi elsápad, aztán megkönnyebbülten felnevet: „Ez nem az én aláírásom. Nézze: én a T-t mindig áthúzom, itt meg sima vonal. Valaki rám akarja kenni.” A levél hamisítvány." },
     { id: "c-fekete", suspect: "fekete", clue: ["galos", "kulcs"], reveal: "Fekete mosolya meg sem rezdül: „Gyakran használom a hátsó lépcsőt, a kocsimtól közelebb van.”" },
     { id: "c-fekete2", suspect: "fekete", clue: ["tinta", "toll"], reveal: "„Bárki kölcsönvehette a tollamat” mondja Fekete. Közben a gomblyukában lévő sötét szegfűt igazgatja." },
     { id: "c-irma", suspect: "irma", clue: ["kesztyu"], reveal: "Irma elsápad: „Jó, itt voltam ötkor. Meg akartam kérdezni Editet, van-e a férjemnek valakije. Azt mondta, sokkal rosszabb a helyzet, de még nem mondhatja el. Fél hatkor hazamentem.”" },
@@ -111,11 +117,12 @@ contradictions: [
         { clue: "kocsma", label: "Pintér mellénye", text: "Kihúzod a papírt a zsebből." }],
       puzzle: "hol" },
     { id: "hatso", spots: { galos: [72, 72], kulcs: [67, 20], gazora: [83, 38] }, name: "Hátsó lépcső", desc: "Keskeny cselédlépcső az udvar felől, egy vasajtó, a lépcsőfokokon víz.",
-      look: "Keskeny cselédlépcső az udvar felől. [[A lépcsőfokokon nedves nyomok, felfelé és lefelé is|galos]]. Fent [[egy vasajtó, kívülről csak kulccsal nyílik|kulcs]]. A fordulóban [[egy gázóra|gazora]].",
+      look: "Keskeny cselédlépcső az udvar felől. [[A lépcsőfokokon nedves nyomok, felfelé és lefelé is|galos]]. Fent [[egy vasajtó, kívülről csak kulccsal nyílik|kulcs]]. A fordulóban [[egy gázóra|gazora]]. A lépcső alján [[egy összegyűrt, gépelt levél|fenyeget]].",
       decoys: { gazora: "Rendesen jár. A radiátoron át senki sem engedett {{gázt|gaz}} a szobákba." },
       items: [
         { clue: "galos", label: "A lépcsőfokok", text: "Leguggolsz a nyomokhoz." },
-        { clue: "kulcs", label: "A vasajtó", text: "Megvizsgálod a zárat." }] },
+        { clue: "kulcs", label: "A vasajtó", text: "Megvizsgálod a zárat." },
+        { clue: "fenyeget", label: "Az összegyűrt levél", text: "Kisimítod a papírt." }] },
     { id: "varo", spots: { ujsag: [65, 78], kesztyu: [50, 45], zseton: [45, 30] }, name: "Váróterem", desc: "Bőr kanapék, újságok, a rendőrség itt veszi fel a vallomásokat. A fogason kabátok.",
       look: "Bőr kanapék, a rendőrség itt veszi fel a vallomásokat. [[Az asztalon a mai újságok|ujsag]]. A fogason kabátok: [[egy finom női kesztyű, ibolyaillattal|kesztyu]], és [[Halmi kabátja, a zsebében valami kerek csörög|zseton]].",
       decoys: { ujsag: "Pesti Hírlap, március 15.: „A Lánchíd Rt. megvásárolta a tokaji Récsey-birtokot.” A cikk mellett Fekete fényképe. Lejjebb egy rövidhír: {{sikkasztás|sikkasztas}} gyanúja egy belvárosi ügyvédi irodában, név nélkül." },

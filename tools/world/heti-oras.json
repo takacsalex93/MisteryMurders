@@ -1,0 +1,245 @@
+{
+ "case": "heti-oras",
+ "start": [
+  "m",
+  17.0,
+  8.6
+ ],
+ "chars": [
+  "detektiv",
+  "kun",
+  "bardos",
+  "szalai",
+  "oras"
+ ],
+ "maps": {
+  "m": {
+   "name": "Az órásbolt",
+   "w": 24,
+   "h": 11,
+   "rooms": [
+    [
+     "bolt",
+     1,
+     3,
+     12,
+     7,
+     [
+      0,
+      26
+     ],
+     [
+      11,
+      18
+     ]
+    ],
+    [
+     "muhely",
+     14,
+     3,
+     9,
+     7,
+     [
+      0,
+      16
+     ],
+     [
+      22,
+      22
+     ]
+    ]
+   ],
+   "snd": [
+    "wood",
+    "wood"
+   ],
+   "doors": [
+    [
+     13,
+     6,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "clock",
+     "x": 1.6,
+     "b": 4.1
+    },
+    {
+     "s": "clock2",
+     "x": 3.0,
+     "b": 4.0
+    },
+    {
+     "s": "clock",
+     "x": 4.4,
+     "b": 4.1,
+     "spot": "orak",
+     "label": "Tizenkét falióra, mind áll"
+    },
+    {
+     "s": "clock2",
+     "x": 5.8,
+     "b": 4.0
+    },
+    {
+     "s": "clock",
+     "x": 9.2,
+     "b": 4.1
+    },
+    {
+     "s": "clock2",
+     "x": 10.6,
+     "b": 4.0
+    },
+    {
+     "s": "vitrine",
+     "x": 1.4,
+     "b": 8.4,
+     "spot": "kirakat",
+     "label": "Aranyórák a kirakatban"
+    },
+    {
+     "s": "counter",
+     "x": 6.8,
+     "b": 5.6
+    },
+    {
+     "s": "cashreg",
+     "x": 7.4,
+     "b": 5.1,
+     "z": 0.6,
+     "spot": "kassza",
+     "label": "A pénztárgép"
+    },
+    {
+     "s": "coatrack",
+     "x": 11.6,
+     "b": 9.6,
+     "spot": "kabat",
+     "label": "A fogason hagyott kabát"
+    },
+    {
+     "s": "table_round",
+     "x": 5.2,
+     "b": 9.6,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 5.3,
+     "b": 9.1,
+     "fg": true,
+     "z": 0.6,
+     "puzzle": "alibi",
+     "label": "A vallomások"
+    },
+    {
+     "s": "runner_r",
+     "x": 7.0,
+     "b": 9.95,
+     "floor": true
+    },
+    {
+     "s": "plant_a",
+     "x": 12.0,
+     "b": 5.0
+    },
+    {
+     "s": "table_wood",
+     "x": 15.2,
+     "b": 6.6,
+     "fg": true
+    },
+    {
+     "s": "ledger",
+     "x": 15.6,
+     "b": 5.2,
+     "fg": true,
+     "z": 1.5,
+     "spot": "konyv",
+     "label": "A javítási könyv"
+    },
+    {
+     "s": "glass",
+     "x": 16.7,
+     "b": 5.2,
+     "fg": true,
+     "z": 1.5,
+     "spot": "kave",
+     "label": "Egy kihűlt kávéscsésze"
+    },
+    {
+     "s": "lamp_red",
+     "x": 17.2,
+     "b": 5.4,
+     "fg": true,
+     "z": 1.3,
+     "spot": "lampa",
+     "label": "A nagyító lámpa"
+    },
+    {
+     "s": "shelf_metal",
+     "x": 20.4,
+     "b": 4.4
+    },
+    {
+     "s": "filing",
+     "x": 22.0,
+     "b": 4.6
+    },
+    {
+     "s": "chair_b",
+     "x": 16.0,
+     "b": 7.4,
+     "fg": true,
+     "nosolid": true
+    }
+   ],
+   "npcs": [
+    {
+     "id": "oras",
+     "x": 18.4,
+     "y": 8.0,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "A mester a munkapad mellett"
+    },
+    {
+     "id": "kun",
+     "x": 8.6,
+     "y": 7.4,
+     "dir": "left",
+     "barks": [
+      "Három éve söpröm ezt a boltot.",
+      "A mester sosem fizetett időben."
+     ]
+    },
+    {
+     "id": "bardos",
+     "x": 3.6,
+     "y": 6.6,
+     "dir": "right",
+     "barks": [
+      "Egy Breguet, uram, az nem óra. Az műremek.",
+      "Harminc éve gyűjtök. Engem nem lehet becsapni."
+     ]
+    },
+    {
+     "id": "szalai",
+     "x": 10.4,
+     "y": 6.2,
+     "dir": "down",
+     "barks": [
+      "A falon át mindent hallok, de mindent ám.",
+      "Kalapot, uram? Ilyen fagyban jól jönne."
+     ]
+    }
+   ]
+  }
+ }
+}
