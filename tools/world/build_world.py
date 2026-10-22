@@ -131,7 +131,7 @@ def build(mid, M):
             "solids": solids, "fg": fg, "inter": inter, "warps": warps, "npcs": M.get("npcs", []),
             "doors": M["doors"], "snd": M.get("snd", []), "lights": lights, "ticks": ticks, "decals": M.get("decals", []), "talks": M.get("talks", [])}
 
-out = {"case": CASE, "start": SPEC["start"], "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
+out = {"case": CASE, "start": SPEC["start"], "dark": SPEC.get("dark"), "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
 for mid, M in SPEC["maps"].items(): out["maps"][mid] = build(mid, M)
 # atlasz a szabadon álló tárgyakból
 names = sorted({f["s"] for m in out["maps"].values() for f in m["fg"]} | {"door"})

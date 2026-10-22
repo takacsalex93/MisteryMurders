@@ -1144,5 +1144,10 @@
     }
    ]
   }
+ },
+ "dark": {
+  "after": "aram",
+  "lit": "titkarsag",
+  "msg": "Lukács gyertyával érkezik. A házban újra pislákol a fény."
  }
 }

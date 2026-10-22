@@ -83,23 +83,25 @@ window.MM_WORLD_ENGINE = function (A) {
     });
     return best;
   }
-  const isDark = () => (S().events || []).includes("aram") && !S().wlit;
+  // áramszünet: az ügy világleírása mondja meg, melyik fordulat után sötétül el a ház, és hol tér vissza a fény
+  const DK = () => W().dark;
+  const isDark = () => !!DK() && (S().events || []).includes(DK().after) && !S().wlit;
 
   /* ---------- helyiségzár ---------- */
   function lockMsg(locId) {
     const L = locById(locId), st = S(), cur = st.cur && locById(st.cur);
     if (!L) return null;
     if (L.requires && !st.solved[L.requires]) return T("Az ajtó zárva: {0}. Előbb máshol kell továbbjutnod.", L.name);
-    if (cur && cur.id !== locId && A.remaining(cur)) return T("Előbb fejezd be itt: {0}. Valami még elkerülte a figyelmedet.", cur.name);
+    if (cur && cur.id !== locId && A.remaining(cur)) return T("Még nem mehetsz tovább: itt, a(z) {0} helyiségben még {1} nyom vár rád. Keresd a csillogó dolgokat!", cur.name, A.remaining(cur));
     return null;
   }
   function say(msg) { const n = performance.now(); if (n - lastToast > 1600) { lastToast = n; SFX("wrong"); A.toast(msg); } }
   function enterLoc(locId) {
     const st = S(); st.cur = locId; A.save(); banner(locById(locId).name); hud();
     window.MM_AUDIO && window.MM_AUDIO.setScene((C().sounds || {})[locId] || C().sound);
-    if (isDark() && locId === "titkarsag") {
+    if (isDark() && locId === DK().lit) {
       st.wlit = true; A.save(); SFX("door");
-      A.toast(T("Lukács gyertyával érkezik. A házban újra pislákol a fény."));
+      A.toast(DK().msg || T("Visszatér a fény."));
     }
     st.wvis = st.wvis || [];
     if (!st.wvis.includes(locId)) { st.wvis.push(locId); A.save(); if (!document.querySelector(".intro:not(.wdlg)")) openDlg("scene", locId); }
@@ -108,29 +110,34 @@ window.MM_WORLD_ENGINE = function (A) {
   /* ---------- mozgás ---------- */
   function tryMove(dx, dy) {
     const m = map(); let moved = false;
+    const ox = P.x, oy = P.y;
     const step = (nx, ny) => {
       const box = [nx - 5, ny - 6, 10, 6], ld = lockedDoors(m).find(d => overlap(box, d.r));
       if (ld) { say(T("Az ajtó zárva: {0}. Előbb máshol kell továbbjutnod.", ld.L.name)); path = null; pending = null; return false; }
-      if (blocked(m, nx, ny)) return false;
-      const r1 = roomAt(m, nx, ny);
+      // ha a nyomozó valahogy beszorult (falba, tárgyba, szereplőbe), szabadon kiléphet onnan
+      if (blocked(m, nx, ny) && !blocked(m, P.x, P.y)) return false;
+      const r1 = roomAt(m, nx, ny), r0 = roomAt(m, P.x, P.y);
       if (r1 && r1.loc && r1.loc !== S().cur) {
-        const msg = lockMsg(r1.loc); if (msg) { say(msg); path = null; pending = null; return false; }
+        // ha már ebben a helyiségben áll (pl. a szöveges nézetből tért vissza), nem zárjuk ki
+        const msg = r0 && r0.loc === r1.loc ? null : lockMsg(r1.loc); if (msg) { say(msg); path = null; pending = null; return false; }
         P.x = nx; P.y = ny; enterLoc(r1.loc); return true;
       }
       P.x = nx; P.y = ny; return true;
     };
     if (dx && step(P.x + dx, P.y)) moved = true;
     if (dy && step(P.x, P.y + dy)) moved = true;
-    if (moved) checkWarp();
+    if (moved && checkWarp(ox, oy) === false) { P.x = ox; P.y = oy; }
     return moved;
   }
-  function checkWarp() {
-    const m = map(), w = m.warps.find(w => P.x > w.r[0] && P.x < w.r[0] + w.r[2] && P.y > w.r[1] && P.y < w.r[1] + w.r[3]);
+  // a lépcső csak akkor visz át, ha most lépsz rá; ha a túloldal zárva, a nyomozó visszalép oda, ahonnan jött
+  const inRect = (r, x, y) => x > r[0] && x < r[0] + r[2] && y > r[1] && y < r[1] + r[3];
+  function checkWarp(ox, oy) {
+    const m = map(), w = m.warps.find(w => inRect(w.r, P.x, P.y) && !inRect(w.r, ox, oy));
     if (!w) return;
     const [mid, tx, ty] = w.to, M2 = W().maps[mid], r = roomAt(M2, tx * TS, ty * TS);
     if (r && r.loc && r.loc !== S().cur) {
       const msg = lockMsg(r.loc);
-      if (msg) { say(msg); path = null; pending = null; P.y += 6; return; }
+      if (msg) { say(msg); path = null; pending = null; return false; }
     }
     P.map = mid; P.x = tx * TS; P.y = ty * TS; path = null; pending = null; fade = 1; SFX("stairs"); savePos(true);
     bark = null; talk = null; sub(null);
@@ -265,8 +272,25 @@ window.MM_WORLD_ENGINE = function (A) {
       return `${head}<p>${A.rich(L.decoys[id])}</p><p class="meta">${T("Nem tűnik nyomnak. De ki tudja.")}</p>${close}`;
     }
     if (kind === "npc") return `${A.susCard(sus(id))}${close}`;
+    if (kind === "help") return helpHtml();
     if (kind === "puzzle") return `<div class="item" data-puzzle="${id}">${A.renderPuzzle(id)}</div>${st.solved[id] ? close : `<div class="row"><button class="link" data-wclose>${T("Később folytatom")}</button></div>`}`;
     return close;
+  }
+  function helpHtml() {
+    const row = (ico, h, p) => `<li><span class="w-ico">${ico}</span><div><b>${h}</b><p>${p}</p></div></li>`;
+    return `<span class="eyebrow">${T("Útmutató")}</span><h2>${T("Így nyomozol a térképen")}</h2>
+      <ol class="w-helplist">
+        ${row("🚶", T("Mozgás"), T("Nyilak vagy W A S D. Telefonon koppints oda, ahová menjen a nyomozó: magától odatalál."))}
+        ${row("✨", T("Ami csillog, azt meg lehet vizsgálni"), T("Állj mellé, és nyomd meg az E betűt, vagy a térkép alján megjelenő gombot. Vigyázz: nem minden csillogó dolog nyom, van, ami csak csali."))}
+        ${row("💬", T("Beszélgetés"), T("Akinek a feje fölött „…” buborék van, annak van még mondanivalója. Menj oda hozzá: kérdezd ki, és ha egy nyomod ellentmond a vallomásának, szembesítsd vele."))}
+        ${row("✦", T("Rejtvények"), T("Az arany kereszt rejtvényt jelöl (számzár, titkosírás, összevetés). Mindet meg kell oldanod, mielőtt vádat emelhetsz."))}
+        ${row("🔒", T("Egy helyiség egyszerre"), T("A következő helyiségbe csak akkor léphetsz be, ha az aktuálisban minden nyomot megtaláltál. A térkép alatti sor mutatja, hány van még hátra."))}
+        ${row("🃏", T("Szókártyák"), T("A nyomok szövegében az aláhúzott szavakra kattintva gyűjtöd a szókártyákat: nevek, tárgyak, helyek, időpontok."))}
+        ${row("🧵", T("Következtetés"), T("A Tábla fülön köss össze két összetartozó nyomot. Megnyílik egy hiányos mondat: a szókártyáiddal töltsd ki."))}
+        ${row("⚖️", T("Vádemelés"), T("Ha minden következtetés és rejtvény megvan, a Vádemelés fülön elmondod, mi történt. Ha ártatlant vádolsz, nincs visszaút."))}
+      </ol>
+      <p class="meta">${T("A lap tetején a „Következő lépés” sáv mindig megmondja, mi a teendő. Ezt az útmutatót a térkép sarkában lévő ? gombbal bármikor újra megnyithatod.")}</p>
+      <div class="row"><button class="btn" data-wclose>${T("Értem, kezdjük")}</button></div>`;
   }
   function openDlg(kind, id, refresh) {
     keys.clear(); path = null;
@@ -290,7 +314,8 @@ window.MM_WORLD_ENGINE = function (A) {
   }
   function closeDlg() {
     const ov = document.querySelector(".wdlg"); if (ov) ov.remove();
-    dlg = null; A.rerender();
+    const was = dlg; dlg = null; A.rerender();
+    if (was && was.kind === "help") { const r = curRoom(), st = S(); if (r && r.loc && !(st.wvis || []).includes(r.loc)) { st.wvis.push(r.loc); A.save(); openDlg("scene", r.loc); } }
   }
   // nagyító: a megvizsgált részlet pixeles közelképe
   function zoomInto(box, id) {
@@ -341,6 +366,7 @@ window.MM_WORLD_ENGINE = function (A) {
     if (!root) return;
     const h = root.parentNode.querySelector(".w-hud"), f = root.parentNode.querySelector(".w-found");
     if (h) h.innerHTML = hudHtml(); if (f) f.innerHTML = foundHtml();
+    A.updateCoach && A.updateCoach();
   }
   function actButton() {
     const b = root.querySelector(".w-act"); if (!b) return;
@@ -542,13 +568,23 @@ window.MM_WORLD_ENGINE = function (A) {
     const sp = st.wpos && W().maps[st.wpos.map] ? st.wpos : null, s0 = W().start;
     P = { case: C().id, map: sp ? sp.map : s0[0], x: sp ? sp.x : s0[1] * TS, y: sp ? sp.y : s0[2] * TS, dir: (sp && sp.dir) || "down", moving: false };
     initNpcs(); dlg = null; path = null; pending = null; bark = null; talk = null;
+    unstick();
+  }
+  // ha egy régi mentés falba vagy tárgyba tette a nyomozót, a legközelebbi szabad helyre kerül
+  function unstick() {
+    const m = map(); if (!blocked(m, P.x, P.y, true)) return;
+    for (let r = 4; r < 200; r += 4) for (let a = 0; a < 16; a++) {
+      const x = P.x + Math.cos(a / 16 * Math.PI * 2) * r, y = P.y + Math.sin(a / 16 * Math.PI * 2) * r;
+      if (!blocked(m, x, y, true) && roomAt(m, x, y) === roomAt(m, P.x, P.y)) { P.x = x; P.y = y; return; }
+    }
+    const s0 = W().start; P.map = s0[0]; P.x = s0[1] * TS; P.y = s0[2] * TS;
   }
   return {
     html() {
       ensure();
       return `<div class="stack world-wrap">
         <div class="row" style="justify-content:space-between"><span class="eyebrow">${T("Helyszínelés · {0}", esc(map().name))}</span>${A.viewSwitch ? A.viewSwitch() : ""}</div>
-        <div class="world" data-world><canvas aria-label="${T("A helyszín térképe. Nyilakkal vagy WASD-vel mozogsz, E-vel vizsgálsz.")}"></canvas><div class="w-banner" aria-live="polite"></div><div class="w-say" hidden></div><div class="w-sub" aria-live="polite" hidden></div><button class="w-act" hidden></button></div>
+        <div class="world" data-world><canvas aria-label="${T("A helyszín térképe. Nyilakkal vagy WASD-vel mozogsz, E-vel vizsgálsz.")}"></canvas><div class="w-banner" aria-live="polite"></div><div class="w-say" hidden></div><div class="w-sub" aria-live="polite" hidden></div><button class="w-act" hidden></button><button class="w-help-btn" data-whelp aria-label="${T("Útmutató")}" title="${T("Útmutató")}">?</button></div>
         <p class="w-hud">${hudHtml()}</p>
         <p class="meta">${T("Mozgás: nyilak vagy WASD, illetve koppints oda, ahová menjen a nyomozó. A csillogó dolgokat E-vel vagy a gombbal vizsgálod meg, a szereplőkkel beszélgethetsz is. Amíg egy helyiség minden nyomát meg nem találod, a következőbe nem léphetsz be.")}</p>
         <div class="w-found">${foundHtml()}</div>
@@ -564,9 +600,11 @@ window.MM_WORLD_ENGINE = function (A) {
       st.wvis = st.wvis || [];
       cv.onpointerdown = e => { e.preventDefault(); onTap(e); };
       el.querySelector(".w-act").onclick = () => { if (near) interact(near); };
+      el.querySelector("[data-whelp]").onclick = () => openDlg("help");
       [W().atlas, m.bg, ...Object.values(W().chars)].forEach(img);
       if (talk && talk.i > 0) sub(who(talk.lines[talk.i - 1][0]), talk.lines[talk.i - 1][1]);
       if (dlg) openDlg(dlg.kind, dlg.id, true);
+      else if (!st.wtut && !document.querySelector(".intro:not(.wdlg)")) { st.wtut = 1; A.save(); openDlg("help"); }
       else if (r && r.loc && !st.wvis.includes(r.loc)) { st.wvis.push(r.loc); A.save(); if (!document.querySelector(".intro:not(.wdlg)")) openDlg("scene", r.loc); }
       if (!nextFlash) nextFlash = performance.now() + 9000;
       if (!raf) { last = 0; raf = requestAnimationFrame(loop); }

@@ -296,6 +296,7 @@
         <div class="stack" style="gap:6px"><span class="meta">${esc(C.meta)}</span><h1>${esc(C.title)}</h1>${S.master ? `<span class="badge">${T(S.noir ? "Noir mód" : "Mester mód")}</span>` : ""}${S.timed && !S.ended ? `<span class="clock ${budget(C) - S.used < 60 ? "low" : ""}">⏱ ${T("Még {0} a csendőrök érkezéséig", fmtLeft(budget(C) - S.used))}</span>` : ""}</div>
         <span class="stamp">${T(S.ended === "win" ? "Ügy lezárva" : S.ended ? "Elszalasztva" : "Nyomozás folyamatban")}</span>
       </header>
+      <div class="coach" data-coachbar>${coachHtml()}</div>
       <nav class="tabs" role="tablist">${TABS.map(([id, l]) => `<button role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${l}${id === "jegy" && S.clues.length ? `<span class="count">${S.clues.length}</span>` : ""}${id === "vad" && !S.ended && !ready() ? " 🔒" : ""}</button>`).join("")}</nav>
       <main class="sheet" aria-live="polite">${VIEWS[S.tab]()}</main>
       <footer><span>${T("{0}. ügy", C.number)}</span><button data-reset>${T(confirmReset ? "Biztosan? Kattints újra a törléshez" : "Ügy újrakezdése")}</button></footer>
@@ -306,7 +307,7 @@
       confirmReset = false; S = fresh(); save(); renderCase(); window.scrollTo({ top: 0 });
     };
     BIND[S.tab] && BIND[S.tab]();
-    bindLang(); notesUI(true);
+    bindCoach(); bindLang(); notesUI(true);
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
     else checkEvents();
     const sl = S.loc || (worldOn() && S.cur);
@@ -732,6 +733,35 @@
       <div class="confront"><select id="rv-proof" aria-label="${T("Bizonyíték")}"><option value="">${T("Felmutatom a bizonyítékot…")}</option>${opts}</select><button class="btn" data-rv>${T("Felmutatom")}</button></div>
       <p class="msg" data-rvmsg></p></div>`;
   }
+  /* ---------- „Következő lépés”: mindig megmondja, mi a teendő (Mester módban nincs) ---------- */
+  const openQs = sid => ((C.interviews || {})[sid] || []).filter(q => (!q.after || S.clues.includes(q.after)) && (!q.afterConf || S.conf.includes(q.afterConf)) && !S.asked.includes(sid + ":" + q.id));
+  const haveAny = f => [].concat(f).some(x => S.clues.includes(x));
+  function nextStep() {
+    if (!C || S.ended || S.master) return null;
+    const acc = l => !l.requires || S.solved[l.requires], locOfP = p => C.locations.find(l => l.puzzle === p), world = worldOn();
+    const look = world ? T("keresd a csillogó dolgokat, és nyomd meg mellettük az E-t") : T("kattints a leírás kiemelt részleteire");
+    const cur = S.cur && C.locations.find(l => l.id === S.cur);
+    if (cur && remaining(cur)) return { t: T("Kutasd át ezt a helyiséget: {0}. Még {1} nyom van itt: {2}.", cur.name, remaining(cur), look), tab: "hely" };
+    const open = C.locations.find(l => acc(l) && remaining(l));
+    if (open) return { t: T("Menj tovább ide: {0}. Még {1} nyom vár ott.", open.name, remaining(open)), tab: "hely" };
+    const lockedL = C.locations.find(l => !acc(l));
+    if (lockedL) { const pl = locOfP(lockedL.requires); return { t: T("Zárva van: {0}. Kinyitásához oldd meg ezt a rejtvényt: {1}{2}.", lockedL.name, C.puzzles[lockedL.requires].title, pl ? ` (${pl.name})` : ""), tab: "hely" }; }
+    const up = pids(C).find(p => !S.solved[p]);
+    if (up) { const pl = locOfP(up); return { t: T("Oldd meg a rejtvényt: {0}{1}. {2}", C.puzzles[up].title, pl ? ` (${pl.name})` : "", world ? T("Az arany ✦ jel mutatja a térképen.") : ""), tab: "hely" }; }
+    const sq = C.suspects.find(x => openQs(x.id).length);
+    if (sq) return { t: T("Beszélj vele: {0}. Van még kérdésed hozzá. {1}", sq.name, world ? T("A térképen a „…” buborék jelzi.") : ""), tab: world ? "hely" : "gyan" };
+    const cf = contra(C).find(k => !S.conf.includes(k.id) && haveAny(k.clue));
+    if (cf) return { t: T("Valakinek a vallomása ütközik az egyik nyomoddal. Olvasd el újra a vallomásokat, és szembesítsd az illetőt a megfelelő nyommal (Gyanúsítottak fül)."), tab: "gyan" };
+    const dd = dedsOf(C).filter(d => !S.clues.includes(d.id) && haveAny(d.from[0]) && haveAny(d.from[1]));
+    if (dd.length) return S.unl.some(id => dd.find(d => d.id === id))
+      ? { t: T("Van egy megnyitott következtetésed. Töltsd ki a hiányos mondatot a szókártyáiddal (a nyomok szövegében aláhúzott szavak)."), tab: "jegy" }
+      : { t: T("Gondold végig a nyomokat: a Táblán köss össze piros fonallal kettőt, amelyek összetartoznak. Még {0} következtetés vár rád.", dd.length), tab: "tabla" };
+    if (ready()) return { t: T("Minden bizonyíték megvan. A Vádemelés fülön mondd el, mi történt, és nevezd meg a tettest."), tab: "vad" };
+    return null;
+  }
+  const coachHtml = () => { const n = nextStep(); return n ? `<span class="coach-k">${T("Következő lépés")}</span><span class="coach-t">${esc(n.t)}</span>${n.tab !== S.tab ? `<button class="link" data-coach="${n.tab}">${T("Odamegyek")} →</button>` : ""}` : ""; };
+  function bindCoach() { const b = document.querySelector("[data-coachbar]"); if (!b) return; b.hidden = !b.innerHTML.trim(); b.querySelectorAll("[data-coach]").forEach(x => x.onclick = () => go(x.dataset.coach)); }
+  function updateCoach() { const b = document.querySelector("[data-coachbar]"); if (b) { b.innerHTML = coachHtml(); bindCoach(); } }
   const ready = () => dedsOf(C).every(d => S.clues.includes(d.id)) && pids(C).every(p => S.solved[p]);
   const culpritId = () => [].concat(C.accusation.b[(C.accusation.who || [0])[0]])[0];
   function viewWrong() {
@@ -1125,7 +1155,7 @@
   // a pixelvilág a motor belső függvényeit ezen keresztül éri el
   const WORLD = window.MM_WORLD_ENGINE ? window.MM_WORLD_ENGINE({
     get C() { return C; }, get S() { return S; }, save, T, esc, rich, plain, ART, SND, toast, gain, spend, COST, remaining, itemOf,
-    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote
+    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote, updateCoach
   }) : null;
   window.MM_WORLD = WORLD;
 
