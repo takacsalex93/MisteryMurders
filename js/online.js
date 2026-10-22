@@ -2,8 +2,8 @@
    A beállításhoz lásd a README „Közös ranglista” részét és a supabase.sql fájlt.
    Az „anon” kulcs nyilvános: a táblát a sorszintű szabályok védik (csak olvasni és új sort beszúrni lehet). */
 window.MM_ONLINE_CONFIG = window.MM_ONLINE_CONFIG || {
-  url: "",   // pl. https://abcdefgh.supabase.co
-  key: ""    // Project Settings → API Keys → Publishable key (sb_publishable_…) vagy a régi anon public kulcs
+  url: "https://xwhzjiixivgjqtgohjdy.supabase.co",
+  key: "sb_publishable_HOScjDT3HNmtXbDvV3uCEQ_5rpw44Y5"    // Project Settings → API Keys → Publishable key (sb_publishable_…) vagy a régi anon public kulcs
 };
 window.MM_ONLINE = (function () {
   "use strict";
