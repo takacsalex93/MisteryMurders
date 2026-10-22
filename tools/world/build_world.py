@@ -13,7 +13,7 @@ RB = os.path.join(RAW, "1_Interiors/16x16/Room_Builder_subfiles")
 FLOORS = Image.open(os.path.join(RB, "Room_Builder_Floors_16x16.png")).convert("RGBA")
 WALLS = Image.open(os.path.join(RB, "Room_Builder_Walls_16x16.png")).convert("RGBA")
 OUT_IMG = os.path.join(REPO, "images/world", CASE); os.makedirs(OUT_IMG, exist_ok=True)
-OUT_CH = os.path.join(REPO, "images/world/chars"); os.makedirs(OUT_CH, exist_ok=True)
+OUT_CH = os.path.join(REPO, "images/world/chars", CASE); os.makedirs(OUT_CH, exist_ok=True)
 T = 16
 _sheets = {}
 def sheet(f): return _sheets.setdefault(f, Image.open(os.path.join(TS, f)).convert("RGBA"))
@@ -42,8 +42,10 @@ CUSTOM = {
  "coat": px(14, 12, [" oooo  oooo   ", "onnnnoonnnno  ", "onnnnnnnnnnno ", "onnnwnnnwnnno ", "onnnnwwwnnnnno", "onnnnnwnnnnnno", "onnnnnwnnnnno ", " onnnnwnnnno  ", " onnnnwnnnno  ", "  oooooooooo  ", "              ", "              "], P),
  "suitcase": px(22, 14, ["       oooooooo       ", "       o      o       ", "oooooooooooooooooooooo", "obbbbbbbbbbbbbbbbbbbbo", "obwwwwsswwwwwwrrrrrrbo", "obwsswwwwswwwwrRRRRrbo", "obwwwwwwwwwwwwrrrrrrbo", "obwwsswwwwsswwwwwwwwbo", "obwwwwwwwwwwwwwwsswwbo", "obbbbbbbbbbbbbbbbbbbbo", "oBBBBBBBBBBBBBBBBBBBBo", "obbbbbbyybbbbbbbbbbbbo", "oooooooooooooooooooooo", "                      "], P),
 }
+sys.path.insert(0, HERE); import props
 def sprite(name):
     if name in CUSTOM: return CUSTOM[name]
+    if name in props.PROPS: return props.make(name)
     f, x, y, w, h = SPR[name]; return sheet(f).crop((x, y, x + w, y + h))
 
 def build(mid, M):
@@ -112,7 +114,7 @@ def build(mid, M):
         if not (o.get("floor") or o.get("wall") or o.get("nosolid") or o.get("z")):
             sd = min(h, round(o.get("sd", 0.9) * T)); solids.append([x + 1, y + h - sd, w - 2, sd])
         if o.get("warp"):
-            wr = o.get("wr") or [0, h - 24, w, 24]
+            wr = o.get("wr") or [2, h - 12, w - 4, 24]
             warps.append({"r": [x + wr[0], y + wr[1], wr[2], wr[3]], "to": o["warp"], "label": o.get("label", "")})
         if o.get("light"): lights.append([x + w / 2, y + h * .6, o["light"][0], o["light"][1]])
         if o.get("tick"): ticks.append([x + w / 2, y + h])
@@ -121,13 +123,14 @@ def build(mid, M):
     for o in objs:
         if "glint" in o:
             x, y = round(o["x"] * T), round(o["b"] * T) - 10
-            inter.append({"k": "spot", "id": o["glint"], "r": [x - 4, y - 2, 14, 12], "label": o.get("label", ""), "glint": True})
+            inter.append({"k": "puzzle" if o.get("puzzle") else "spot", "id": o["glint"], "r": [x - 4, y - 2, 14, 12], "label": o.get("label", ""), "glint": True})
     img.save(os.path.join(OUT_IMG, mid + ".png"), optimize=True)
     rid = [r[0] for r in rooms]
     return {"name": M["name"], "w": W, "h": H, "bg": f"images/world/{CASE}/{mid}.png",
             "walls": ["".join("1" if kind[y][x] == "#" else "0" for x in range(W)) for y in range(H)],
             "reg": ["".join("." if reg[y][x] is None else chr(97 + reg[y][x]) for x in range(W)) for y in range(H)],
-            "rooms": [{"loc": None if r[0].startswith("_") else r[0], "label": r[7] if len(r) > 7 else None} for r in rooms],
+            "rooms": [{"loc": None if r[0].startswith("_") else r[0], "label": r[7] if len(r) > 7 else None, "rect": r[1:5]} for r in rooms],
+            "weather": M.get("weather", {}), "fog": M.get("fog"),
             "solids": solids, "fg": fg, "inter": inter, "warps": warps, "npcs": M.get("npcs", []),
             "doors": M["doors"], "snd": M.get("snd", []), "lights": lights, "ticks": ticks, "decals": M.get("decals", []), "talks": M.get("talks", [])}
 
@@ -146,7 +149,7 @@ for n, (x, y, w, h) in pos.items(): atlas.alpha_composite(ims[n], (x, y))
 atlas.save(os.path.join(OUT_IMG, "atlas.png"), optimize=True)
 out["sprites"] = pos
 for c in SPEC["chars"]:
-    shutil.copy(os.path.join(CHARS, c + ".png"), os.path.join(OUT_CH, c + ".png")); out["chars"][c] = f"images/world/chars/{c}.png"
+    shutil.copy(os.path.join(CHARS, CASE, c + ".png"), os.path.join(OUT_CH, c + ".png")); out["chars"][c] = f"images/world/chars/{CASE}/{c}.png"
 js = "/* A tools/world/build_world.py generálja, kézzel ne szerkeszd. Grafika: LimeZu, Modern Interiors (limezu.itch.io). */\n"
 js += "(window.MM_WORLDS = window.MM_WORLDS || {})[%s] = %s;\n" % (json.dumps(CASE), json.dumps(out, ensure_ascii=False, separators=(",", ":")))
 open(os.path.join(REPO, "cases", CASE + ".world.js"), "w").write(js)

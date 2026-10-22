@@ -72,6 +72,46 @@ for mid, m in D["maps"].items():
                 x, y = (a[0] + (b[0] - a[0]) * s / k) * TS, (a[1] + (b[1] - a[1]) * s / k) * TS
                 if blocked(m, x, y): errs.append(f"{mid}: {n['id']} útvonala falon/tárgyon megy át ({x/TS:.1f}, {y/TS:.1f})"); break
     for d in m.get("decals", []): pass
+# zárak: a "requires" helyiségek csak a rejtvényük megoldása után nyílnak; játsszuk végig, hogy minden helyszín elérhető-e
+LOC = {l["id"]: l for l in Cd["locations"]}
+def reach_locked(locked):
+    seen_pts = {}; todo = [(s0[0], s0[1] * TS, s0[2] * TS)]; done = set()
+    while todo:
+        mid, x, y = todo.pop()
+        if (mid, x, y) in done: continue
+        done.add((mid, x, y)); m = D["maps"][mid]
+        gw, gh = int(m["w"] * TS // G), int(m["h"] * TS // G)
+        def ok(i, j):
+            if not (0 <= i < gw and 0 <= j < gh) or blocked(m, i * G + 2, j * G + 2): return False
+            r = room(m, i * G + 2, j * G + 2); return r is None or m["rooms"][r]["loc"] not in locked
+        st = (int(x // G), int(y // G)); seen = seen_pts.setdefault(mid, set())
+        if not ok(*st) or st in seen: continue
+        q = [st]; seen.add(st)
+        while q:
+            i, j = q.pop()
+            for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (i + di, j + dj)
+                if n in seen or not ok(*n): continue
+                seen.add(n); q.append(n)
+        for w in m["warps"]:
+            if any(w["r"][0] < i * G + 2 < w["r"][0] + w["r"][2] and w["r"][1] < j * G + 2 < w["r"][1] + w["r"][3] for i, j in seen):
+                todo.append((w["to"][0], w["to"][1] * TS, w["to"][2] * TS))
+    vis = set()
+    for mid, seen in seen_pts.items():
+        m = D["maps"][mid]
+        for i, j in seen:
+            r = room(m, i * G + 2, j * G + 2)
+            if r is not None and m["rooms"][r]["loc"]: vis.add(m["rooms"][r]["loc"])
+    return vis
+solved = set()
+while True:
+    locked = {k for k, l in LOC.items() if l.get("requires") and l["requires"] not in solved}
+    vis = reach_locked(locked)
+    new = {LOC[v]["puzzle"] for v in vis if LOC[v].get("puzzle")} - solved
+    if not new: break
+    solved |= new
+miss = set(LOC) - vis
+if miss: errs.append("a zárak miatt soha nem érhető el: " + ", ".join(sorted(miss)))
 # az ügy minden helyszíne, részlete és rejtvénye szerepel-e a térképen
 have_loc = {r["loc"] for m in D["maps"].values() for r in m["rooms"] if r["loc"]}
 have_spot = {t["id"] for m in D["maps"].values() for t in m["inter"] if t["k"] == "spot"} | {n["spot"] for m in D["maps"].values() for n in m["npcs"] if n.get("spot")}

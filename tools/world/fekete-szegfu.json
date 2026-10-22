@@ -1,0 +1,775 @@
+{
+ "case": "fekete-szegfu",
+ "start": [
+  "iroda",
+  4.0,
+  7.8
+ ],
+ "chars": [
+  "detektiv",
+  "fekete",
+  "irma",
+  "halmi",
+  "pinter",
+  "rozsa",
+  "edit"
+ ],
+ "dark": [
+  {
+   "room": "sotetkamra",
+   "tint": "red",
+   "alpha": 0.9,
+   "lamp": 54
+  }
+ ],
+ "maps": {
+  "iroda": {
+   "name": "Harmadik emelet",
+   "w": 41,
+   "h": 21,
+   "rooms": [
+    [
+     "titkarsag",
+     1,
+     3,
+     10,
+     8,
+     [
+      0,
+      20
+     ],
+     [
+      0,
+      6
+     ]
+    ],
+    [
+     "fekete_iroda",
+     12,
+     3,
+     12,
+     8,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "sotetkamra",
+     25,
+     3,
+     6,
+     8,
+     [
+      8,
+      28
+     ],
+     [
+      0,
+      30
+     ]
+    ],
+    [
+     "irattar",
+     32,
+     3,
+     8,
+     8,
+     [
+      0,
+      32
+     ],
+     [
+      11,
+      14
+     ]
+    ],
+    [
+     "varo",
+     1,
+     14,
+     12,
+     6,
+     [
+      12,
+      4
+     ],
+     [
+      0,
+      8
+     ]
+    ],
+    [
+     "_lepcsohaz",
+     14,
+     14,
+     15,
+     6,
+     [
+      8,
+      22
+     ],
+     [
+      0,
+      4
+     ],
+     "Főlépcső"
+    ],
+    [
+     "hatso",
+     30,
+     14,
+     10,
+     6,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      30
+     ]
+    ]
+   ],
+   "snd": [
+    "wood",
+    "carpet",
+    "tile",
+    "wood",
+    "stone",
+    "stone",
+    "stone"
+   ],
+   "doors": [
+    [
+     5,
+     11,
+     2,
+     3
+    ],
+    [
+     11,
+     6,
+     1,
+     2
+    ],
+    [
+     24,
+     6,
+     1,
+     2
+    ],
+    [
+     13,
+     16,
+     1,
+     2
+    ],
+    [
+     17,
+     11,
+     2,
+     3
+    ],
+    [
+     35,
+     11,
+     2,
+     3
+    ],
+    [
+     29,
+     16,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "filing",
+     "x": 1.3,
+     "b": 4.6
+    },
+    {
+     "s": "filing",
+     "x": 2.4,
+     "b": 4.6,
+     "spot": "fuzet",
+     "label": "Egy köteg iktatókönyv alatt"
+    },
+    {
+     "s": "radiator",
+     "x": 4.4,
+     "b": 3.9
+    },
+    {
+     "s": "bottle",
+     "x": 5.8,
+     "b": 3.4,
+     "z": 0.6
+    },
+    {
+     "s": "table_wood",
+     "x": 6.6,
+     "b": 7.4,
+     "fg": true
+    },
+    {
+     "s": "typewriter",
+     "x": 7.0,
+     "b": 5.9,
+     "fg": true,
+     "z": 1.6,
+     "spot": "bucsu",
+     "label": "Az írógépben maradt levél"
+    },
+    {
+     "s": "papers",
+     "x": 8.2,
+     "b": 6.0,
+     "fg": true,
+     "z": 1.5,
+     "puzzle": "alairas",
+     "label": "Az aláírás"
+    },
+    {
+     "s": "vase_flower",
+     "x": 6.5,
+     "b": 5.6,
+     "fg": true,
+     "z": 1.9,
+     "spot": "szegfu",
+     "label": "Egy váza egyetlen szál, szinte fekete virággal"
+    },
+    {
+     "s": "table_round",
+     "x": 2.4,
+     "b": 9.6,
+     "fg": true
+    },
+    {
+     "s": "compact",
+     "x": 2.65,
+     "b": 8.9,
+     "fg": true,
+     "z": 0.8,
+     "spot": "rouge",
+     "label": "Egy kis tükör és egy rúzs"
+    },
+    {
+     "s": "landscape1",
+     "x": 13.0,
+     "b": 2.5,
+     "wall": true,
+     "spot": "kepek",
+     "label": "Bekeretezett fényképek a Balatonról, Tokajról, egy színházról"
+    },
+    {
+     "s": "landscape2",
+     "x": 15.0,
+     "b": 2.5,
+     "wall": true
+    },
+    {
+     "s": "frame_s2",
+     "x": 18.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "bookcase_dark",
+     "x": 20.6,
+     "b": 4.4
+    },
+    {
+     "s": "table_dark",
+     "x": 15.6,
+     "b": 7.6,
+     "fg": true
+    },
+    {
+     "s": "calendar",
+     "x": 16.0,
+     "b": 6.0,
+     "fg": true,
+     "z": 1.6,
+     "spot": "naptar",
+     "label": "Az asztali naptár"
+    },
+    {
+     "glint": "toll",
+     "x": 16.9,
+     "b": 6.2,
+     "label": "Az íróasztalon egy töltőtoll"
+    },
+    {
+     "s": "tubchair_r",
+     "x": 13.0,
+     "b": 9.8,
+     "fg": true
+    },
+    {
+     "s": "tubchair_r",
+     "x": 19.0,
+     "b": 9.8,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 21.8,
+     "b": 9.6,
+     "fg": true
+    },
+    {
+     "s": "decanter",
+     "x": 22.05,
+     "b": 9.0,
+     "fg": true,
+     "z": 0.7,
+     "spot": "konyak",
+     "label": "Kristálykancsó konyakkal"
+    },
+    {
+     "glint": "sotetkod",
+     "x": 23.3,
+     "b": 7.8,
+     "label": "A sötétkamra ajtaja",
+     "puzzle": true
+    },
+    {
+     "s": "redlamp",
+     "x": 27.6,
+     "b": 3.6,
+     "z": 0.1,
+     "light": [
+      56,
+      "red"
+     ]
+    },
+    {
+     "s": "photoline",
+     "x": 25.6,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "table_light",
+     "x": 25.4,
+     "b": 6.6,
+     "fg": true
+    },
+    {
+     "s": "trays",
+     "x": 25.6,
+     "b": 5.0,
+     "fg": true,
+     "z": 1.7,
+     "spot": "talak",
+     "label": "Előhívótálak"
+    },
+    {
+     "s": "drinkshelf",
+     "x": 28.8,
+     "b": 4.3,
+     "spot": "cianid",
+     "label": "A vegyszerespolc"
+    },
+    {
+     "glint": "jelek",
+     "x": 28.0,
+     "b": 9.6,
+     "label": "A hetedik cédula",
+     "puzzle": true
+    },
+    {
+     "s": "bookcase_dark",
+     "x": 32.2,
+     "b": 4.4,
+     "spot": "evszam",
+     "label": "Dossziék évszámokkal"
+    },
+    {
+     "s": "bookcase_dark",
+     "x": 35.4,
+     "b": 4.4
+    },
+    {
+     "s": "bookcase_dark",
+     "x": 32.2,
+     "b": 9.4,
+     "fg": true
+    },
+    {
+     "glint": "lanchid",
+     "x": 38.6,
+     "b": 6.4,
+     "label": "A cégjegyzékek között egy vastag dosszié"
+    },
+    {
+     "s": "table_wood",
+     "x": 36.4,
+     "b": 10.2,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 36.9,
+     "b": 8.8,
+     "fg": true,
+     "z": 1.6,
+     "puzzle": "dosszie",
+     "label": "Edit dossziéja"
+    },
+    {
+     "s": "plant_pot",
+     "x": 39.0,
+     "b": 4.0
+    },
+    {
+     "s": "sofa_grey",
+     "x": 1.4,
+     "b": 15.4
+    },
+    {
+     "s": "sofa_grey",
+     "x": 5.4,
+     "b": 15.4
+    },
+    {
+     "s": "table_light",
+     "x": 3.6,
+     "b": 18.8,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 4.0,
+     "b": 17.4,
+     "fg": true,
+     "z": 1.5,
+     "spot": "ujsag",
+     "label": "A mai újságok"
+    },
+    {
+     "s": "coatrack",
+     "x": 9.4,
+     "b": 16.0,
+     "spot": "zseton",
+     "label": "Halmi kabátja a fogason"
+    },
+    {
+     "glint": "kesztyu",
+     "x": 11.0,
+     "b": 17.0,
+     "label": "Egy finom női kesztyű a fogason"
+    },
+    {
+     "s": "papers",
+     "x": 8.4,
+     "b": 19.6,
+     "nosolid": true,
+     "puzzle": "vallomas",
+     "label": "Fekete vallomása"
+    },
+    {
+     "s": "stairs",
+     "x": 21.0,
+     "b": 15.9,
+     "warp": [
+      "fsz",
+      5.0,
+      6.0
+     ],
+     "label": "Le a főlépcsőn a kapuhoz",
+     "nosolid": true
+    },
+    {
+     "s": "plant_b",
+     "x": 14.4,
+     "b": 15.4
+    },
+    {
+     "s": "plant_b",
+     "x": 27.6,
+     "b": 15.4
+    },
+    {
+     "s": "stairs",
+     "x": 37.6,
+     "b": 19.95,
+     "warp": [
+      "fsz",
+      30.5,
+      6.0
+     ],
+     "label": "Le a hátsó lépcsőn az udvarra",
+     "nosolid": true
+    },
+    {
+     "glint": "galos",
+     "x": 35.4,
+     "b": 18.6,
+     "label": "Nedves nyomok a lépcsőfokokon"
+    },
+    {
+     "s": "irondoor",
+     "x": 31.0,
+     "b": 16.4,
+     "spot": "kulcs",
+     "label": "A vasajtó"
+    },
+    {
+     "s": "gasmeter",
+     "x": 33.6,
+     "b": 13.6,
+     "wall": true,
+     "spot": "gazora",
+     "label": "A gázóra"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "edit",
+     "x": 7.6,
+     "y": 6.6,
+     "dir": "down",
+     "static": true,
+     "sit": 8,
+     "dy": -12,
+     "spot": "holttest",
+     "label": "Edit az íróasztalra borulva"
+    },
+    {
+     "id": "fekete",
+     "x": 6.0,
+     "y": 17.6,
+     "dir": "right",
+     "barks": [
+      "Harminc éve vezetem ezt az irodát. Edit a legjobb titkárnőm volt.",
+      "Kérem, legyen tapintatos. Gyászolunk."
+     ]
+    },
+    {
+     "id": "irma",
+     "x": 3.6,
+     "y": 16.4,
+     "dir": "down",
+     "barks": [
+      "Az ibolya mindig is a kedvencem volt.",
+      "A férjem sosem késik. Ma este sem késett."
+     ]
+    },
+    {
+     "id": "halmi",
+     "x": 11.2,
+     "y": 18.6,
+     "dir": "left",
+     "route": [
+      [
+       11.2,
+       18.6,
+       5
+      ],
+      [
+       11.2,
+       15.2,
+       5
+      ]
+     ],
+     "barks": [
+      "Öt éve dolgozom itt. Öt hosszú éve.",
+      "Ma ünnep van, uram. A törvényszék zárva."
+     ]
+    }
+   ]
+  },
+  "fsz": {
+   "name": "Földszint",
+   "w": 35,
+   "h": 11,
+   "rooms": [
+    [
+     "porta",
+     1,
+     3,
+     12,
+     7,
+     [
+      0,
+      32
+     ],
+     [
+      0,
+      22
+     ]
+    ],
+    [
+     "_udvar",
+     14,
+     3,
+     20,
+     7,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      16
+     ],
+     "Udvar"
+    ]
+   ],
+   "snd": [
+    "wood",
+    "gravel"
+   ],
+   "doors": [
+    [
+     13,
+     5,
+     1,
+     2
+    ]
+   ],
+   "weather": {
+    "Udvar": "rain"
+   },
+   "objects": [
+    {
+     "s": "stairs",
+     "x": 2.0,
+     "b": 4.3,
+     "warp": [
+      "iroda",
+      21.6,
+      17.6
+     ],
+     "label": "Fel a főlépcsőn",
+     "nosolid": true
+    },
+    {
+     "s": "notice",
+     "x": 6.0,
+     "b": 2.6,
+     "wall": true,
+     "spot": "nevsor",
+     "label": "A lakók névsora"
+    },
+    {
+     "s": "window",
+     "x": 9.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "table_wood",
+     "x": 8.4,
+     "b": 8.8,
+     "fg": true
+    },
+    {
+     "s": "vase_flower",
+     "x": 9.0,
+     "b": 7.2,
+     "fg": true,
+     "z": 1.6,
+     "spot": "uveg",
+     "label": "Egy szál szegfű egy befőttesüvegben"
+    },
+    {
+     "glint": "hol",
+     "x": 10.8,
+     "b": 6.8,
+     "label": "Fél hét",
+     "puzzle": true
+    },
+    {
+     "s": "chair_d",
+     "x": 11.4,
+     "b": 9.6,
+     "fg": true,
+     "nosolid": true
+    },
+    {
+     "s": "stairs",
+     "x": 30.0,
+     "b": 4.3,
+     "warp": [
+      "iroda",
+      35.0,
+      17.4
+     ],
+     "label": "Fel a hátsó lépcsőn",
+     "nosolid": true
+    },
+    {
+     "s": "barrel",
+     "x": 15.0,
+     "b": 4.4
+    },
+    {
+     "s": "barrel",
+     "x": 16.1,
+     "b": 4.4
+    },
+    {
+     "s": "cart",
+     "x": 20.0,
+     "b": 9.9,
+     "fg": true
+    },
+    {
+     "s": "crate",
+     "x": 26.0,
+     "b": 4.3
+    },
+    {
+     "s": "bin",
+     "x": 33.0,
+     "b": 4.4
+    }
+   ],
+   "npcs": [
+    {
+     "id": "rozsa",
+     "x": 5.0,
+     "y": 8.4,
+     "dir": "down",
+     "spot": "penz",
+     "barks": [
+      "Rózsa néninek szólítson, kedves.",
+      "Én csak a kaput nyitom, a többi nem az én dolgom."
+     ]
+    },
+    {
+     "id": "pinter",
+     "x": 24.0,
+     "y": 7.0,
+     "dir": "down",
+     "spot": "kocsma",
+     "route": [
+      [
+       24,
+       7,
+       6
+      ],
+      [
+       17,
+       8.4,
+       5
+      ]
+     ],
+     "barks": [
+      "Harminc éve hordom az aktákat ebben a házban.",
+      "Két fröccs, uram, nem több. Esküszöm."
+     ]
+    }
+   ]
+  }
+ }
+}

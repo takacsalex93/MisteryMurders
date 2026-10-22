@@ -58,10 +58,11 @@ window.MM_WORLD_ENGINE = function (A) {
       if (t.k === "puzzle") { if (!C().puzzles[t.id]) return; out.push({ kind: "puzzle", id: t.id, r: t.r, label: t.label || C().puzzles[t.id].title, done: !!S().solved[t.id], glint: t.glint }); }
       else out.push({ kind: "spot", id: t.id, r: t.r, label: t.label, done: itemState(t.id).done, glint: t.glint });
     });
-    walkers(m).forEach(n => {
-      const p = pos(n), r = [p.x - 8, p.y - 28, 16, 28], s = sus(n.id);
-      if (n.spot) out.push({ kind: "spot", id: n.spot, r, label: who(n.id), done: itemState(n.spot).done, npc: n });
-      else if (s) {
+    m.npcs.forEach(n => {
+      const p = pos(n), r = n.lie ? [p.x - 16, p.y - 12, 32, 16] : [p.x - 8, p.y - 28, 16, 28], s = sus(n.id);
+      // akinél nyom van (pl. a kertész), azt előbb meg kell vizsgálni; utána, ha gyanúsított, beszélgetni is lehet vele
+      if (n.spot && (!s || !itemState(n.spot).done)) out.push({ kind: "spot", id: n.spot, r, label: n.label || who(n.id), done: itemState(n.spot).done, npc: n.static ? null : n });
+      else if (s && !n.static) {
         const qs = ((C().interviews || {})[s.id] || []).filter(q => (!q.after || S().clues.includes(q.after)) && (!q.afterConf || S().conf.includes(q.afterConf)));
         out.push({ kind: "npc", id: s.id, r, label: s.name, done: !qs.some(q => !S().asked.includes(s.id + ":" + q.id)), npc: n });
       }
@@ -84,8 +85,13 @@ window.MM_WORLD_ENGINE = function (A) {
     return best;
   }
   // áramszünet: az ügy világleírása mondja meg, melyik fordulat után sötétül el a ház, és hol tér vissza a fény
-  const DK = () => W().dark;
-  const isDark = () => !!DK() && (S().events || []).includes(DK().after) && !S().wlit;
+  // szabályok: {after, lit, msg} egy fordulat után sötét, amíg a "lit" helyiségbe nem érsz; {map} mindig sötét pálya; {room, tint} sötét helyiség színes fénnyel
+  const DK = () => [].concat(W().dark || []);
+  function darkRule() {
+    const st = S(), r = P && curRoom();
+    return DK().find(k => (k.map && k.map === P.map) || (k.room && r && r.loc === k.room) || (k.after && (st.events || []).includes(k.after) && !st.wlit)) || null;
+  }
+  const isDark = () => !!darkRule();
 
   /* ---------- helyiségzár ---------- */
   function lockMsg(locId) {
@@ -99,10 +105,8 @@ window.MM_WORLD_ENGINE = function (A) {
   function enterLoc(locId) {
     const st = S(); st.cur = locId; A.save(); banner(locById(locId).name); hud();
     window.MM_AUDIO && window.MM_AUDIO.setScene((C().sounds || {})[locId] || C().sound);
-    if (isDark() && locId === DK().lit) {
-      st.wlit = true; A.save(); SFX("door");
-      A.toast(DK().msg || T("Visszatér a fény."));
-    }
+    const lr = DK().find(k => k.after && k.lit === locId && (st.events || []).includes(k.after) && !st.wlit);
+    if (lr) { st.wlit = true; A.save(); SFX("door"); A.toast(lr.msg || T("Visszatér a fény.")); }
     st.wvis = st.wvis || [];
     if (!st.wvis.includes(locId)) { st.wvis.push(locId); A.save(); if (!document.querySelector(".intro:not(.wdlg)")) openDlg("scene", locId); }
   }
@@ -235,7 +239,7 @@ window.MM_WORLD_ENGINE = function (A) {
     keys.clear(); path = null; pending = null;
     const cx = t.r[0] + t.r[2] / 2, cy = t.r[1] + t.r[3] / 2;
     P.dir = Math.abs(cx - P.x) > Math.abs(cy - P.y) ? (cx > P.x ? "right" : "left") : (cy > P.y ? "down" : "up");
-    if (t.npc) faceTo(NS[t.npc.id], P.x, P.y);
+    if (t.npc && NS[t.npc.id]) faceTo(NS[t.npc.id], P.x, P.y);
     savePos(true);
     if (t.kind === "spot") examine(t.id, t);
     else if (t.kind === "puzzle") { SFX("paper"); openDlg("puzzle", t.id); }
@@ -389,6 +393,7 @@ window.MM_WORLD_ENGINE = function (A) {
     const im = img(W().chars[id]); if (!im.complete || !im.naturalWidth) return;
     const di = DIRS[dir] ?? 3, fr = di * 6 + (opt && opt.still ? 0 : Math.floor(t * (moving ? 10 : 5) + ((opt && opt.ph) || 0)) % 6);
     const sit = (opt && opt.sit) || 0, dy = (opt && opt.dy) || 0;
+    if (opt && opt.lie) { g.save(); g.translate(Math.round(x - 16), Math.round(y + 4)); g.rotate(-Math.PI / 2); g.drawImage(im, 18 * 16, 0, 16, 32, 0, 0, 16, 32); g.restore(); return; }
     g.drawImage(im, fr * 16, moving ? 32 : 0, 16, 32 - sit, Math.round(x - 8), Math.round(y - 32 + dy), 16, 32 - sit);
   }
   function sparkle(x, y, t, col) {
@@ -429,12 +434,12 @@ window.MM_WORLD_ENGINE = function (A) {
     drawDecals(g, m); drawDoors(g, m);
     const at = img(w.atlas), list = [];
     m.fg.forEach(f => list.push({ base: f.base, f }));
-    m.npcs.forEach(n => list.push({ base: pos(n).y + (n.static ? 1 : 0), n }));
+    m.npcs.forEach(n => list.push({ base: pos(n).y + (n.lie ? 4 : n.static ? 1 : 0), n }));
     if (!still) list.push({ base: P.y, p: true });
     list.sort((a, b) => a.base - b.base);
     list.forEach(o => {
       if (o.f) { const r = w.sprites[o.f.s]; if (r && at.complete) g.drawImage(at, r[0], r[1], r[2], r[3], o.f.x, o.f.y, r[2], r[3]); }
-      else if (o.n) { const p = pos(o.n); drawChar(g, o.n.id, p.x, p.y, p.dir, p.moving, t, { sit: o.n.sit, dy: o.n.dy, still: o.n.static, ph: o.n.x * 3 }); }
+      else if (o.n) { const p = pos(o.n); drawChar(g, o.n.id, p.x, p.y, p.dir, p.moving, t, { sit: o.n.sit, dy: o.n.dy, still: o.n.static, lie: o.n.lie, ph: o.n.x * 3 }); }
       else drawChar(g, "detektiv", P.x, P.y, P.dir, P.moving, t);
     });
   }
@@ -446,7 +451,7 @@ window.MM_WORLD_ENGINE = function (A) {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = "#17131d"; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.setTransform(k, 0, 0, k, -ox, -oy); ctx.imageSmoothingEnabled = false;
     drawLayer(ctx, t);
-    const dk = isDark();
+    const rule = darkRule(), dk = !!rule;
     // ami még nincs megvizsgálva, az csillog; a rejtvény arany jelet kap; akinek van mondanivalója, annál buborék
     targets().forEach(tg => {
       if (tg.done) return;
@@ -465,6 +470,7 @@ window.MM_WORLD_ENGINE = function (A) {
       const cx = near.r[0] + near.r[2] / 2, y = Math.round(near.r[1] - (near.kind === "npc" && !near.done ? 16 : 7) + Math.sin(t * 5) * 1.5);
       ctx.fillStyle = "#ffffff"; ctx.fillRect(Math.round(cx) - 3, y, 7, 2); ctx.fillRect(Math.round(cx) - 2, y + 2, 5, 1); ctx.fillRect(Math.round(cx) - 1, y + 3, 3, 1); ctx.fillRect(Math.round(cx), y + 4, 1, 1);
     }
+    weather(m, t);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     const px = (P.x - cam.x) * k, py = (P.y - 14 - cam.y) * k;
     if (dk) {
@@ -472,17 +478,18 @@ window.MM_WORLD_ENGINE = function (A) {
       if (!dark || dark.width !== cv.width || dark.height !== cv.height) { dark = document.createElement("canvas"); dark.width = cv.width; dark.height = cv.height; }
       const d = dark.getContext("2d");
       d.globalCompositeOperation = "source-over"; d.clearRect(0, 0, dark.width, dark.height);
-      d.fillStyle = `rgba(4,4,12,${.94 * (1 - Math.min(1, flash))})`; d.fillRect(0, 0, dark.width, dark.height);
+      d.fillStyle = `rgba(4,4,12,${(rule.alpha || .94) * (1 - Math.min(1, flash))})`; d.fillRect(0, 0, dark.width, dark.height);
       d.globalCompositeOperation = "destination-out";
       const hole = (x, y, r, a) => { const gr = d.createRadialGradient(x, y, r * .25, x, y, r); gr.addColorStop(0, `rgba(0,0,0,${a})`); gr.addColorStop(1, "rgba(0,0,0,0)"); d.fillStyle = gr; d.fillRect(x - r, y - r, r * 2, r * 2); };
       const fl = 1 + Math.sin(t * 9) * .03 + Math.sin(t * 23) * .02;
-      hole(px, py, 62 * k * fl, 1);
+      hole(px, py, (rule.lamp || 62) * k * fl, 1);
       (m.lights || []).forEach(([lx, ly, lr]) => hole((lx - cam.x) * k, (ly - cam.y) * k, lr * k * (1 + Math.sin(t * 7 + lx) * .06), .95));
       ctx.drawImage(dark, 0, 0);
       ctx.globalCompositeOperation = "lighter";
-      const warm = (x, y, r, a) => { const gr = ctx.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(255,170,70,${a})`); gr.addColorStop(1, "rgba(255,170,70,0)"); ctx.fillStyle = gr; ctx.fillRect(x - r, y - r, r * 2, r * 2); };
+      const tint = rule.tint === "red" ? "255,40,40" : "255,170,70";
+      const warm = (x, y, r, a) => { const gr = ctx.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(${tint},${a})`); gr.addColorStop(1, `rgba(${tint},0)`); ctx.fillStyle = gr; ctx.fillRect(x - r, y - r, r * 2, r * 2); };
       warm(px, py, 50 * k, .10 * fl);
-      (m.lights || []).forEach(([lx, ly, lr]) => warm((lx - cam.x) * k, (ly - cam.y) * k, lr * k * .8, .16 * fl));
+      (m.lights || []).forEach(([lx, ly, lr]) => warm((lx - cam.x) * k, (ly - cam.y) * k, lr * k * .8, (rule.tint === "red" ? .35 : .16) * fl));
       ctx.globalCompositeOperation = "source-over";
     } else {
       // éjszaka és vihar: sötétkék fátyol, szélein mélyebb árnyék; gyertyafény az áramszünet után
@@ -493,6 +500,29 @@ window.MM_WORLD_ENGINE = function (A) {
     if (flash > 0) { ctx.fillStyle = `rgba(235,240,255,${Math.min(1, flash) * .5})`; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (fade > 0) { ctx.fillStyle = `rgba(10,8,16,${fade})`; ctx.fillRect(0, 0, cv.width, cv.height); }
     if (bark) sayEl(bark); else sayEl(null);
+  }
+  // időjárás a szabadtéri helyiségeken: eső, köd, hó
+  function weather(m, t) {
+    const W2 = m.weather || {}; if (!Object.keys(W2).length) return;
+    m.rooms.forEach(r => {
+      const kind = W2[r.loc || r.label]; if (!kind) return;
+      const [rx, ry, rw, rh] = r.rect.map(v => v * TS);
+      ctx.save(); ctx.beginPath(); ctx.rect(rx, ry - TS * 2, rw, rh + TS * 2); ctx.clip();
+      if (kind === "rain") {
+        ctx.strokeStyle = "rgba(190,210,240,.45)"; ctx.lineWidth = 1; ctx.beginPath();
+        for (let i = 0; i < rw * rh / 260; i++) { const x = rx + ((i * 97.3 + t * 40) % rw), y = ry - TS * 2 + ((i * 61.7 + t * 230) % (rh + TS * 2)); ctx.moveTo(x, y); ctx.lineTo(x - 2, y + 6); }
+        ctx.stroke();
+      } else if (kind === "snow") {
+        ctx.fillStyle = "rgba(255,255,255,.8)";
+        for (let i = 0; i < rw * rh / 300; i++) { const x = rx + ((i * 97.3 + Math.sin(t + i) * 6 + t * 8) % rw), y = ry + ((i * 61.7 + t * 30) % rh); ctx.fillRect(x, y, 1, 1); }
+      } else if (kind === "fog") {
+        for (let i = 0; i < 7; i++) {
+          const x = rx + ((i * 173 + t * 6 * (i % 2 ? 1 : -1)) % (rw + 160) + rw + 160) % (rw + 160) - 80, y = ry + (i * 53) % rh, R = 60 + (i % 3) * 20;
+          const g = ctx.createRadialGradient(x, y, 0, x, y, R); g.addColorStop(0, "rgba(220,226,230,.45)"); g.addColorStop(1, "rgba(220,226,230,0)"); ctx.fillStyle = g; ctx.fillRect(x - R, y - R, R * 2, R * 2);
+        }
+      }
+      ctx.restore();
+    });
   }
   function sounds(now, moved) {
     const m = map();
@@ -612,6 +642,14 @@ window.MM_WORLD_ENGINE = function (A) {
     // tesztekhez
     debug: () => ({ P, near: near && { kind: near.kind, id: near.id }, targets: targets().map(t => ({ kind: t.kind, id: t.id, done: t.done, r: t.r })), cur: S().cur, map: P && P.map, dark: isDark(), npcs: NS, talk: talk && talk.id, bark: bark && bark.id }),
     tp(mapId, x, y) { P.map = mapId; P.x = x; P.y = y; },
+    freeIn(locId) {
+      for (const [mid, m] of Object.entries(W().maps)) {
+        const pts = [];
+        for (let ty = 0; ty < m.h; ty++) for (let tx = 0; tx < m.w; tx++) { const r = regAt(m, tx, ty); if (r && r.loc === locId) { const x = tx * TS + 8, y = ty * TS + 12; if (!blocked(m, x, y) && !blocked(m, x, y + 6)) pts.push([x, y]); } }
+        if (pts.length) { const c = pts[Math.floor(pts.length / 2)]; return { map: mid, x: c[0], y: c[1] }; }
+      }
+      return null;
+    },
     interact(kind, id) { const t = targets().find(t => t.kind === kind && t.id === id); if (t) interact(t); return !!t; },
     walk(x, y) { walkTo(x, y); }
   };

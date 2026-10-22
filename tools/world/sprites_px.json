@@ -467,5 +467,145 @@
 364,
 47,
 15
+],
+"ladder_w": [
+"14_Basement_16x16.png",
+20,
+149,
+22,
+40
+],
+"poker": [
+"14_Basement_16x16.png",
+55,
+333,
+34,
+35
+],
+"tubchair_w": [
+"14_Basement_16x16.png",
+43,
+532,
+19,
+26
+],
+"tubchair_r": [
+"14_Basement_16x16.png",
+75,
+557,
+19,
+33
+],
+"tubchair_y": [
+"14_Basement_16x16.png",
+134,
+531,
+20,
+24
+],
+"basket_l": [
+"14_Basement_16x16.png",
+80,
+494,
+16,
+26
+],
+"basket_p": [
+"14_Basement_16x16.png",
+112,
+494,
+16,
+26
+],
+"stool": [
+"14_Basement_16x16.png",
+226,
+221,
+12,
+16
+],
+"bench_wood": [
+"14_Basement_16x16.png",
+108,
+221,
+40,
+22
+],
+"piano_up": [
+"6_Music_and_sport_16x16.png",
+2,
+25,
+27,
+29
+],
+"mic": [
+"6_Music_and_sport_16x16.png",
+114,
+248,
+13,
+24
+],
+"spot_l": [
+"23_Television_and_Film_Studio.png",
+74,
+0,
+17,
+40
+],
+"spot_r": [
+"23_Television_and_Film_Studio.png",
+91,
+0,
+24,
+40
+],
+"desk_rec": [
+"13_Conference_Hall_16x16.png",
+11,
+27,
+59,
+32
+],
+"runner_r": [
+"13_Conference_Hall_16x16.png",
+81,
+67,
+14,
+26
+],
+"runner_b": [
+"13_Conference_Hall_16x16.png",
+113,
+67,
+14,
+26
+],
+"bin": [
+"13_Conference_Hall_16x16.png",
+113,
+42,
+14,
+20
+],
+"vitrine": [
+"16_Grocery_store_16x16.png",
+177,
+366,
+62,
+24
+],
+"shelf_metal": [
+"16_Grocery_store_16x16.png",
+27,
+131,
+26,
+34
+],
+"mirror": [
+"2_LivingRoom_16x16.png",
+48,
+391,
+16,
+22
 ]
 }

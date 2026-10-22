@@ -9,7 +9,9 @@ SPEC = json.load(open(os.path.join(os.path.dirname(__file__), "characters.json")
 os.makedirs(OUT, exist_ok=True)
 def layer(kind, name):
     return Image.open(os.path.join(G, kind, "16x16", name + ".png")).convert("RGBA")
-for cid, s in SPEC.items():
+for case, group in SPEC.items():
+  os.makedirs(os.path.join(OUT, case), exist_ok=True)
+  for cid, s in group.items():
     parts = [layer("Bodies", "Body_" + s["body"]), layer("Eyes", "Eyes_" + s.get("eyes", "01"))]
     if s.get("outfit"): parts.append(layer("Outfits", "Outfit_" + s["outfit"]))
     if s.get("hair"): parts.append(layer("Hairstyles", "Hairstyle_" + s["hair"]))
@@ -19,5 +21,5 @@ for cid, s in SPEC.items():
     sheet = Image.new("RGBA", (384, 64))
     sheet.alpha_composite(full.crop((0, 32, 384, 64)), (0, 0))
     sheet.alpha_composite(full.crop((0, 64, 384, 96)), (0, 32))
-    sheet.save(os.path.join(OUT, cid + ".png"))
-print(len(SPEC), "szereplő")
+    sheet.save(os.path.join(OUT, case, cid + ".png"))
+print(sum(len(g) for g in SPEC.values()), "szereplő")

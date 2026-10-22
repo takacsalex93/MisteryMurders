@@ -1,10 +1,397 @@
 {
- "detektiv": {"body": "03", "outfit": "18_02", "hair": "06_04", "acc": ["08_Detective_Hat_03"]},
- "baro": {"body": "02", "outfit": "06_01", "hair": "08_05", "acc": ["12_Mustache_05"]},
- "matild": {"body": "01", "outfit": "28_01", "hair": "15_04"},
- "gabor": {"body": "02", "outfit": "22_01", "hair": "02_04"},
- "szirmai": {"body": "04", "outfit": "05_01", "hair": "01_05", "acc": ["15_Glasses_01", "12_Mustache_05"]},
- "ilona": {"body": "01", "outfit": "21_01", "hair": "11_03", "acc": ["15_Glasses_02"]},
- "lukacs": {"body": "05", "outfit": "06_02", "hair": "12_05", "acc": ["12_Mustache_01"]},
- "kertesz": {"body": "06", "outfit": "10_05", "hair": "19_05", "acc": ["13_Beard_02"]}
+ "szegfu-villa": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "baro": {
+   "body": "02",
+   "outfit": "06_01",
+   "hair": "08_05",
+   "acc": [
+    "12_Mustache_05"
+   ]
+  },
+  "matild": {
+   "body": "01",
+   "outfit": "28_01",
+   "hair": "15_04"
+  },
+  "gabor": {
+   "body": "02",
+   "outfit": "22_01",
+   "hair": "02_04"
+  },
+  "szirmai": {
+   "body": "04",
+   "outfit": "05_01",
+   "hair": "01_05",
+   "acc": [
+    "15_Glasses_01",
+    "12_Mustache_05"
+   ]
+  },
+  "ilona": {
+   "body": "01",
+   "outfit": "21_01",
+   "hair": "11_03",
+   "acc": [
+    "15_Glasses_02"
+   ]
+  },
+  "lukacs": {
+   "body": "05",
+   "outfit": "06_02",
+   "hair": "12_05",
+   "acc": [
+    "12_Mustache_01"
+   ]
+  },
+  "kertesz": {
+   "body": "06",
+   "outfit": "10_05",
+   "hair": "19_05",
+   "acc": [
+    "13_Beard_02"
+   ]
+  }
+ },
+ "arany-griff": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "lili": {
+   "body": "01",
+   "outfit": "24_01",
+   "hair": "15_02"
+  },
+  "hartmann": {
+   "body": "02",
+   "outfit": "26_01",
+   "hair": "03_04",
+   "acc": [
+    "12_Mustache_04"
+   ]
+  },
+  "margit": {
+   "body": "01",
+   "outfit": "12_02",
+   "hair": "11_03"
+  },
+  "ferenczy": {
+   "body": "03",
+   "outfit": "27_01",
+   "hair": "08_05",
+   "acc": [
+    "12_Mustache_05"
+   ]
+  },
+  "kardos": {
+   "body": "02",
+   "outfit": "18_01",
+   "hair": "02_03"
+  },
+  "liftes": {
+   "body": "03",
+   "outfit": "09_01",
+   "hair": "02_04"
+  },
+  "pultos": {
+   "body": "05",
+   "outfit": "12_01",
+   "hair": "01_04",
+   "acc": [
+    "12_Mustache_01"
+   ]
+  },
+  "anna": {
+   "body": "01",
+   "outfit": "12_03",
+   "hair": "11_01"
+  },
+  "vandor": {
+   "body": "02",
+   "outfit": "06_01",
+   "hair": "03_03"
+  }
+ },
+ "ejszakai-gyors": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "agnes": {
+   "body": "01",
+   "outfit": "28_03",
+   "hair": "11_05"
+  },
+  "wolf": {
+   "body": "02",
+   "outfit": "22_02",
+   "hair": "08_02",
+   "acc": [
+    "16_Monocle_01"
+   ]
+  },
+  "iren": {
+   "body": "01",
+   "outfit": "21_03",
+   "hair": "15_04",
+   "acc": [
+    "15_Glasses_02"
+   ]
+  },
+  "kornelia": {
+   "body": "01",
+   "outfit": "24_02",
+   "hair": "16_07"
+  },
+  "somlo": {
+   "body": "03",
+   "outfit": "05_02",
+   "hair": "02_04"
+  },
+  "bodnar": {
+   "body": "02",
+   "outfit": "27_03",
+   "hair": "08_05",
+   "acc": [
+    "06_Policeman_Hat_02",
+    "12_Mustache_05"
+   ]
+  },
+  "pincer": {
+   "body": "05",
+   "outfit": "09_01",
+   "hair": "01_03"
+  },
+  "raday": {
+   "body": "02",
+   "outfit": "06_03",
+   "hair": "08_05",
+   "acc": [
+    "12_Mustache_05"
+   ]
+  }
+ },
+ "hollos-cukraszda": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "szendrei": {
+   "body": "02",
+   "outfit": "08_01",
+   "hair": "01_04",
+   "acc": [
+    "18_Chef_01",
+    "12_Mustache_02"
+   ]
+  },
+  "hollosbela": {
+   "body": "03",
+   "outfit": "22_03",
+   "hair": "02_02"
+  },
+  "anna": {
+   "body": "01",
+   "outfit": "21_02",
+   "hair": "11_03"
+  },
+  "vilma": {
+   "body": "01",
+   "outfit": "28_04",
+   "hair": "15_05"
+  },
+  "feher": {
+   "body": "04",
+   "outfit": "18_03",
+   "hair": "08_05",
+   "acc": [
+    "13_Beard_05"
+   ]
+  },
+  "hollos": {
+   "body": "02",
+   "outfit": "08_01",
+   "hair": "08_05",
+   "acc": [
+    "12_Mustache_05"
+   ]
+  }
+ },
+ "corvin-szinhaz": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "mimi": {
+   "body": "01",
+   "outfit": "24_01",
+   "hair": "16_02"
+  },
+  "kalman": {
+   "body": "02",
+   "outfit": "26_02",
+   "hair": "03_05",
+   "acc": [
+    "15_Glasses_01"
+   ]
+  },
+  "vass": {
+   "body": "05",
+   "outfit": "10_03",
+   "hair": "01_04",
+   "acc": [
+    "13_Beard_02"
+   ]
+  },
+  "klara": {
+   "body": "01",
+   "outfit": "21_04",
+   "hair": "11_05",
+   "acc": [
+    "15_Glasses_02"
+   ]
+  },
+  "bodo": {
+   "body": "03",
+   "outfit": "22_04",
+   "hair": "02_01"
+  },
+  "sarkozy": {
+   "body": "02",
+   "outfit": "06_02",
+   "hair": "03_04"
+  }
+ },
+ "tokaji-pince": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "ilona": {
+   "body": "01",
+   "outfit": "28_02",
+   "hair": "11_04"
+  },
+  "andras": {
+   "body": "03",
+   "outfit": "18_04",
+   "hair": "02_03"
+  },
+  "gaspar": {
+   "body": "04",
+   "outfit": "10_04",
+   "hair": "08_05",
+   "acc": [
+    "13_Beard_02"
+   ]
+  },
+  "lorenz": {
+   "body": "02",
+   "outfit": "05_03",
+   "hair": "03_05",
+   "acc": [
+    "12_Mustache_04"
+   ]
+  },
+  "rozalia": {
+   "body": "01",
+   "outfit": "08_02",
+   "hair": "11_01"
+  },
+  "barany": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "01_04"
+  },
+  "kocsis": {
+   "body": "05",
+   "outfit": "10_01",
+   "hair": "01_03",
+   "acc": [
+    "11_Beanie_03"
+   ]
+  },
+  "recsey": {
+   "body": "02",
+   "outfit": "06_04",
+   "hair": "03_05",
+   "acc": [
+    "12_Mustache_05"
+   ]
+  }
+ },
+ "fekete-szegfu": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  },
+  "fekete": {
+   "body": "02",
+   "outfit": "27_02",
+   "hair": "08_05",
+   "acc": [
+    "15_Glasses_01"
+   ]
+  },
+  "irma": {
+   "body": "01",
+   "outfit": "28_01",
+   "hair": "15_05"
+  },
+  "halmi": {
+   "body": "03",
+   "outfit": "22_01",
+   "hair": "02_04"
+  },
+  "pinter": {
+   "body": "04",
+   "outfit": "26_03",
+   "hair": "08_05",
+   "acc": [
+    "12_Mustache_05"
+   ]
+  },
+  "rozsa": {
+   "body": "01",
+   "outfit": "21_01",
+   "hair": "11_05"
+  },
+  "edit": {
+   "body": "01",
+   "outfit": "21_02",
+   "hair": "15_04"
+  }
+ }
 }

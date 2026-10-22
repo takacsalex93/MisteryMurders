@@ -1,0 +1,808 @@
+{
+ "case": "ejszakai-gyors",
+ "start": [
+  "train",
+  29.4,
+  7.8
+ ],
+ "chars": [
+  "detektiv",
+  "agnes",
+  "wolf",
+  "iren",
+  "kornelia",
+  "somlo",
+  "bodnar",
+  "pincer",
+  "raday"
+ ],
+ "maps": {
+  "train": {
+   "name": "A szerelvény",
+   "w": 63,
+   "h": 15,
+   "rooms": [
+    [
+     "etkezo",
+     1,
+     3,
+     10,
+     11,
+     [
+      0,
+      26
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "kalauz",
+     13,
+     3,
+     4,
+     5,
+     [
+      0,
+      32
+     ],
+     [
+      11,
+      14
+     ]
+    ],
+    [
+     "_f1",
+     18,
+     3,
+     4,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ],
+     "1-es fülke"
+    ],
+    [
+     "_f2",
+     23,
+     3,
+     4,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ],
+     "2-es fülke"
+    ],
+    [
+     "fulke3",
+     28,
+     3,
+     4,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "mosdo",
+     33,
+     3,
+     2,
+     5,
+     [
+      0,
+      4
+     ],
+     [
+      22,
+      14
+     ]
+    ],
+    [
+     "somlo",
+     36,
+     3,
+     4,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "_f5",
+     41,
+     3,
+     4,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ],
+     "5-ös fülke"
+    ],
+    [
+     "_f6",
+     46,
+     3,
+     4,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ],
+     "6-os fülke"
+    ],
+    [
+     "folyoso",
+     13,
+     11,
+     37,
+     3,
+     [
+      8,
+      18
+     ],
+     [
+      11,
+      18
+     ]
+    ],
+    [
+     "csomagok",
+     52,
+     3,
+     10,
+     11,
+     [
+      4,
+      22
+     ],
+     [
+      11,
+      0
+     ]
+    ]
+   ],
+   "snd": [
+    "wood",
+    "wood",
+    "carpet",
+    "carpet",
+    "carpet",
+    "tile",
+    "carpet",
+    "carpet",
+    "carpet",
+    "carpet",
+    "wood"
+   ],
+   "doors": [
+    [
+     11,
+     11,
+     2,
+     2
+    ],
+    [
+     50,
+     11,
+     2,
+     2
+    ],
+    [
+     14,
+     8,
+     2,
+     3
+    ],
+    [
+     19,
+     8,
+     2,
+     3
+    ],
+    [
+     24,
+     8,
+     2,
+     3
+    ],
+    [
+     29,
+     8,
+     2,
+     3
+    ],
+    [
+     37,
+     8,
+     2,
+     3
+    ],
+    [
+     42,
+     8,
+     2,
+     3
+    ],
+    [
+     47,
+     8,
+     2,
+     3
+    ],
+    [
+     32,
+     5,
+     1,
+     2
+    ],
+    [
+     35,
+     5,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "window_frost",
+     "x": 2.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "window_frost",
+     "x": 5.5,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "piano_up",
+     "x": 8.6,
+     "b": 4.6,
+     "spot": "zongora",
+     "label": "A zongora"
+    },
+    {
+     "s": "table_light",
+     "x": 2.0,
+     "b": 7.4,
+     "fg": true
+    },
+    {
+     "s": "chair_d",
+     "x": 1.2,
+     "b": 6.9,
+     "fg": true,
+     "nosolid": true
+    },
+    {
+     "s": "table_light",
+     "x": 2.0,
+     "b": 11.4,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 2.5,
+     "b": 10.0,
+     "fg": true,
+     "z": 1.5,
+     "puzzle": "idorend",
+     "label": "Az éjszaka időrendje"
+    },
+    {
+     "s": "table_light",
+     "x": 6.6,
+     "b": 9.4,
+     "fg": true
+    },
+    {
+     "s": "cards",
+     "x": 7.0,
+     "b": 8.0,
+     "fg": true,
+     "z": 1.5
+    },
+    {
+     "s": "glass",
+     "x": 3.0,
+     "b": 6.0,
+     "fg": true,
+     "z": 1.5
+    },
+    {
+     "s": "glass",
+     "x": 7.6,
+     "b": 8.1,
+     "fg": true,
+     "z": 1.4
+    },
+    {
+     "s": "drinkshelf",
+     "x": 9.0,
+     "b": 13.95
+    },
+    {
+     "s": "valve",
+     "x": 15.6,
+     "b": 2.7,
+     "wall": true,
+     "spot": "futes",
+     "label": "Egy vörösre festett kerék: a fűtésszelep"
+    },
+    {
+     "s": "pipevalve",
+     "x": 13.3,
+     "b": 4.4,
+     "puzzle": "ujjnyom",
+     "label": "Ujjnyom a szelepen"
+    },
+    {
+     "s": "samovar",
+     "x": 16.1,
+     "b": 4.3
+    },
+    {
+     "s": "table_round",
+     "x": 13.3,
+     "b": 7.8,
+     "fg": true
+    },
+    {
+     "s": "ledger",
+     "x": 13.35,
+     "b": 7.2,
+     "fg": true,
+     "z": 0.7,
+     "spot": "menetnaplo",
+     "label": "A kalauz menetnaplója"
+    },
+    {
+     "s": "rag",
+     "x": 16.0,
+     "b": 7.6,
+     "nosolid": true,
+     "spot": "rongy",
+     "label": "Egy olajos rongy"
+    },
+    {
+     "s": "bench",
+     "x": 18.1,
+     "b": 4.5
+    },
+    {
+     "s": "window_frost",
+     "x": 19.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "bench_green",
+     "x": 23.1,
+     "b": 4.5
+    },
+    {
+     "s": "window_frost",
+     "x": 24.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "bench",
+     "x": 41.1,
+     "b": 4.5
+    },
+    {
+     "s": "window_frost",
+     "x": 42.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "bench_green",
+     "x": 46.1,
+     "b": 4.5
+    },
+    {
+     "s": "window_frost",
+     "x": 47.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "hatbox",
+     "x": 48.5,
+     "b": 7.7
+    },
+    {
+     "s": "window_frost",
+     "x": 29.0,
+     "b": 2.6,
+     "wall": true,
+     "spot": "ablak",
+     "label": "A befagyott ablak"
+    },
+    {
+     "s": "bench",
+     "x": 28.6,
+     "b": 6.9
+    },
+    {
+     "s": "table_round",
+     "x": 30.9,
+     "b": 7.8,
+     "fg": true
+    },
+    {
+     "s": "bottle",
+     "x": 31.1,
+     "b": 7.3,
+     "fg": true,
+     "z": 0.6
+    },
+    {
+     "s": "glass",
+     "x": 31.5,
+     "b": 7.3,
+     "fg": true,
+     "z": 0.6,
+     "spot": "poharak",
+     "label": "Két pohár és egy üveg tokaji"
+    },
+    {
+     "glint": "medal",
+     "x": 30.6,
+     "b": 6.4,
+     "label": "A kidudorodó mellényzseb"
+    },
+    {
+     "s": "papers",
+     "x": 28.2,
+     "b": 4.4,
+     "nosolid": true,
+     "puzzle": "naplo",
+     "label": "A titkos napló"
+    },
+    {
+     "s": "mirror",
+     "x": 33.4,
+     "b": 2.9,
+     "wall": true,
+     "spot": "tukor",
+     "label": "A tükör"
+    },
+    {
+     "s": "sink",
+     "x": 33.4,
+     "b": 4.5,
+     "spot": "csap",
+     "label": "A csap"
+    },
+    {
+     "glint": "bejarat",
+     "x": 34.3,
+     "b": 7.6,
+     "label": "Az út befelé: a két ajtó",
+     "puzzle": true
+    },
+    {
+     "s": "bench",
+     "x": 36.1,
+     "b": 4.5
+    },
+    {
+     "s": "window_frost",
+     "x": 37.0,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "coatrack",
+     "x": 39.0,
+     "b": 5.4,
+     "spot": "utlevel",
+     "label": "A fogason egy átázott felöltő"
+    },
+    {
+     "s": "table_round",
+     "x": 36.3,
+     "b": 7.8,
+     "fg": true
+    },
+    {
+     "s": "cards",
+     "x": 36.4,
+     "b": 7.2,
+     "fg": true,
+     "z": 0.7,
+     "spot": "kartya",
+     "label": "Egy pakli kártya"
+    },
+    {
+     "s": "decanter",
+     "x": 37.5,
+     "b": 7.3,
+     "fg": true,
+     "z": 0.6,
+     "spot": "kolni",
+     "label": "Egy félig üres kölnisüveg"
+    },
+    {
+     "s": "briefcase",
+     "x": 38.6,
+     "b": 8.0,
+     "fg": true,
+     "puzzle": "aktataska",
+     "label": "Somló aktatáskája"
+    },
+    {
+     "s": "window_frost",
+     "x": 17.0,
+     "b": 10.6,
+     "wall": true
+    },
+    {
+     "s": "window_frost",
+     "x": 27.0,
+     "b": 10.6,
+     "wall": true
+    },
+    {
+     "s": "window_frost",
+     "x": 40.0,
+     "b": 10.6,
+     "wall": true
+    },
+    {
+     "s": "notice",
+     "x": 22.0,
+     "b": 10.6,
+     "wall": true,
+     "puzzle": "fulkek",
+     "label": "Az utaslista"
+    },
+    {
+     "glint": "folt",
+     "x": 33.6,
+     "b": 13.6,
+     "label": "Olvadt hó foltjai a szőnyegen"
+    },
+    {
+     "glint": "lanc",
+     "x": 31.0,
+     "b": 12.0,
+     "label": "A lefeszített biztonsági lánc"
+    },
+    {
+     "s": "shelf_metal",
+     "x": 52.4,
+     "b": 4.4
+    },
+    {
+     "s": "shelf_metal",
+     "x": 54.4,
+     "b": 4.4
+    },
+    {
+     "s": "crate",
+     "x": 60.2,
+     "b": 4.2
+    },
+    {
+     "s": "crate",
+     "x": 60.2,
+     "b": 5.3
+    },
+    {
+     "s": "handbag",
+     "x": 53.5,
+     "b": 8.0,
+     "fg": true,
+     "spot": "vegrendelet",
+     "label": "Ráday Ágnes táskája"
+    },
+    {
+     "s": "suitcase",
+     "x": 56.0,
+     "b": 8.4,
+     "fg": true,
+     "spot": "orak",
+     "label": "Herbert Wolf bőröndje"
+    },
+    {
+     "s": "handbag",
+     "x": 59.0,
+     "b": 8.0,
+     "fg": true,
+     "spot": "valtok",
+     "label": "Vay Kornélia kézitáskája"
+    },
+    {
+     "s": "suitcase2",
+     "x": 54.0,
+     "b": 11.6,
+     "fg": true,
+     "spot": "level",
+     "label": "Csermák Irén bőröndje"
+    },
+    {
+     "s": "hatbox",
+     "x": 58.4,
+     "b": 11.6,
+     "fg": true,
+     "spot": "kalap",
+     "label": "Egy kalapdoboz"
+    },
+    {
+     "s": "crate",
+     "x": 60.4,
+     "b": 13.9
+    }
+   ],
+   "npcs": [
+    {
+     "id": "raday",
+     "x": 29.6,
+     "y": 6.3,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "Ráday Kristóf az alsó ágyon"
+    },
+    {
+     "id": "pincer",
+     "x": 5.0,
+     "y": 5.2,
+     "dir": "down",
+     "spot": "pincer",
+     "label": "A bóbiskoló pincér",
+     "barks": [
+      "Hm? Igen, uram… egy pillanat… zzz…"
+     ]
+    },
+    {
+     "id": "agnes",
+     "x": 4.2,
+     "y": 8.8,
+     "dir": "right",
+     "barks": [
+      "A bátyám mindig mindent megoldott pénzzel.",
+      "Kassán vár a családi kripta. Szép gondolat."
+     ]
+    },
+    {
+     "id": "wolf",
+     "x": 8.6,
+     "y": 10.2,
+     "dir": "left",
+     "barks": [
+      "Az órák pontosak, uram. Az emberek nem.",
+      "Bécsben ilyenkor már esik a hó."
+     ]
+    },
+    {
+     "id": "kornelia",
+     "x": 4.6,
+     "y": 12.8,
+     "dir": "up",
+     "barks": [
+      "Holnap főpróba Kassán. Ha ez a vonat valaha odaér.",
+      "Énekeljek valamit? Ebben a csendben megőrülök."
+     ]
+    },
+    {
+     "id": "iren",
+     "x": 8.0,
+     "y": 12.6,
+     "dir": "left",
+     "barks": [
+      "A gyerekek már alszanak? Ó, persze, egyedül utazom.",
+      "Hideg van. Ugye ön is érzi?"
+     ]
+    },
+    {
+     "id": "somlo",
+     "x": 20.0,
+     "y": 12.4,
+     "dir": "down",
+     "route": [
+      [
+       20,
+       12.4,
+       5
+      ],
+      [
+       45,
+       12.4,
+       5
+      ]
+     ],
+     "barks": [
+      "Tizenkét éve dolgozom Ráday úrnak. Dolgoztam.",
+      "Kártyázik, nyomozó úr? Most nincs kedvem."
+     ]
+    },
+    {
+     "id": "bodnar",
+     "x": 15.0,
+     "y": 12.6,
+     "dir": "right",
+     "route": [
+      [
+       15,
+       12.6,
+       6
+      ],
+      [
+       36,
+       12.6,
+       3
+      ]
+     ],
+     "barks": [
+      "Tizennyolc éve járom ezt a vonalat.",
+      "A fűtés? Megjavítottam, uram. Megint."
+     ]
+    }
+   ],
+   "talks": [
+    {
+     "id": "suttogas",
+     "zone": [
+      13,
+      11,
+      10,
+      3
+     ],
+     "after": "futes",
+     "lines": [
+      [
+       "somlo",
+       "Bodnár, rendben van már a fűtés?"
+      ],
+      [
+       "bodnar",
+       "Rendben, uram. Ahogy megbeszéltük… vagyis ahogy kell."
+      ],
+      [
+       "somlo",
+       "Jól van. Menjen a dolgára."
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

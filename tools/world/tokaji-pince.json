@@ -1,0 +1,943 @@
+{
+ "case": "tokaji-pince",
+ "start": [
+  "pince",
+  4.6,
+  7.4
+ ],
+ "chars": [
+  "detektiv",
+  "ilona",
+  "andras",
+  "gaspar",
+  "lorenz",
+  "rozalia",
+  "barany",
+  "kocsis",
+  "recsey"
+ ],
+ "dark": [
+  {
+   "map": "pince",
+   "alpha": 0.9,
+   "lamp": 66
+  }
+ ],
+ "maps": {
+  "haz": {
+   "name": "A birtok",
+   "w": 43,
+   "h": 29,
+   "rooms": [
+    [
+     "haloszoba",
+     1,
+     3,
+     9,
+     7,
+     [
+      0,
+      20
+     ],
+     [
+      22,
+      28
+     ]
+    ],
+    [
+     "szalon",
+     11,
+     3,
+     11,
+     7,
+     [
+      0,
+      26
+     ],
+     [
+      22,
+      2
+     ]
+    ],
+    [
+     "konyha",
+     23,
+     3,
+     8,
+     7,
+     [
+      8,
+      14
+     ],
+     [
+      22,
+      22
+     ]
+    ],
+    [
+     "istallo",
+     32,
+     3,
+     10,
+     7,
+     [
+      4,
+      22
+     ],
+     [
+      11,
+      0
+     ]
+    ],
+    [
+     "udvar",
+     1,
+     13,
+     30,
+     7,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      16
+     ],
+     "Udvar és szellőzőkürtő"
+    ],
+    [
+     "preshaz",
+     32,
+     13,
+     10,
+     7,
+     [
+      0,
+      28
+     ],
+     [
+      0,
+      16
+     ]
+    ],
+    [
+     "mester",
+     32,
+     23,
+     7,
+     5,
+     [
+      4,
+      22
+     ],
+     [
+      11,
+      14
+     ]
+    ],
+    [
+     "lada",
+     40,
+     23,
+     2,
+     5,
+     [
+      4,
+      22
+     ],
+     [
+      11,
+      14
+     ]
+    ]
+   ],
+   "snd": [
+    "wood",
+    "wood",
+    "tile",
+    "gravel",
+    "gravel",
+    "stone",
+    "wood",
+    "wood"
+   ],
+   "doors": [
+    [
+     4,
+     10,
+     2,
+     3
+    ],
+    [
+     15,
+     10,
+     2,
+     3
+    ],
+    [
+     26,
+     10,
+     2,
+     3
+    ],
+    [
+     36,
+     10,
+     2,
+     3
+    ],
+    [
+     31,
+     16,
+     1,
+     2
+    ],
+    [
+     35,
+     20,
+     2,
+     3
+    ],
+    [
+     39,
+     25,
+     1,
+     2
+    ]
+   ],
+   "weather": {
+    "udvar": "fog"
+   },
+   "decals": [
+    {
+     "kind": "heel",
+     "pts": [
+      [
+       9.6,
+       17.6
+      ],
+      [
+       14,
+       18.2
+      ],
+      [
+       20,
+       17.8
+      ],
+      [
+       26,
+       17.2
+      ],
+      [
+       30.6,
+       17.1
+      ]
+     ]
+    }
+   ],
+   "objects": [
+    {
+     "s": "rug_blue",
+     "x": 3.6,
+     "b": 8.6,
+     "floor": true
+    },
+    {
+     "s": "bed_b",
+     "x": 1.3,
+     "b": 6.4
+    },
+    {
+     "s": "nightstand",
+     "x": 3.6,
+     "b": 4.3
+    },
+    {
+     "s": "glass",
+     "x": 3.75,
+     "b": 3.4,
+     "z": 1.0,
+     "spot": "tea",
+     "label": "Kamillatea az éjjeliszekrényen"
+    },
+    {
+     "s": "bottle",
+     "x": 4.2,
+     "b": 3.4,
+     "z": 1.0,
+     "spot": "csepp",
+     "label": "Egy üveg altatócsepp"
+    },
+    {
+     "s": "wardrobe_old",
+     "x": 7.6,
+     "b": 4.3
+    },
+    {
+     "s": "chair_b",
+     "x": 6.2,
+     "b": 7.8,
+     "fg": true
+    },
+    {
+     "s": "pongyola",
+     "x": 6.3,
+     "b": 7.0,
+     "fg": true,
+     "z": 0.9,
+     "spot": "penesz",
+     "label": "A pongyola és a papucs"
+    },
+    {
+     "s": "table_round",
+     "x": 2.4,
+     "b": 9.8,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 2.55,
+     "b": 9.3,
+     "fg": true,
+     "z": 0.6,
+     "puzzle": "vallomas",
+     "label": "Ilona vallomása"
+    },
+    {
+     "s": "fireplace",
+     "x": 15.6,
+     "b": 3.9,
+     "light": [
+      44,
+      "fire"
+     ]
+    },
+    {
+     "s": "notice",
+     "x": 13.0,
+     "b": 2.6,
+     "wall": true,
+     "puzzle": "ido",
+     "label": "Az éjszaka sorrendje"
+    },
+    {
+     "s": "drinkshelf",
+     "x": 18.6,
+     "b": 4.2
+    },
+    {
+     "s": "poker",
+     "x": 12.0,
+     "b": 8.2,
+     "fg": true,
+     "spot": "kartya",
+     "label": "Kiterített kártyák"
+    },
+    {
+     "s": "chair_b",
+     "x": 17.0,
+     "b": 8.2,
+     "fg": true
+    },
+    {
+     "s": "briefcase",
+     "x": 17.0,
+     "b": 7.6,
+     "fg": true,
+     "z": 0.7,
+     "spot": "lorenz",
+     "label": "Lorenz úr irattáskája"
+    },
+    {
+     "s": "coatrack",
+     "x": 20.6,
+     "b": 6.0,
+     "spot": "andras",
+     "label": "András kabátja"
+    },
+    {
+     "s": "sofa_grey",
+     "x": 17.8,
+     "b": 10.0,
+     "fg": true
+    },
+    {
+     "s": "window",
+     "x": 23.6,
+     "b": 2.6,
+     "wall": true,
+     "spot": "ablak",
+     "label": "Az ablak a kürtőre néz"
+    },
+    {
+     "s": "counter",
+     "x": 23.2,
+     "b": 4.3
+    },
+    {
+     "s": "stove",
+     "x": 27.4,
+     "b": 4.7
+    },
+    {
+     "s": "barrel",
+     "x": 29.4,
+     "b": 4.6
+    },
+    {
+     "s": "ktable",
+     "x": 25.4,
+     "b": 8.9,
+     "fg": true
+    },
+    {
+     "s": "hooks",
+     "x": 29.6,
+     "b": 2.4,
+     "wall": true
+    },
+    {
+     "s": "apron",
+     "x": 29.8,
+     "b": 3.0,
+     "wall": true,
+     "z": 0.1,
+     "spot": "rozalia",
+     "label": "Rozália köténye"
+    },
+    {
+     "s": "hay",
+     "x": 32.3,
+     "b": 4.4
+    },
+    {
+     "s": "hay",
+     "x": 33.8,
+     "b": 4.4
+    },
+    {
+     "s": "hay",
+     "x": 32.3,
+     "b": 9.95
+    },
+    {
+     "s": "horse",
+     "x": 36.0,
+     "b": 7.6,
+     "fg": true,
+     "spot": "lo",
+     "label": "Egy beteg ló pokróccal letakarva"
+    },
+    {
+     "s": "hooks",
+     "x": 40.0,
+     "b": 2.4,
+     "wall": true
+    },
+    {
+     "s": "coat",
+     "x": 40.0,
+     "b": 3.6,
+     "wall": true,
+     "z": 0.1,
+     "spot": "barany",
+     "label": "Bárány kabátja"
+    },
+    {
+     "s": "lantern",
+     "x": 39.2,
+     "b": 8.6,
+     "fg": true,
+     "light": [
+      30,
+      "fire"
+     ]
+    },
+    {
+     "s": "chimney",
+     "x": 8.0,
+     "b": 16.6,
+     "spot": "fedel",
+     "label": "A kürtő fedele"
+    },
+    {
+     "glint": "hol",
+     "x": 10.8,
+     "b": 17.4,
+     "label": "A kürtő éjszakája",
+     "puzzle": true
+    },
+    {
+     "glint": "nyom",
+     "x": 20.0,
+     "b": 17.6,
+     "label": "Lábnyomok a kürtőtől a présház felé"
+    },
+    {
+     "glint": "drot",
+     "x": 30.2,
+     "b": 16.4,
+     "label": "Drót a présház ajtaján"
+    },
+    {
+     "s": "cellardoor",
+     "x": 2.2,
+     "b": 19.6,
+     "nosolid": true,
+     "warp": [
+      "pince",
+      4.0,
+      6.4
+     ],
+     "label": "Le a pincébe"
+    },
+    {
+     "s": "barrel",
+     "x": 14.0,
+     "b": 14.6
+    },
+    {
+     "s": "barrel",
+     "x": 15.1,
+     "b": 14.6
+    },
+    {
+     "s": "cart",
+     "x": 23.0,
+     "b": 15.8,
+     "fg": true
+    },
+    {
+     "s": "crate",
+     "x": 28.6,
+     "b": 14.4
+    },
+    {
+     "s": "crate",
+     "x": 1.2,
+     "b": 14.4
+    },
+    {
+     "s": "press",
+     "x": 33.6,
+     "b": 16.6,
+     "spot": "pres",
+     "label": "A nagy prés"
+    },
+    {
+     "s": "vat",
+     "x": 37.0,
+     "b": 18.6,
+     "fg": true
+    },
+    {
+     "s": "thermometer",
+     "x": 38.2,
+     "b": 17.6,
+     "fg": true,
+     "z": 1.1,
+     "spot": "homero",
+     "label": "Hőmérő egy dézsában"
+    },
+    {
+     "s": "table_wood",
+     "x": 39.4,
+     "b": 15.6
+    },
+    {
+     "s": "ledger",
+     "x": 39.9,
+     "b": 14.2,
+     "z": 1.5,
+     "puzzle": "mustnaplo",
+     "label": "A mustnapló"
+    },
+    {
+     "s": "barrel",
+     "x": 32.3,
+     "b": 19.95
+    },
+    {
+     "s": "barrel",
+     "x": 33.4,
+     "b": 19.95
+    },
+    {
+     "s": "bed_a",
+     "x": 32.2,
+     "b": 27.0
+    },
+    {
+     "s": "notice",
+     "x": 36.0,
+     "b": 22.6,
+     "wall": true
+    },
+    {
+     "s": "table_round",
+     "x": 35.4,
+     "b": 24.8,
+     "fg": true
+    },
+    {
+     "s": "bottle",
+     "x": 35.65,
+     "b": 24.2,
+     "fg": true,
+     "z": 0.7,
+     "spot": "asz",
+     "label": "Egy címke nélküli palack aszú"
+    },
+    {
+     "s": "cane",
+     "x": 37.8,
+     "b": 24.6,
+     "spot": "bot",
+     "label": "Egy sétabot"
+    },
+    {
+     "s": "chest",
+     "x": 34.4,
+     "b": 27.9,
+     "fg": true,
+     "puzzle": "kod",
+     "label": "A vasalt láda"
+    },
+    {
+     "s": "chest_open",
+     "x": 40.0,
+     "b": 25.4,
+     "puzzle": "konyv",
+     "label": "A titkos füzet"
+    },
+    {
+     "glint": "fuzet_",
+     "x": 40.5,
+     "b": 27.6,
+     "label": "Egy kopott, viaszosvászon füzet"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "ilona",
+     "x": 5.6,
+     "y": 8.4,
+     "dir": "left",
+     "barks": [
+      "Huszonöt éve vagyok itt asszony. Ennyi ködöt még nem láttam.",
+      "Aludtam. Bevettem a cseppjeimet, és aludtam."
+     ]
+    },
+    {
+     "id": "andras",
+     "x": 14.8,
+     "y": 5.2,
+     "dir": "down",
+     "route": [
+      [
+       14.8,
+       5.2,
+       5
+      ],
+      [
+       14.8,
+       9.4,
+       5
+      ]
+     ],
+     "barks": [
+      "Apám mindig azt mondta, belőlem sosem lesz gazda.",
+      "Pesten legalább nincs köd."
+     ]
+    },
+    {
+     "id": "lorenz",
+     "x": 19.4,
+     "y": 8.0,
+     "dir": "left",
+     "barks": [
+      "Bécsben a tokaji aranyat ér. Szó szerint.",
+      "Négyszáz pengő ulti. Nem rossz este. Volt."
+     ]
+    },
+    {
+     "id": "rozalia",
+     "x": 26.5,
+     "y": 6.0,
+     "dir": "down",
+     "barks": [
+      "Hozhatok egy kis teát? Vagy pálinkát, a ködre.",
+      "Az ablakból mindent látni, ha az ember nem alszik."
+     ]
+    },
+    {
+     "id": "kocsis",
+     "x": 34.4,
+     "y": 7.8,
+     "dir": "right",
+     "spot": "kocsis",
+     "label": "A kocsis",
+     "barks": [
+      "Szegény pára. Reggelre talán jobban lesz."
+     ]
+    },
+    {
+     "id": "barany",
+     "x": 38.6,
+     "y": 8.8,
+     "dir": "left",
+     "barks": [
+      "A ló egész éjjel nyögött. Mellette voltam.",
+      "Az intézőnek mindent tudnia kell. Majdnem mindent."
+     ]
+    },
+    {
+     "id": "gaspar",
+     "x": 36.6,
+     "y": 26.2,
+     "dir": "left",
+     "barks": [
+      "Negyven éve járom ezt a pincét.",
+      "A bor nem hazudik, uram. Csak a címke."
+     ]
+    }
+   ],
+   "talks": [
+    {
+     "id": "szallitmany",
+     "zone": [
+      1,
+      13,
+      30,
+      7
+     ],
+     "after": "lorenz",
+     "lines": [
+      [
+       "lorenz",
+       "Gáspár úr, a szállítmány rendben lesz holnapra?"
+      ],
+      [
+       "gaspar",
+       "Rendben, ahogy mindig. Csak ne kérdezzen sokat, uram."
+      ],
+      [
+       "lorenz",
+       "Én sosem kérdezek. Én csak fizetek."
+      ]
+     ]
+    }
+   ]
+  },
+  "pince": {
+   "name": "A pince",
+   "w": 33,
+   "h": 14,
+   "rooms": [
+    [
+     "lepcso",
+     1,
+     3,
+     6,
+     10,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     "erjeszto",
+     8,
+     3,
+     24,
+     10,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      4
+     ]
+    ]
+   ],
+   "snd": [
+    "stone",
+    "stone"
+   ],
+   "doors": [
+    [
+     7,
+     8,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "stairs",
+     "x": 2.4,
+     "b": 4.3,
+     "warp": [
+      "haz",
+      3.2,
+      18.0
+     ],
+     "label": "Fel az udvarra",
+     "light": [
+      40,
+      "fire"
+     ]
+    },
+    {
+     "s": "mold",
+     "x": 5.0,
+     "b": 2.7,
+     "wall": true,
+     "spot": "penesz_",
+     "label": "Fekete, bolyhos penész a falon"
+    },
+    {
+     "glint": "korlat",
+     "x": 4.8,
+     "b": 5.8,
+     "label": "A korlát"
+    },
+    {
+     "glint": "halal",
+     "x": 5.4,
+     "b": 11.0,
+     "label": "Hol halt meg?",
+     "puzzle": true
+    },
+    {
+     "s": "cask",
+     "x": 8.6,
+     "b": 4.6
+    },
+    {
+     "s": "cask",
+     "x": 10.6,
+     "b": 4.6
+    },
+    {
+     "s": "cask",
+     "x": 12.6,
+     "b": 4.6
+    },
+    {
+     "s": "cask",
+     "x": 14.6,
+     "b": 4.6
+    },
+    {
+     "s": "cask",
+     "x": 16.6,
+     "b": 4.6
+    },
+    {
+     "s": "cask",
+     "x": 18.6,
+     "b": 4.6
+    },
+    {
+     "s": "cask",
+     "x": 20.6,
+     "b": 4.6,
+     "spot": "hordo",
+     "label": "A hetes hordó"
+    },
+    {
+     "s": "cask",
+     "x": 8.6,
+     "b": 12.95
+    },
+    {
+     "s": "cask",
+     "x": 10.6,
+     "b": 12.95
+    },
+    {
+     "s": "cask",
+     "x": 12.6,
+     "b": 12.95
+    },
+    {
+     "s": "cask",
+     "x": 14.6,
+     "b": 12.95
+    },
+    {
+     "s": "cask",
+     "x": 16.6,
+     "b": 12.95
+    },
+    {
+     "s": "cask",
+     "x": 22.6,
+     "b": 9.4,
+     "fg": true
+    },
+    {
+     "s": "cask",
+     "x": 24.6,
+     "b": 9.4,
+     "fg": true
+    },
+    {
+     "s": "cask",
+     "x": 26.6,
+     "b": 9.4,
+     "fg": true
+    },
+    {
+     "glint": "vasrud",
+     "x": 8.5,
+     "b": 8.0,
+     "label": "A vasajtó és a falnak támasztott vasrúd"
+    },
+    {
+     "s": "chute",
+     "x": 26.0,
+     "b": 2.7,
+     "wall": true,
+     "spot": "nyilas",
+     "label": "A szellőzőnyílás"
+    },
+    {
+     "s": "table_wood",
+     "x": 28.6,
+     "b": 12.6,
+     "fg": true
+    },
+    {
+     "s": "candle",
+     "x": 29.2,
+     "b": 11.0,
+     "fg": true,
+     "z": 1.6,
+     "light": [
+      34,
+      "fire"
+     ]
+    }
+   ],
+   "npcs": [
+    {
+     "id": "recsey",
+     "x": 3.8,
+     "y": 9.6,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "A gazda a lépcső alján"
+    }
+   ]
+  }
+ }
+}

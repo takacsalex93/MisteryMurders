@@ -1,0 +1,851 @@
+{
+ "case": "arany-griff",
+ "start": [
+  "f4",
+  6.0,
+  7.9
+ ],
+ "chars": [
+  "detektiv",
+  "lili",
+  "hartmann",
+  "margit",
+  "ferenczy",
+  "kardos",
+  "liftes",
+  "pultos",
+  "anna",
+  "vandor"
+ ],
+ "maps": {
+  "f4": {
+   "name": "Negyedik emelet",
+   "w": 40,
+   "h": 17,
+   "rooms": [
+    [
+     "szoba412",
+     1,
+     3,
+     9,
+     6,
+     [
+      8,
+      18
+     ],
+     [
+      22,
+      2
+     ]
+    ],
+    [
+     "szoba414",
+     11,
+     3,
+     8,
+     6,
+     [
+      8,
+      18
+     ],
+     [
+      22,
+      0
+     ]
+    ],
+    [
+     "lili",
+     20,
+     3,
+     9,
+     6,
+     [
+      8,
+      2
+     ],
+     [
+      11,
+      26
+     ]
+    ],
+    [
+     "szemelyzet",
+     30,
+     3,
+     9,
+     6,
+     [
+      0,
+      6
+     ],
+     [
+      0,
+      4
+     ]
+    ],
+    [
+     "_folyoso",
+     1,
+     12,
+     38,
+     4,
+     [
+      8,
+      20
+     ],
+     [
+      11,
+      24
+     ],
+     "Negyedik emeleti folyosó"
+    ]
+   ],
+   "snd": [
+    "carpet",
+    "carpet",
+    "carpet",
+    "tile",
+    "carpet"
+   ],
+   "doors": [
+    [
+     4,
+     9,
+     2,
+     3
+    ],
+    [
+     14,
+     9,
+     2,
+     3
+    ],
+    [
+     23,
+     9,
+     2,
+     3
+    ],
+    [
+     33,
+     9,
+     2,
+     3
+    ],
+    [
+     10,
+     6,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "rug_red",
+     "x": 3.7,
+     "b": 7.4,
+     "floor": true
+    },
+    {
+     "s": "fireplace",
+     "x": 4.0,
+     "b": 3.9,
+     "light": [
+      40,
+      "fire"
+     ]
+    },
+    {
+     "s": "poster",
+     "x": 6.6,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "poster",
+     "x": 7.6,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "window_red",
+     "x": 1.5,
+     "b": 2.8,
+     "wall": true,
+     "spot": "ablak",
+     "label": "A muskátlis ablak"
+    },
+    {
+     "s": "safe",
+     "x": 8.3,
+     "b": 4.3,
+     "puzzle": "szef",
+     "label": "A széf"
+    },
+    {
+     "s": "bed_a",
+     "x": 1.2,
+     "b": 8.9
+    },
+    {
+     "s": "table_round",
+     "x": 6.9,
+     "b": 7.6,
+     "fg": true
+    },
+    {
+     "s": "bottle",
+     "x": 7.15,
+     "b": 7.0,
+     "fg": true,
+     "z": 0.7,
+     "spot": "pezsgo",
+     "label": "Pezsgősüveg és két pohár"
+    },
+    {
+     "s": "glass",
+     "x": 7.5,
+     "b": 7.1,
+     "fg": true,
+     "z": 0.6
+    },
+    {
+     "glint": "ajto",
+     "x": 9.3,
+     "b": 7.6,
+     "label": "A keskeny, tapétázott ajtó"
+    },
+    {
+     "s": "bed_b",
+     "x": 11.3,
+     "b": 6.4,
+     "spot": "agy",
+     "label": "A bevetetlen ágy"
+    },
+    {
+     "s": "window",
+     "x": 15.4,
+     "b": 2.6,
+     "wall": true,
+     "puzzle": "kijarat",
+     "label": "Az út kifelé"
+    },
+    {
+     "s": "wardrobe_old",
+     "x": 17.2,
+     "b": 4.3
+    },
+    {
+     "s": "table_round",
+     "x": 15.6,
+     "b": 7.2,
+     "fg": true
+    },
+    {
+     "s": "ashtray",
+     "x": 15.8,
+     "b": 6.7,
+     "fg": true,
+     "z": 0.6,
+     "spot": "cigi",
+     "label": "Hamutartó, benne egy félig szívott cigaretta"
+    },
+    {
+     "s": "rug_blue",
+     "x": 23.4,
+     "b": 8.2,
+     "floor": true
+    },
+    {
+     "s": "wardrobe_glass",
+     "x": 20.3,
+     "b": 4.3,
+     "spot": "ruha",
+     "label": "A flitteres ruha"
+    },
+    {
+     "s": "vanity",
+     "x": 22.4,
+     "b": 4.3,
+     "spot": "nevjegy",
+     "label": "Névjegyek és szerelmes levelek"
+    },
+    {
+     "s": "nightstand",
+     "x": 25.4,
+     "b": 4.3
+    },
+    {
+     "s": "papers",
+     "x": 25.4,
+     "b": 3.5,
+     "z": 1.0,
+     "spot": "tavirat",
+     "label": "Gyűrött papírok az éjjeliszekrényen"
+    },
+    {
+     "s": "bed_b",
+     "x": 26.8,
+     "b": 6.4
+    },
+    {
+     "s": "plant_pot",
+     "x": 24.5,
+     "b": 4.0
+    },
+    {
+     "s": "bush",
+     "x": 20.4,
+     "b": 8.8,
+     "fg": true
+    },
+    {
+     "s": "hooks",
+     "x": 30.6,
+     "b": 2.4,
+     "wall": true
+    },
+    {
+     "s": "apron",
+     "x": 30.8,
+     "b": 3.0,
+     "wall": true,
+     "z": 0.1,
+     "spot": "mandzsetta",
+     "label": "A szobalányok kötényei"
+    },
+    {
+     "s": "hooks",
+     "x": 32.0,
+     "b": 2.4,
+     "wall": true
+    },
+    {
+     "s": "apron",
+     "x": 32.2,
+     "b": 3.0,
+     "wall": true,
+     "z": 0.1
+    },
+    {
+     "s": "chute",
+     "x": 35.6,
+     "b": 2.7,
+     "wall": true,
+     "spot": "ledobo",
+     "label": "A szennyesledobó nyílása"
+    },
+    {
+     "s": "shelf_metal",
+     "x": 37.0,
+     "b": 4.4
+    },
+    {
+     "s": "basket_l",
+     "x": 30.5,
+     "b": 8.7,
+     "fg": true
+    },
+    {
+     "s": "basket_p",
+     "x": 31.7,
+     "b": 8.7,
+     "fg": true
+    },
+    {
+     "s": "ironboard",
+     "x": 33.4,
+     "b": 6.6,
+     "fg": true
+    },
+    {
+     "s": "rug_brown",
+     "x": 15.0,
+     "b": 15.4,
+     "floor": true
+    },
+    {
+     "s": "landscape2",
+     "x": 7.0,
+     "b": 11.2,
+     "wall": true
+    },
+    {
+     "s": "landscape1",
+     "x": 18.0,
+     "b": 11.2,
+     "wall": true
+    },
+    {
+     "s": "frame_s2",
+     "x": 27.5,
+     "b": 11.0,
+     "wall": true
+    },
+    {
+     "s": "plant_b",
+     "x": 1.3,
+     "b": 13.8
+    },
+    {
+     "s": "palm",
+     "x": 26.6,
+     "b": 15.95
+    },
+    {
+     "s": "liftcage",
+     "x": 35.4,
+     "b": 12.4,
+     "warp": [
+      "fsz",
+      35.6,
+      7.6
+     ],
+     "label": "A lift: le a földszintre"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "vandor",
+     "x": 5.1,
+     "y": 5.6,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "Vándor a kandalló előtt"
+    },
+    {
+     "id": "lili",
+     "x": 24.0,
+     "y": 6.8,
+     "dir": "left",
+     "barks": [
+      "Vándor mindig azt mondta, nélkülem nincs varieté.",
+      "Kérem, ne nézzen így rám. Én szerettem őt… a magam módján.",
+      "Bécs vár. Bécs mindig vár."
+     ]
+    },
+    {
+     "id": "margit",
+     "x": 8.0,
+     "y": 13.8,
+     "dir": "down",
+     "route": [
+      [
+       8,
+       13.8,
+       4
+      ],
+      [
+       30,
+       13.8,
+       4
+      ]
+     ],
+     "barks": [
+      "Elnézést, sietek, a negyedik emelet az enyém.",
+      "Minden szobát én takarítok. Majdnem mindet.",
+      "Ilyen esőben a szennyes sosem szárad meg."
+     ]
+    },
+    {
+     "id": "anna",
+     "x": 37.0,
+     "y": 6.4,
+     "dir": "left",
+     "spot": "anna",
+     "label": "Anna, a másik szobalány",
+     "barks": [
+      "Margit ma este nagyon ideges volt.",
+      "A kötényeket minden reggel én számolom."
+     ]
+    }
+   ],
+   "talks": [
+    {
+     "id": "szobalanyok",
+     "zone": [
+      26,
+      12,
+      12,
+      4
+     ],
+     "after": "tavirat",
+     "lines": [
+      [
+       "margit",
+       "Anna, ha kérdezik, egész este vasaltunk, ugye?"
+      ],
+      [
+       "anna",
+       "Hát persze. Te mondtad, hogy ne beszéljek a kötényekről."
+      ],
+      [
+       "margit",
+       "Csitt! Valaki jön."
+      ]
+     ]
+    }
+   ]
+  },
+  "fsz": {
+   "name": "Földszint",
+   "w": 40,
+   "h": 12,
+   "rooms": [
+    [
+     "kozpont",
+     1,
+     3,
+     6,
+     8,
+     [
+      0,
+      32
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "porta",
+     8,
+     3,
+     10,
+     8,
+     [
+      12,
+      4
+     ],
+     [
+      11,
+      18
+     ]
+    ],
+    [
+     "bar",
+     19,
+     3,
+     12,
+     8,
+     [
+      12,
+      26
+     ],
+     [
+      22,
+      2
+     ]
+    ],
+    [
+     "lift",
+     32,
+     3,
+     7,
+     8,
+     [
+      8,
+      14
+     ],
+     [
+      0,
+      8
+     ]
+    ]
+   ],
+   "snd": [
+    "wood",
+    "stone",
+    "wood",
+    "carpet"
+   ],
+   "doors": [
+    [
+     7,
+     7,
+     1,
+     2
+    ],
+    [
+     18,
+     7,
+     1,
+     2
+    ],
+    [
+     31,
+     7,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "switchboard",
+     "x": 1.3,
+     "b": 4.6,
+     "spot": "tabla",
+     "label": "A dugaszolótábla"
+    },
+    {
+     "s": "table_wood",
+     "x": 4.0,
+     "b": 8.0,
+     "fg": true
+    },
+    {
+     "s": "headphones",
+     "x": 4.5,
+     "b": 6.6,
+     "fg": true,
+     "z": 1.5,
+     "spot": "fejhallgato",
+     "label": "A kezelőnő fejhallgatója"
+    },
+    {
+     "s": "table_round",
+     "x": 1.6,
+     "b": 9.8,
+     "fg": true
+    },
+    {
+     "s": "ledger",
+     "x": 1.65,
+     "b": 9.3,
+     "fg": true,
+     "z": 0.6,
+     "puzzle": "naplo",
+     "label": "A központ naplója"
+    },
+    {
+     "s": "keyboard",
+     "x": 9.2,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "frame_s3",
+     "x": 13.5,
+     "b": 2.5,
+     "wall": true,
+     "spot": "keret",
+     "label": "A keretezett levél"
+    },
+    {
+     "s": "desk_rec",
+     "x": 10.2,
+     "b": 7.4,
+     "fg": true
+    },
+    {
+     "s": "guestbook",
+     "x": 11.0,
+     "b": 6.0,
+     "fg": true,
+     "z": 1.5,
+     "puzzle": "anagramma",
+     "label": "A vendégkönyv"
+    },
+    {
+     "s": "papers",
+     "x": 13.4,
+     "b": 6.0,
+     "fg": true,
+     "z": 1.5,
+     "spot": "blokk",
+     "label": "A táviratblokk"
+    },
+    {
+     "s": "umbrella",
+     "x": 16.4,
+     "b": 10.4,
+     "fg": true,
+     "spot": "eso",
+     "label": "Az ernyőtartó, alatta tócsa"
+    },
+    {
+     "s": "runner_r",
+     "x": 12.3,
+     "b": 10.95,
+     "floor": true
+    },
+    {
+     "s": "plant_a",
+     "x": 8.3,
+     "b": 10.6,
+     "fg": true
+    },
+    {
+     "s": "palm",
+     "x": 16.3,
+     "b": 4.6
+    },
+    {
+     "s": "counter",
+     "x": 19.3,
+     "b": 4.3
+    },
+    {
+     "s": "counter",
+     "x": 23.3,
+     "b": 4.3
+    },
+    {
+     "s": "drinkshelf",
+     "x": 27.3,
+     "b": 4.2
+    },
+    {
+     "s": "piano_up",
+     "x": 29.0,
+     "b": 4.6
+    },
+    {
+     "s": "poker",
+     "x": 26.0,
+     "b": 9.8,
+     "fg": true,
+     "spot": "poker",
+     "label": "Egy elhagyott pókerasztal"
+    },
+    {
+     "s": "table_round",
+     "x": 20.2,
+     "b": 8.8,
+     "fg": true
+    },
+    {
+     "s": "stool",
+     "x": 22.6,
+     "b": 8.9,
+     "fg": true,
+     "nosolid": true
+    },
+    {
+     "s": "briefcase",
+     "x": 22.55,
+     "b": 8.2,
+     "fg": true,
+     "z": 0.8,
+     "spot": "fokonyv",
+     "label": "Hartmann aktatáskája a bárszéken"
+    },
+    {
+     "s": "stairs",
+     "x": 32.4,
+     "b": 4.2
+    },
+    {
+     "s": "runner_r",
+     "x": 32.8,
+     "b": 10.0,
+     "floor": true
+    },
+    {
+     "glint": "folt",
+     "x": 33.3,
+     "b": 8.2,
+     "label": "Sötét foltok a vörös szőnyegen"
+    },
+    {
+     "s": "liftcage",
+     "x": 35.3,
+     "b": 4.6,
+     "warp": [
+      "f4",
+      36.4,
+      14.6
+     ],
+     "label": "A lift: fel a negyedikre"
+    },
+    {
+     "s": "ashstand",
+     "x": 37.6,
+     "b": 9.9,
+     "fg": true,
+     "spot": "hamu",
+     "label": "A hamutartó oszlop"
+    },
+    {
+     "s": "notice",
+     "x": 37.2,
+     "b": 2.6,
+     "wall": true,
+     "puzzle": "idorend",
+     "label": "Az este időrendje"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "ferenczy",
+     "x": 12.0,
+     "y": 4.9,
+     "dir": "down",
+     "barks": [
+      "Húsz éve állok ennél a pultnál, uram.",
+      "Az esernyőket mindig ide teszik. Ma este mind csöpögött.",
+      "A vendégkönyvben minden benne van. Ha valaki el tudja olvasni."
+     ]
+    },
+    {
+     "id": "pultos",
+     "x": 22.0,
+     "y": 5.7,
+     "dir": "down",
+     "spot": "pultos",
+     "label": "A pultos",
+     "barks": [
+      "Egy fröccsöt, uram? Vagy valami erősebbet?",
+      "Ma este mindenki többet ivott a kelleténél."
+     ]
+    },
+    {
+     "id": "hartmann",
+     "x": 24.6,
+     "y": 7.4,
+     "dir": "left",
+     "barks": [
+      "A számok nem hazudnak, nyomozó úr. Az emberek igen.",
+      "Holnap reggel a bankba kell mennem. Remélem, elengednek."
+     ]
+    },
+    {
+     "id": "kardos",
+     "x": 28.6,
+     "y": 7.2,
+     "dir": "left",
+     "route": [
+      [
+       28.6,
+       7.2,
+       6
+      ],
+      [
+       24.0,
+       9.9,
+       5
+      ]
+     ],
+     "barks": [
+      "Egyszer még megírom ezt az estét. Darabnak.",
+      "Esik. Pesten mindig esik, amikor valami véget ér."
+     ]
+    },
+    {
+     "id": "liftes",
+     "x": 34.3,
+     "y": 6.2,
+     "dir": "down",
+     "spot": "liftes",
+     "label": "Az egyenruhás liftesfiú",
+     "barks": [
+      "Melyik emeletre, uram?",
+      "Én csak le-fel járok. Mindent látok, semmit sem mondok."
+     ]
+    }
+   ]
+  }
+ }
+}

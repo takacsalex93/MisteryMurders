@@ -1,0 +1,788 @@
+{
+ "case": "hollos-cukraszda",
+ "start": [
+  "m",
+  17.2,
+  16.4
+ ],
+ "chars": [
+  "detektiv",
+  "szendrei",
+  "hollosbela",
+  "anna",
+  "vilma",
+  "feher",
+  "hollos"
+ ],
+ "maps": {
+  "m": {
+   "name": "A cukrászda",
+   "w": 34,
+   "h": 30,
+   "rooms": [
+    [
+     "uzlet",
+     1,
+     3,
+     16,
+     8,
+     [
+      12,
+      4
+     ],
+     [
+      0,
+      6
+     ]
+    ],
+    [
+     "kassza",
+     18,
+     3,
+     5,
+     8,
+     [
+      0,
+      26
+     ],
+     [
+      0,
+      6
+     ]
+    ],
+    [
+     "iroda",
+     24,
+     3,
+     9,
+     8,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "muhely",
+     1,
+     14,
+     13,
+     7,
+     [
+      0,
+      4
+     ],
+     [
+      22,
+      14
+     ]
+    ],
+    [
+     "jegkamra",
+     15,
+     14,
+     7,
+     7,
+     [
+      4,
+      28
+     ],
+     [
+      22,
+      8
+     ]
+    ],
+    [
+     "oltozo",
+     23,
+     14,
+     10,
+     7,
+     [
+      4,
+      22
+     ],
+     [
+      11,
+      14
+     ]
+    ],
+    [
+     "_udvar",
+     1,
+     24,
+     24,
+     5,
+     [
+      4,
+      32
+     ],
+     [
+      0,
+      16
+     ],
+     "Hátsó udvar"
+    ],
+    [
+     "portas",
+     26,
+     24,
+     7,
+     5,
+     [
+      0,
+      32
+     ],
+     [
+      11,
+      14
+     ]
+    ]
+   ],
+   "snd": [
+    "stone",
+    "wood",
+    "wood",
+    "tile",
+    "stone",
+    "wood",
+    "gravel",
+    "wood"
+   ],
+   "doors": [
+    [
+     17,
+     6,
+     1,
+     2
+    ],
+    [
+     23,
+     6,
+     1,
+     2
+    ],
+    [
+     6,
+     11,
+     2,
+     3
+    ],
+    [
+     27,
+     11,
+     2,
+     3
+    ],
+    [
+     14,
+     17,
+     1,
+     2
+    ],
+    [
+     22,
+     17,
+     1,
+     2
+    ],
+    [
+     17,
+     21,
+     2,
+     3
+    ],
+    [
+     5,
+     21,
+     2,
+     3
+    ],
+    [
+     25,
+     26,
+     1,
+     2
+    ]
+   ],
+   "weather": {
+    "Hátsó udvar": "snow"
+   },
+   "objects": [
+    {
+     "s": "mirror",
+     "x": 2.0,
+     "b": 2.9,
+     "wall": true
+    },
+    {
+     "s": "mirror",
+     "x": 6.0,
+     "b": 2.9,
+     "wall": true
+    },
+    {
+     "s": "mirror",
+     "x": 10.0,
+     "b": 2.9,
+     "wall": true
+    },
+    {
+     "s": "frame_s1",
+     "x": 14.0,
+     "b": 2.6,
+     "wall": true,
+     "spot": "arlap",
+     "label": "Az árlap rézkeretben"
+    },
+    {
+     "s": "vitrine",
+     "x": 1.4,
+     "b": 5.4
+    },
+    {
+     "s": "cake",
+     "x": 2.0,
+     "b": 4.4,
+     "z": 1.1
+    },
+    {
+     "s": "cake_cut",
+     "x": 3.4,
+     "b": 4.4,
+     "z": 1.1
+    },
+    {
+     "s": "cake",
+     "x": 5.6,
+     "b": 5.7,
+     "z": 0.05
+    },
+    {
+     "s": "vitrine",
+     "x": 11.0,
+     "b": 5.4
+    },
+    {
+     "s": "swan",
+     "x": 12.4,
+     "b": 4.4,
+     "z": 1.1,
+     "spot": "hattyu",
+     "label": "A cukorból öntött hattyú"
+    },
+    {
+     "s": "table_round",
+     "x": 4.0,
+     "b": 8.6,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 8.0,
+     "b": 9.6,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 12.0,
+     "b": 8.6,
+     "fg": true
+    },
+    {
+     "s": "chair_b",
+     "x": 5.2,
+     "b": 8.9,
+     "fg": true
+    },
+    {
+     "s": "tubchair_r",
+     "x": 14.0,
+     "b": 10.6,
+     "fg": true
+    },
+    {
+     "s": "handbag",
+     "x": 14.2,
+     "b": 9.4,
+     "fg": true,
+     "z": 1.3,
+     "spot": "vilmatask",
+     "label": "Vilma asszony táskája"
+    },
+    {
+     "s": "plant_a",
+     "x": 15.7,
+     "b": 4.8
+    },
+    {
+     "s": "runner_b",
+     "x": 8.3,
+     "b": 10.95,
+     "floor": true
+    },
+    {
+     "s": "counter",
+     "x": 18.2,
+     "b": 4.4
+    },
+    {
+     "s": "cashreg",
+     "x": 19.0,
+     "b": 3.9,
+     "z": 0.6
+    },
+    {
+     "s": "ledger",
+     "x": 20.8,
+     "b": 4.0,
+     "z": 0.5,
+     "spot": "penzkonyv",
+     "label": "A vastag pénztárkönyv"
+    },
+    {
+     "s": "tape",
+     "x": 19.0,
+     "b": 6.6,
+     "puzzle": "szalag",
+     "label": "A kasszaszalag"
+    },
+    {
+     "s": "coins",
+     "x": 21.4,
+     "b": 8.6,
+     "nosolid": true,
+     "spot": "apro",
+     "label": "Apró a fiókban"
+    },
+    {
+     "s": "frame_s2",
+     "x": 25.0,
+     "b": 2.6,
+     "wall": true,
+     "spot": "oklevel",
+     "label": "Bekeretezett oklevelek"
+    },
+    {
+     "s": "frame_s3",
+     "x": 26.2,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "landscape1",
+     "x": 28.0,
+     "b": 2.5,
+     "wall": true
+    },
+    {
+     "s": "safe",
+     "x": 31.2,
+     "b": 4.4,
+     "puzzle": "szef",
+     "label": "A páncélszekrény"
+    },
+    {
+     "s": "table_dark",
+     "x": 26.0,
+     "b": 8.0,
+     "fg": true
+    },
+    {
+     "s": "calendar",
+     "x": 26.6,
+     "b": 6.3,
+     "fg": true,
+     "z": 1.6,
+     "spot": "naptar",
+     "label": "Asztali naptár"
+    },
+    {
+     "s": "lamp_red",
+     "x": 27.3,
+     "b": 6.5,
+     "fg": true,
+     "z": 1.6
+    },
+    {
+     "s": "chair_d",
+     "x": 26.5,
+     "b": 9.0,
+     "fg": true,
+     "nosolid": true
+    },
+    {
+     "s": "bookcase_dark",
+     "x": 29.4,
+     "b": 10.95
+    },
+    {
+     "s": "oven",
+     "x": 1.2,
+     "b": 15.8
+    },
+    {
+     "s": "oven",
+     "x": 3.4,
+     "b": 15.8
+    },
+    {
+     "s": "counter",
+     "x": 6.0,
+     "b": 15.3
+    },
+    {
+     "s": "copperpot",
+     "x": 6.4,
+     "b": 14.7,
+     "z": 0.6,
+     "spot": "ust",
+     "label": "A rézüst"
+    },
+    {
+     "s": "copperpot",
+     "x": 8.4,
+     "b": 14.7,
+     "z": 0.6
+    },
+    {
+     "s": "table_light",
+     "x": 3.0,
+     "b": 19.4,
+     "fg": true
+    },
+    {
+     "s": "table_light",
+     "x": 7.6,
+     "b": 19.4,
+     "fg": true
+    },
+    {
+     "glint": "sodrofa",
+     "x": 8.4,
+     "b": 18.4,
+     "label": "Egy sodrófa"
+    },
+    {
+     "glint": "retesz",
+     "x": 4.0,
+     "b": 18.5,
+     "label": "A zöld folt",
+     "puzzle": true
+    },
+    {
+     "glint": "retesz_",
+     "x": 13.3,
+     "b": 18.2,
+     "label": "A nehéz vasretesz a jégkamra ajtaján"
+    },
+    {
+     "s": "hooks",
+     "x": 11.0,
+     "b": 13.4,
+     "wall": true
+    },
+    {
+     "s": "apron",
+     "x": 11.2,
+     "b": 14.0,
+     "wall": true,
+     "z": 0.1
+    },
+    {
+     "s": "apron",
+     "x": 12.2,
+     "b": 14.0,
+     "wall": true,
+     "z": 0.1
+    },
+    {
+     "s": "iceblock",
+     "x": 15.3,
+     "b": 15.4
+    },
+    {
+     "s": "iceblock",
+     "x": 16.2,
+     "b": 15.4
+    },
+    {
+     "s": "iceblock",
+     "x": 15.3,
+     "b": 20.95
+    },
+    {
+     "s": "iceblock",
+     "x": 16.3,
+     "b": 20.95
+    },
+    {
+     "s": "iceblock",
+     "x": 20.5,
+     "b": 20.95
+    },
+    {
+     "s": "shelf_metal",
+     "x": 19.6,
+     "b": 15.4
+    },
+    {
+     "s": "cake_cut",
+     "x": 20.0,
+     "b": 14.5,
+     "z": 1.1,
+     "spot": "torta",
+     "label": "A pisztáciás torta, egy szelet hiányzik"
+    },
+    {
+     "s": "window_frost",
+     "x": 17.3,
+     "b": 13.6,
+     "wall": true,
+     "puzzle": "der",
+     "label": "Írás a dérben"
+    },
+    {
+     "glint": "kartya",
+     "x": 17.0,
+     "b": 19.2,
+     "label": "Valami piros-fehér a jégtömbök között"
+    },
+    {
+     "s": "bucket_tipped",
+     "x": 20.6,
+     "b": 18.0,
+     "spot": "vodor",
+     "label": "Egy felborított vödör"
+    },
+    {
+     "s": "hooks",
+     "x": 24.0,
+     "b": 13.4,
+     "wall": true
+    },
+    {
+     "s": "coat",
+     "x": 24.0,
+     "b": 14.6,
+     "wall": true,
+     "z": 0.1,
+     "spot": "valtok",
+     "label": "Egy elegáns férfikabát a kötények között"
+    },
+    {
+     "s": "hooks",
+     "x": 25.4,
+     "b": 13.4,
+     "wall": true
+    },
+    {
+     "s": "apron",
+     "x": 25.6,
+     "b": 14.0,
+     "wall": true,
+     "z": 0.1
+    },
+    {
+     "s": "wardrobe_old",
+     "x": 28.0,
+     "b": 15.4,
+     "spot": "szekreny",
+     "label": "Szendrei szekrénye"
+    },
+    {
+     "s": "wardrobe_old",
+     "x": 30.0,
+     "b": 15.4
+    },
+    {
+     "s": "bench_wood",
+     "x": 26.0,
+     "b": 19.4,
+     "fg": true
+    },
+    {
+     "s": "boots",
+     "x": 31.4,
+     "b": 20.4,
+     "fg": true,
+     "spot": "csizma",
+     "label": "Egy pár csizma"
+    },
+    {
+     "s": "barrel",
+     "x": 1.3,
+     "b": 25.4
+    },
+    {
+     "s": "barrel",
+     "x": 2.4,
+     "b": 25.4
+    },
+    {
+     "s": "crate",
+     "x": 9.0,
+     "b": 25.3
+    },
+    {
+     "s": "crate",
+     "x": 10.0,
+     "b": 25.3
+    },
+    {
+     "s": "cart",
+     "x": 12.0,
+     "b": 28.9,
+     "fg": true
+    },
+    {
+     "s": "bin",
+     "x": 22.6,
+     "b": 25.3
+    },
+    {
+     "s": "table_wood",
+     "x": 27.0,
+     "b": 27.4,
+     "fg": true
+    },
+    {
+     "s": "bottle",
+     "x": 27.6,
+     "b": 25.9,
+     "fg": true,
+     "z": 1.5,
+     "spot": "palinka",
+     "label": "Egy üveg és egy felborult pohár"
+    },
+    {
+     "s": "lantern",
+     "x": 29.2,
+     "b": 26.0,
+     "fg": true,
+     "z": 1.4,
+     "spot": "lampas",
+     "label": "Gyuri bácsi lámpása"
+    },
+    {
+     "s": "notice",
+     "x": 30.6,
+     "b": 23.6,
+     "wall": true,
+     "puzzle": "tavozas",
+     "label": "A jelenléti ív"
+    },
+    {
+     "s": "chair_d",
+     "x": 27.6,
+     "b": 28.6,
+     "fg": true,
+     "nosolid": true
+    }
+   ],
+   "npcs": [
+    {
+     "id": "hollos",
+     "x": 18.4,
+     "y": 17.4,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "A mester a jégtömbök mellett"
+    },
+    {
+     "id": "hollosbela",
+     "x": 6.5,
+     "y": 7.6,
+     "dir": "down",
+     "route": [
+      [
+       6.5,
+       7.6,
+       5
+      ],
+      [
+       10.5,
+       7.2,
+       5
+      ]
+     ],
+     "barks": [
+      "Holnap nyitottunk volna újra. Holnap!",
+      "A bácsikám sosem bízott bennem. Na tessék."
+     ]
+    },
+    {
+     "id": "anna",
+     "x": 20.5,
+     "y": 7.2,
+     "dir": "down",
+     "barks": [
+      "Hat éve kezelem a kasszát. Egy fillér sem hiányzott soha.",
+      "Kérem, ne nyúljon a pénztárgéphez."
+     ]
+    },
+    {
+     "id": "vilma",
+     "x": 29.0,
+     "y": 6.6,
+     "dir": "left",
+     "barks": [
+      "Harminc évig itt álltam mellette. Harminc évig.",
+      "Az irodába senki sem jár be. Csak ő. Csak ő járt."
+     ]
+    },
+    {
+     "id": "szendrei",
+     "x": 29.4,
+     "y": 18.4,
+     "dir": "left",
+     "barks": [
+      "Tizenöt éve keverem itt a krémeket.",
+      "A pisztácia titka? Az az én titkom, uram."
+     ]
+    },
+    {
+     "id": "feher",
+     "x": 30.6,
+     "y": 27.3,
+     "dir": "left",
+     "barks": [
+      "Gyuri bácsinak szólítson, mindenki így hív.",
+      "Éjjel egyszer sem aludtam el. Na jó… talán egyszer."
+     ]
+    }
+   ],
+   "talks": [
+    {
+     "id": "udvar",
+     "zone": [
+      1,
+      24,
+      24,
+      5
+     ],
+     "after": "palinka",
+     "lines": [
+      [
+       "vilma",
+       "Szendrei úr, ugye maga is tudta, hogy Ernő el akarja adni?"
+      ],
+      [
+       "szendrei",
+       "Asszonyom, én csak a tortákat sütöm. Az üzlet az önöké."
+      ],
+      [
+       "vilma",
+       "Hát persze. Mindig csak a tortákat."
+      ]
+     ]
+    }
+   ]
+  }
+ }
+}

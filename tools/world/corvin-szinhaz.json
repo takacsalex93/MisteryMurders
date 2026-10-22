@@ -1,0 +1,883 @@
+{
+ "case": "corvin-szinhaz",
+ "start": [
+  "fsz",
+  19.6,
+  12.0
+ ],
+ "chars": [
+  "detektiv",
+  "mimi",
+  "kalman",
+  "vass",
+  "klara",
+  "bodo",
+  "sarkozy"
+ ],
+ "dark": [
+  {
+   "map": "fent",
+   "alpha": 0.82,
+   "lamp": 70
+  }
+ ],
+ "maps": {
+  "fsz": {
+   "name": "A színház",
+   "w": 44,
+   "h": 32,
+   "rooms": [
+    [
+     "kellektar",
+     1,
+     3,
+     8,
+     5,
+     [
+      4,
+      22
+     ],
+     [
+      11,
+      14
+     ]
+    ],
+    [
+     "porta",
+     1,
+     11,
+     8,
+     4,
+     [
+      0,
+      32
+     ],
+     [
+      11,
+      16
+     ]
+    ],
+    [
+     "szinpad",
+     10,
+     3,
+     20,
+     12,
+     [
+      0,
+      12
+     ],
+     [
+      0,
+      30
+     ]
+    ],
+    [
+     "iroda",
+     31,
+     3,
+     12,
+     5,
+     [
+      12,
+      26
+     ],
+     [
+      11,
+      32
+     ]
+    ],
+    [
+     "oltozok",
+     31,
+     11,
+     12,
+     4,
+     [
+      0,
+      20
+     ],
+     [
+      11,
+      26
+     ]
+    ],
+    [
+     "sugolyuk",
+     17,
+     18,
+     6,
+     3,
+     [
+      12,
+      26
+     ],
+     [
+      0,
+      30
+     ]
+    ],
+    [
+     "_nezoter",
+     1,
+     24,
+     29,
+     7,
+     [
+      8,
+      18
+     ],
+     [
+      22,
+      2
+     ],
+     "Nézőtér"
+    ],
+    [
+     "bufe",
+     31,
+     24,
+     12,
+     7,
+     [
+      12,
+      4
+     ],
+     [
+      22,
+      2
+     ]
+    ]
+   ],
+   "snd": [
+    "wood",
+    "wood",
+    "wood",
+    "wood",
+    "wood",
+    "wood",
+    "carpet",
+    "stone"
+   ],
+   "doors": [
+    [
+     9,
+     5,
+     1,
+     2
+    ],
+    [
+     9,
+     12,
+     1,
+     2
+    ],
+    [
+     30,
+     5,
+     1,
+     2
+    ],
+    [
+     30,
+     12,
+     1,
+     2
+    ],
+    [
+     19,
+     15,
+     2,
+     3
+    ],
+    [
+     19,
+     21,
+     2,
+     3
+    ],
+    [
+     30,
+     27,
+     1,
+     2
+    ]
+   ],
+   "objects": [
+    {
+     "s": "curtain",
+     "x": 10.0,
+     "b": 2.95,
+     "wall": true
+    },
+    {
+     "s": "curtain",
+     "x": 22.0,
+     "b": 2.95,
+     "wall": true
+    },
+    {
+     "s": "ladder_w",
+     "x": 10.3,
+     "b": 4.6,
+     "warp": [
+      "fent",
+      3.0,
+      6.6
+     ],
+     "label": "Létra a zsinórpadlásra"
+    },
+    {
+     "s": "spot_l",
+     "x": 27.6,
+     "b": 5.0,
+     "spot": "reflektor",
+     "label": "A reflektor"
+    },
+    {
+     "s": "spot_r",
+     "x": 12.2,
+     "b": 5.0
+    },
+    {
+     "s": "sofa_red",
+     "x": 13.0,
+     "b": 8.6,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 23.4,
+     "b": 8.6,
+     "fg": true
+    },
+    {
+     "s": "armchair_red",
+     "x": 25.0,
+     "b": 8.8,
+     "fg": true
+    },
+    {
+     "s": "sandbag_burst",
+     "x": 19.6,
+     "b": 10.9,
+     "fg": true,
+     "nosolid": true
+    },
+    {
+     "s": "chalkmark",
+     "x": 13.0,
+     "b": 12.9,
+     "floor": true
+    },
+    {
+     "s": "chalkmark",
+     "x": 16.0,
+     "b": 12.9,
+     "floor": true
+    },
+    {
+     "s": "chalkmark",
+     "x": 19.3,
+     "b": 10.6,
+     "floor": true
+    },
+    {
+     "s": "chalkmark",
+     "x": 23.0,
+     "b": 12.9,
+     "floor": true
+    },
+    {
+     "s": "chalkmark",
+     "x": 26.0,
+     "b": 12.9,
+     "floor": true
+    },
+    {
+     "s": "plant_a",
+     "x": 10.6,
+     "b": 14.9,
+     "fg": true
+    },
+    {
+     "s": "plant_a",
+     "x": 28.4,
+     "b": 14.9,
+     "fg": true
+    },
+    {
+     "s": "palm",
+     "x": 15.0,
+     "b": 5.2
+    },
+    {
+     "s": "palm",
+     "x": 24.0,
+     "b": 5.2
+    },
+    {
+     "s": "floorlamp",
+     "x": 17.0,
+     "b": 5.0
+    },
+    {
+     "s": "floorlamp",
+     "x": 22.0,
+     "b": 5.0
+    },
+    {
+     "s": "sofa_brown",
+     "x": 12.6,
+     "b": 12.0,
+     "fg": true
+    },
+    {
+     "s": "tubchair_y",
+     "x": 26.0,
+     "b": 12.2,
+     "fg": true
+    },
+    {
+     "glint": "kreta",
+     "x": 22.6,
+     "b": 12.4,
+     "label": "Krétajelek sora a színpadon"
+    },
+    {
+     "s": "candles",
+     "x": 1.4,
+     "b": 4.3,
+     "z": 0.1
+    },
+    {
+     "s": "shelf_metal",
+     "x": 3.2,
+     "b": 4.4
+    },
+    {
+     "s": "swords",
+     "x": 6.0,
+     "b": 5.6,
+     "spot": "kardok",
+     "label": "Fakardok egy hordóban"
+    },
+    {
+     "s": "notice",
+     "x": 7.2,
+     "b": 2.6,
+     "wall": true,
+     "spot": "lista",
+     "label": "A kellékes listája"
+    },
+    {
+     "s": "table_wood",
+     "x": 2.6,
+     "b": 7.95,
+     "fg": true
+    },
+    {
+     "s": "candle",
+     "x": 3.4,
+     "b": 6.4,
+     "fg": true,
+     "z": 1.6,
+     "puzzle": "gyertya",
+     "label": "A gyertya ideje"
+    },
+    {
+     "s": "keyboard",
+     "x": 1.6,
+     "b": 10.6,
+     "wall": true,
+     "spot": "tabla",
+     "label": "A kulcstábla"
+    },
+    {
+     "s": "poster",
+     "x": 5.0,
+     "b": 10.6,
+     "wall": true,
+     "spot": "szereposztas",
+     "label": "A ma esti szereposztás"
+    },
+    {
+     "s": "table_wood",
+     "x": 5.4,
+     "b": 14.95,
+     "fg": true
+    },
+    {
+     "s": "ledger",
+     "x": 5.9,
+     "b": 13.4,
+     "fg": true,
+     "z": 1.6,
+     "puzzle": "kulcsnaplo",
+     "label": "A kulcsnapló"
+    },
+    {
+     "s": "poster",
+     "x": 32.0,
+     "b": 2.6,
+     "wall": true,
+     "spot": "plakat",
+     "label": "Plakátok a falon"
+    },
+    {
+     "s": "poster",
+     "x": 33.4,
+     "b": 2.6,
+     "wall": true
+    },
+    {
+     "s": "table_dark",
+     "x": 36.0,
+     "b": 6.9,
+     "fg": true
+    },
+    {
+     "s": "papers",
+     "x": 36.4,
+     "b": 5.4,
+     "fg": true,
+     "z": 1.6,
+     "spot": "kalman",
+     "label": "Az igazgató asztala"
+    },
+    {
+     "s": "phone",
+     "x": 37.4,
+     "b": 5.2,
+     "fg": true,
+     "z": 1.8
+    },
+    {
+     "s": "typewriter",
+     "x": 40.0,
+     "b": 5.6,
+     "fg": true,
+     "z": 0.2,
+     "puzzle": "vallomas",
+     "label": "Mimi vallomása"
+    },
+    {
+     "s": "table_wood",
+     "x": 39.6,
+     "b": 7.4,
+     "fg": true
+    },
+    {
+     "s": "bookcase_dark",
+     "x": 31.2,
+     "b": 4.4
+    },
+    {
+     "s": "mirror_bulbs",
+     "x": 32.0,
+     "b": 10.7,
+     "wall": true
+    },
+    {
+     "s": "mirror_bulbs",
+     "x": 36.0,
+     "b": 10.7,
+     "wall": true
+    },
+    {
+     "s": "mirror_bulbs",
+     "x": 40.0,
+     "b": 10.7,
+     "wall": true
+    },
+    {
+     "s": "vanity",
+     "x": 31.6,
+     "b": 12.6,
+     "spot": "level",
+     "label": "Rácz Mimi sminkasztala"
+    },
+    {
+     "s": "wardrobe_glass",
+     "x": 35.4,
+     "b": 12.6,
+     "spot": "bodo",
+     "label": "Bodó Ferenc öltözője"
+    },
+    {
+     "s": "gramophone",
+     "x": 40.4,
+     "b": 12.6,
+     "spot": "gramofon",
+     "label": "Egy gramofon"
+    },
+    {
+     "s": "promptbox",
+     "x": 21.0,
+     "b": 19.1
+    },
+    {
+     "s": "papers",
+     "x": 17.4,
+     "b": 20.6,
+     "nosolid": true,
+     "spot": "pletyka",
+     "label": "Kézirat a súgópéldány alatt"
+    },
+    {
+     "s": "lantern",
+     "x": 22.1,
+     "b": 20.95,
+     "spot": "lampa",
+     "label": "A kis lámpa"
+    },
+    {
+     "s": "seats",
+     "x": 3.0,
+     "b": 26.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 3.0,
+     "b": 28.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 3.0,
+     "b": 30.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 22.0,
+     "b": 26.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 22.0,
+     "b": 28.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 22.0,
+     "b": 30.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 12.5,
+     "b": 28.0,
+     "fg": true
+    },
+    {
+     "s": "seats",
+     "x": 12.5,
+     "b": 30.0,
+     "fg": true
+    },
+    {
+     "s": "counter",
+     "x": 31.4,
+     "b": 25.4
+    },
+    {
+     "s": "counter",
+     "x": 35.4,
+     "b": 25.4
+    },
+    {
+     "s": "glass",
+     "x": 32.0,
+     "b": 24.9,
+     "z": 0.6
+    },
+    {
+     "s": "glass",
+     "x": 33.0,
+     "b": 24.9,
+     "z": 0.6
+    },
+    {
+     "s": "bottle",
+     "x": 36.4,
+     "b": 24.9,
+     "z": 0.6
+    },
+    {
+     "s": "notice",
+     "x": 40.0,
+     "b": 23.6,
+     "wall": true,
+     "spot": "rend",
+     "label": "A szünetek rendje"
+    },
+    {
+     "s": "papers",
+     "x": 34.0,
+     "b": 24.9,
+     "z": 0.6,
+     "puzzle": "szunet",
+     "label": "Az első szünet"
+    },
+    {
+     "s": "table_round",
+     "x": 33.0,
+     "b": 29.0,
+     "fg": true
+    },
+    {
+     "s": "table_round",
+     "x": 38.0,
+     "b": 29.0,
+     "fg": true
+    },
+    {
+     "s": "coatrack",
+     "x": 41.4,
+     "b": 29.6,
+     "fg": true,
+     "spot": "vass",
+     "label": "Vass Tibor kabátja"
+    }
+   ],
+   "npcs": [
+    {
+     "id": "sarkozy",
+     "x": 19.6,
+     "y": 9.8,
+     "dir": "down",
+     "static": true,
+     "lie": true,
+     "spot": "holttest",
+     "label": "Sárközy a hetes jelzésnél"
+    },
+    {
+     "id": "klara",
+     "x": 17.9,
+     "y": 19.6,
+     "dir": "right",
+     "spot": "sugo",
+     "label": "Lengyel Klára, a súgónő",
+     "barks": [
+      "Harminc éve ülök ebben a lyukban.",
+      "Mindent látok innen, fiam. Mindent."
+     ]
+    },
+    {
+     "id": "mimi",
+     "x": 37.0,
+     "y": 13.6,
+     "dir": "left",
+     "barks": [
+      "Ne nézzen rám így. Ő volt a partnerem.",
+      "A színpadon mindig tudtam, hova kell lépnem."
+     ]
+    },
+    {
+     "id": "bodo",
+     "x": 34.0,
+     "y": 13.8,
+     "dir": "right",
+     "route": [
+      [
+       34,
+       13.8,
+       6
+      ],
+      [
+       39,
+       13.8,
+       6
+      ]
+     ],
+     "barks": [
+      "Mi-mi-mi-mi… bocsánat, beéneklek.",
+      "Bécsben más a közönség. Hálásabb."
+     ]
+    },
+    {
+     "id": "kalman",
+     "x": 34.0,
+     "y": 6.4,
+     "dir": "right",
+     "barks": [
+      "Huszonöt éve igazgatom ezt a színházat.",
+      "Az előadásnak mennie kell. Mindig mennie kell."
+     ]
+    },
+    {
+     "id": "vass",
+     "x": 36.0,
+     "y": 28.6,
+     "dir": "down",
+     "route": [
+      [
+       36,
+       28.6,
+       6
+      ],
+      [
+       32,
+       27.4,
+       5
+      ]
+     ],
+     "barks": [
+      "A kötél nem hibázik. Az ember igen.",
+      "Huszonkét éve mászom a zsinórpadlást."
+     ]
+    }
+   ],
+   "talks": [
+    {
+     "id": "folyoso",
+     "zone": [
+      31,
+      11,
+      12,
+      4
+     ],
+     "after": "level",
+     "lines": [
+      [
+       "kalman",
+       "Ferenc, holnap ön énekel. Készüljön."
+      ],
+      [
+       "bodo",
+       "Igazgató úr, én… mindig készen álltam."
+      ],
+      [
+       "kalman",
+       "Tudom. Éppen ez aggaszt."
+      ]
+     ]
+    }
+   ]
+  },
+  "fent": {
+   "name": "Zsinórpadlás",
+   "w": 24,
+   "h": 10,
+   "rooms": [
+    [
+     "zsinorpadlas",
+     1,
+     3,
+     22,
+     6,
+     [
+      8,
+      28
+     ],
+     [
+      0,
+      30
+     ]
+    ]
+   ],
+   "snd": [
+    "stone"
+   ],
+   "doors": [],
+   "objects": [
+    {
+     "s": "ladder_w",
+     "x": 1.6,
+     "b": 4.6,
+     "warp": [
+      "fsz",
+      13.0,
+      6.4
+     ],
+     "label": "Létra le a színpadra"
+    },
+    {
+     "s": "pulleys",
+     "x": 5.0,
+     "b": 2.95,
+     "wall": true,
+     "spot": "csigak",
+     "label": "Csigák és kötelek"
+    },
+    {
+     "s": "pulleys",
+     "x": 14.0,
+     "b": 2.95,
+     "wall": true
+    },
+    {
+     "s": "sandbag",
+     "x": 8.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 9.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 10.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 11.0,
+     "b": 5.0,
+     "spot": "zsakok",
+     "label": "Homokzsákok sora, mindegyiken egy szám"
+    },
+    {
+     "s": "sandbag",
+     "x": 12.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 14.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 15.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 16.0,
+     "b": 5.0
+    },
+    {
+     "s": "sandbag",
+     "x": 17.0,
+     "b": 5.0
+    },
+    {
+     "s": "rope",
+     "x": 12.9,
+     "b": 8.6,
+     "nosolid": true
+    },
+    {
+     "glint": "kotel",
+     "x": 13.4,
+     "b": 7.6,
+     "label": "A kötél vége",
+     "puzzle": true
+    },
+    {
+     "s": "candle",
+     "x": 13.6,
+     "b": 4.6,
+     "z": 0.1
+    }
+   ],
+   "npcs": []
+  }
+ }
+}
