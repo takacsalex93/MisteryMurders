@@ -463,3 +463,108 @@ figcaption{font-family:var(--type);font-size:12px;color:var(--muted)}
 .casecard .solvers:empty{display:none}
 .boards .chip,.boards .chip.on{cursor:pointer;font-size:14px;padding:5px 12px}.boards .chip.on{background:var(--accent);color:var(--paper)}
 .dsrc{margin:8px 0;font-size:.95em}.dsrc summary{cursor:pointer;font-family:var(--type);font-size:13px;color:var(--accent)}.dsrc p{margin:6px 0}
+
+/* ===== címoldal 2.0 ===== */
+.wrap.home{max-width:1120px;gap:0}
+.hero{position:relative;border-radius:14px;overflow:hidden;color:#f4ecd6;margin:4px 0 22px;isolation:isolate;
+  background:#10131b var(--hero) center 35%/cover no-repeat;box-shadow:0 30px 60px -30px rgba(10,12,20,.75)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(100deg,rgba(12,14,22,.94) 0%,rgba(12,14,22,.82) 42%,rgba(12,14,22,.35) 75%,rgba(12,14,22,.15) 100%),
+             linear-gradient(0deg,rgba(12,14,22,.85) 0%,transparent 45%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.18;mix-blend-mode:overlay;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.08) 0 1px,transparent 1px 3px)}
+.hero-in{display:flex;flex-direction:column;gap:16px;padding:clamp(22px,5vw,56px);max-width:760px}
+.hero-eyebrow{font-family:var(--type);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:#d9b45a}
+.hero h1{font-family:var(--display);font-style:italic;font-weight:700;font-size:clamp(42px,8.4vw,92px);line-height:.92;margin:0;letter-spacing:-.025em;text-wrap:balance;
+  color:#fbf4e2;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+.hero h1::after{content:"";display:block;width:84px;height:3px;background:#b8323a;margin-top:18px;border-radius:2px}
+.hero-lead{font-size:clamp(18px,2.2vw,21px);color:#e5dcc4;margin:0;max-width:56ch}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.hero .hero-btn{background:#b8323a;color:#fff;border-color:#b8323a;font-size:15px;padding:13px 20px;box-shadow:0 10px 24px -10px rgba(184,50,58,.8)}
+.hero .hero-btn:hover{background:#cc3a43}
+.hero .hero-ghost{color:#f4ecd6;border-color:rgba(244,236,214,.5);background:rgba(255,255,255,.04);padding:13px 18px;font-size:15px}
+.hero .hero-ghost:hover{background:rgba(255,255,255,.12)}
+.hero-stats{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:12px;padding-top:18px;border-top:1px solid rgba(244,236,214,.16)}
+.hero-stats>div{display:flex;flex-direction:column;gap:2px}
+.hero-stats b{font-family:var(--display);font-size:30px;line-height:1;color:#fbf4e2}
+.hero-stats small{font-size:16px;opacity:.6}
+.hero-stats span{font-family:var(--type);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#bfb69f}
+.hero-stats .hero-rank{flex-direction:row;align-items:center;gap:10px}
+.hero .stamp{color:#ff8a8f;border-color:#ff8a8f;background:rgba(0,0,0,.25)}
+.hero .topnav{justify-content:flex-start}
+
+/* ma: napi kihívás + e heti rejtély */
+.today{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;margin-bottom:8px}
+.today .daily{margin:0;flex-direction:column;align-items:stretch;justify-content:space-between;border:none;border-radius:10px;padding:24px;
+  color:#f4ecd6;background:radial-gradient(120% 140% at 100% 0%,#2f5d53 0%,#1d3a35 45%,#15211f 100%);box-shadow:0 20px 40px -24px rgba(0,0,0,.7);position:relative;overflow:hidden}
+.today .daily::after{content:"✦";position:absolute;right:-6px;top:-30px;font-size:150px;line-height:1;color:rgba(255,255,255,.05);pointer-events:none}
+.today .daily .eyebrow{color:#d9b45a}
+.today .daily h2{color:#fbf4e2;font-size:28px}
+.today .daily .meta{color:#b7c7bf}
+.today .daily b{color:#fbf4e2}
+.today .daily .dstat{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:14px}
+.today .daily .btn{background:#d9b45a;color:#16201e;border-color:#d9b45a}
+.today .daily .stamp{color:#ff9aa0;border-color:#ff9aa0}
+.today .casecard.weekly{border:none;border-radius:10px;background:var(--paper);box-shadow:0 20px 40px -26px rgba(0,0,0,.55);border-top:5px solid var(--brass)}
+
+/* szakaszfejek */
+.wrap.home .level{border-top:none;margin-top:38px;padding-top:0;gap:18px}
+.wrap.home .level-head{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"no h" "no p";column-gap:14px;align-items:end;
+  padding-bottom:12px;border-bottom:1px solid var(--line);position:relative}
+.wrap.home .level-head::after{content:"";position:absolute;left:0;bottom:-2px;width:64px;height:3px;background:var(--stamp)}
+.wrap.home .level-head h2{grid-area:h;font-size:clamp(30px,4vw,40px);line-height:1;margin:0}
+.wrap.home .level-head p{grid-area:p;margin:4px 0 0;max-width:70ch}
+.secno{grid-area:no;font-family:var(--display);font-style:italic;font-size:clamp(44px,6vw,64px);line-height:.8;color:var(--brass);opacity:.55;align-self:center}
+
+/* ügykártyák */
+.wrap.home .cases{grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:22px}
+.wrap.home .casecard{border:none;border-radius:10px;padding:20px 22px 22px;transition:transform .25s ease,box-shadow .25s ease;box-shadow:0 18px 36px -26px rgba(0,0,0,.6),0 0 0 1px var(--line)}
+.wrap.home .casecard:hover{transform:translateY(-4px);box-shadow:0 28px 46px -26px rgba(0,0,0,.7),0 0 0 1px var(--brass)}
+.wrap.home .casecard .cover{margin:-20px -22px 6px;border-radius:10px 10px 0 0;border:none}
+.wrap.home .casecard .cover img{transition:transform .6s ease}
+.wrap.home .casecard:hover .cover img{transform:scale(1.04)}
+.wrap.home .casecard h2{font-size:25px;line-height:1.1;margin:0}
+.wrap.home .casecard>p{margin:0;font-size:17px}
+.wrap.home .casecard .stamp{z-index:2;background:color-mix(in srgb,var(--paper) 88%,transparent)}
+.wrap.home .casecard .btn{width:100%;justify-content:center;text-align:center}
+
+/* ranglista + iroda */
+.homegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:0 34px;align-items:start}
+.homegrid .level.boards{margin-top:38px}
+.homegrid .office canvas{max-width:100%}
+.homegrid .office .meta{text-align:left}
+
+/* kitüntetések, összecsukva */
+.badgebox{margin-top:30px;background:var(--paper);border-radius:10px;box-shadow:0 0 0 1px var(--line);padding:4px 18px}
+.badgebox summary{display:flex;align-items:center;gap:14px;flex-wrap:wrap;cursor:pointer;padding:12px 0;list-style:none}
+.badgebox summary::-webkit-details-marker{display:none}
+.badgebox summary b{font-family:var(--type)}
+.badgebox summary .meta{margin-left:auto}
+.badgebox[open] summary .meta{opacity:.5}
+.bbar{flex:1 1 140px;max-width:320px;height:8px;border-radius:4px;background:var(--paper2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}
+.bbar i{display:block;height:100%;background:linear-gradient(90deg,var(--brass),#d9b45a)}
+.badgebox .badges{margin:0 0 16px}
+.badgebox .badges>.eyebrow{display:none}
+
+/* hogyan játssz */
+.wrap.home .howto{margin-top:38px;color:var(--ink)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:14px;max-width:none;counter-reset:st}
+.steps li{counter-increment:st;position:relative;background:var(--paper);border-radius:10px;padding:16px 16px 14px;box-shadow:0 0 0 1px var(--line);display:flex;flex-direction:column;gap:6px}
+.steps li::before{content:counter(st);position:absolute;right:14px;top:6px;font-family:var(--display);font-style:italic;font-size:40px;line-height:1;color:var(--brass);opacity:.35}
+.steps .sico{font-size:26px}
+.steps p{margin:0;font-size:16px;line-height:1.45;color:var(--muted)}
+.homefoot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--type);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.homefoot a{color:var(--accent)}
+@media (max-width:560px){
+  .hero{border-radius:10px;margin-inline:-6px}
+  .hero::before{background:linear-gradient(0deg,rgba(12,14,22,.95) 0%,rgba(12,14,22,.8) 55%,rgba(12,14,22,.45) 100%)}
+  .hero-stats{gap:12px 20px}.hero-stats b{font-size:24px}
+  .hero .hero-btn,.hero .hero-ghost{flex:1 1 100%;text-align:center}
+  .secno{font-size:40px}
+}
+.hero{background-color:#10131b;background-position:center 35%;background-size:cover;background-repeat:no-repeat}
+.wrap.home .cases{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.wrap.home .howto ol.steps{display:grid;padding:0;max-width:none;gap:14px}
+.wrap.home .level.thread .level-head h2,.wrap.home .level.thread .level-head p{text-shadow:none}
+section.level.thread{filter:none;stroke:none}
+.wrap.home .casecard>p.meta{font-size:12.5px;line-height:1.5}

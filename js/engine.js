@@ -316,32 +316,60 @@
       if (!list.length) return "";
       return `<section class="level"><div class="level-head"><h2>${T(lvl)}</h2><p>${esc(desc)}</p></div><div class="cases">${list.map(card).join("")}</div></section>`;
     }).join("");
-    app.innerHTML = `<div class="wrap">
-      <header class="home-head">
-        <div class="topnav"><span class="meta">${T("Klasszikus krimik a böngészőben")}</span>${langSwitch()}</div>
-        <h1>${T("Rejtélyes gyilkosságok")}</h1>
-        <p>${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
-        ${(() => { const k = career(); return `<p class="career"><span class="stamp">${esc(k.rank)}</span> <span class="meta">${T("{0} pont", k.pts)}${k.next !== null ? " · " + T("még {0} pont: {1}", k.next - k.pts, k.nextName) : ""}</span></p>`; })()}
+    // a hős-sáv: a félbehagyott ügy folytatása, különben a következő megoldatlan
+    const mainCases = CASES.filter(c => !c.weekly && !c.finale).sort((x, y) => x.number - y.number);
+    const resume = mainCases.concat(CASES.filter(c => c.weekly)).find(c => { const st = loadState(c.id); return !st.ended && (st.clues.length || st.tries); });
+    const nextC = resume || mainCases.find(c => loadState(c.id).ended !== "win") || mainCases[0];
+    const heroImg = (window.MM_IMAGES || []).includes(nextC.id + "/cover.webp") ? nextC.id : "szegfu-villa";
+    const k = career(), solvedN = mainCases.filter(wonCase).length, bAll = badges(), bGot = bAll.filter(x => x.got).length;
+    const curWeek = CASES.filter(c => c.weekly && new Date(c.weekly) <= new Date()).sort((a, b) => b.weekly.localeCompare(a.weekly))[0];
+    const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
+    let secN = 0;
+    const head = (title, desc) => `<div class="level-head"><span class="secno">${roman[secN++]}.</span><h2>${title}</h2>${desc ? `<p>${desc}</p>` : ""}</div>`;
+    const levelSecs = LEVELS.map(([lvl, desc]) => {
+      const list = CASES.filter(c => c.difficulty === lvl && !c.weekly);
+      if (!list.length) return "";
+      return `<section class="level" data-lvl="${esc(lvl)}">${head(T(lvl), esc(desc))}<div class="cases">${list.map(card).join("")}</div></section>`;
+    }).join("");
+    const steps = [
+      ["🔎", T("Kutasd át a helyszíneket. A nyomok a leírásban rejtőznek: kattints arra, ami gyanús, de vigyázz, nem minden részlet nyom.")],
+      ["🃏", T("Gyűjtsd a szókártyákat: a szövegekben aláhúzott nevekre, tárgyakra, helyekre és időpontokra kattints.")],
+      ["🔐", T("Oldd meg a rejtvényeket: számzárak, titkosírások, naplók, ujjlenyomatok. Ha elakadsz, kérj súgót, de az a végén látszani fog.")],
+      ["🧵", T("A Táblán köss össze piros fonallal két összetartozó nyomot. Ha együtt többet árulnak el, megnyílik egy hiányos mondat, amit a szókártyáidból kell kiegészítened.")],
+      ["🗣", T("Szembesítsd a gyanúsítottakat a nyomokkal. Mindenki elhallgat valamit, de csak egyikük gyilkos.")],
+      ["⚖️", T("A vádban mondd el az egész történetet a szókártyáidból. Ha ártatlant nevezel meg, azt letartóztatják, és az ügy elveszett.")],
+      ["✒️", T("A Jegyzetlap a te papírod és tollad: a játék semmit sem ír rá helyetted.")]];
+    app.innerHTML = `<div class="wrap home">
+      <header class="hero" style="background-image:url('images/${heroImg}/cover.webp')">
+        <div class="hero-in">
+          <div class="topnav"><span class="hero-eyebrow">${T("Klasszikus krimik a böngészőben")}</span>${langSwitch()}</div>
+          <h1>${T("Rejtélyes gyilkosságok")}</h1>
+          <p class="hero-lead">${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
+          <div class="hero-cta">
+            <a class="btn hero-btn" href="#${nextC.id}">${resume ? T("Folytatom: {0}", esc(nextC.title)) : solvedN ? T("Következő ügy: {0}", esc(nextC.title)) : T("Első ügy: {0}", esc(nextC.title))} →</a>
+            <a class="btn ghost hero-ghost" href="#napi">${T("Napi kihívás")}</a>
+          </div>
+          <div class="hero-stats">
+            <div><b>${solvedN}<small>/${mainCases.length}</small></b><span>${T("megoldott ügy")}</span></div>
+            <div><b>${k.pts}</b><span>${T("pont")}</span></div>
+            <div><b>${bGot}<small>/${bAll.length}</small></b><span>${T("kitüntetés")}</span></div>
+            <div class="hero-rank"><span class="stamp">${esc(k.rank)}</span><span>${k.next !== null ? T("még {0} pont: {1}", k.next - k.pts, k.nextName) : T("a legmagasabb rang")}</span></div>
+          </div>
+        </div>
       </header>
-      ${dailyCard()}
-      ${weeklySection()}
-      ${boardSection()}
-      ${window.MM_OFFICE && window.MM_WORLDS && window.MM_WORLDS.iroda ? `<section class="office"><canvas data-office aria-label="${T("A nyomozó irodája")}"></canvas><p class="meta">${T("Az irodád. A megoldott ügyek emlékei a polcra kerülnek, a fekete szegfű cédulái a parafatáblára. Kattints egy tárgyra, és újra elolvashatod az ügyét.")}</p>${badgeGrid()}</section>` : ""}
-      ${sections}
-      ${FINALE ? threadSection() : ""}
-      <section class="howto">
-        <span class="eyebrow">${T("Hogyan játssz?")}</span>
-        <ol>
-          <li>${T("Kutasd át a helyszíneket. A nyomok a leírásban rejtőznek: kattints arra, ami gyanús, de vigyázz, nem minden részlet nyom.")}</li>
-          <li>${T("Gyűjtsd a szókártyákat: a szövegekben aláhúzott nevekre, tárgyakra, helyekre és időpontokra kattints.")}</li>
-          <li>${T("Oldd meg a rejtvényeket: számzárak, titkosírások, naplók, ujjlenyomatok. Ha elakadsz, kérj súgót, de az a végén látszani fog.")}</li>
-          <li>${T("A Táblán köss össze piros fonallal két összetartozó nyomot. Ha együtt többet árulnak el, megnyílik egy hiányos mondat, amit a szókártyáidból kell kiegészítened.")}</li>
-          <li>${T("Szembesítsd a gyanúsítottakat a nyomokkal. Mindenki elhallgat valamit, de csak egyikük gyilkos.")}</li>
-          <li>${T("A vádban mondd el az egész történetet a szókártyáidból. Ha ártatlant nevezel meg, azt letartóztatják, és az ügy elveszett.")}</li>
-          <li>${T("A Jegyzetlap a te papírod és tollad: a játék semmit sem ír rá helyetted.")}</li>
-        </ol>
-        <p>${T("A játékállás ebben a böngészőben mentődik, bármikor folytathatod.")}</p>
+      <section class="today">${dailyCard()}${curWeek ? weeklyCard(curWeek, true) : ""}</section>
+      ${levelSecs}
+      ${weeklyPast()}
+      ${FINALE ? threadSection().replace('<div class="level-head">', `<div class="level-head"><span class="secno">${roman[secN++]}.</span>`) : ""}
+      <div class="homegrid">
+        ${ON ? `<div>${boardSection().replace('<div class="level-head">', `<div class="level-head"><span class="secno">${roman[secN++]}.</span>`)}</div>` : ""}
+        ${window.MM_OFFICE && window.MM_WORLDS && window.MM_WORLDS.iroda ? `<section class="level office">${head(T("Az irodád"), T("A megoldott ügyek emlékei a polcra kerülnek, a fekete szegfű cédulái a parafatáblára. Kattints egy tárgyra, és újra elolvashatod az ügyét."))}<canvas data-office aria-label="${T("A nyomozó irodája")}"></canvas></section>` : ""}
+      </div>
+      <details class="badgebox"><summary><span class="eyebrow">${T("Kitüntetések")}</span><span class="bbar"><i style="width:${Math.round(100 * bGot / bAll.length)}%"></i></span><b>${bGot} / ${bAll.length}</b><span class="meta">${T("Mutasd mind")}</span></summary>${badgeGrid()}</details>
+      <section class="howto">${head(T("Hogyan játssz?"), T("Hét lépés a vádemelésig. A játékállás ebben a böngészőben mentődik, bármikor folytathatod."))}
+        <ol class="steps">${steps.map(([i, t]) => `<li><span class="sico">${i}</span><p>${t}</p></li>`).join("")}</ol>
       </section>
+      <footer class="homefoot"><span>${T("Rejtélyes gyilkosságok")}</span><span>${T("Pixelgrafika:")} <a href="https://limezu.itch.io/" target="_blank" rel="noopener">LimeZu</a></span></footer>
     </div>`;
     const oc = app.querySelector("[data-office]");
     if (oc) window.MM_OFFICE.mount(oc, { won: CASES.filter(wonCase).map(c => c.id), titles: Object.fromEntries(CASES.map(c => [c.id, c.title])),
@@ -356,11 +384,14 @@
       <p class="meta">${T("Mindenki ugyanazt kapja ma. Holnap új ügy és új szabály jön.")}${streak ? " · 🔥 " + T("{0} nap egymás után", streak) : ""}</p></div>
       <div class="dstat">${status ? `<span class="stamp">${esc(status)}</span>` : ""}<a class="btn" href="#napi">${T(st.ended ? "Megnézem" : st.introSeen ? "Folytatom" : "Elfogadom a kihívást")} →</a></div></section>`;
   }
-  function weeklySection() {
-    const today = new Date(), wk = CASES.filter(c => c.weekly && new Date(c.weekly) <= today).sort((a, b) => b.weekly.localeCompare(a.weekly));
+  function weeklyCard(c, cur) {
+    const st = loadState(c.id);
+    return `<article class="casecard weekly ${cur ? "current" : ""}">${st.ended === "win" ? `<span class="stamp">${T("Megoldva")}</span>` : ""}<span class="eyebrow">${cur ? T("E heti rejtély") : T("Korábbi hét")} · ${esc(c.weeklyLabel || "")}</span><h2>${esc(c.title)}</h2><p>${esc(c.teaser)}</p>${cur ? `<p class="meta">${T("Rövid eset, egyetlen helyszín. Minden újrakezdésnél más lehet a tettes.")}</p>` : ""}<span class="meta solvers" data-solvers="${c.id}"></span><div class="row"><a class="btn" href="#${c.id}">${T(st.ended === "win" ? "Újrajátszom" : st.clues.length ? "Folytatom" : "Nyomozás indítása")} →</a></div></article>`;
+  }
+  function weeklyPast() {
+    const wk = CASES.filter(c => c.weekly && new Date(c.weekly) <= new Date()).sort((a, b) => b.weekly.localeCompare(a.weekly)).slice(1);
     if (!wk.length) return "";
-    const card = (c, cur) => { const st = loadState(c.id); return `<article class="casecard weekly ${cur ? "current" : ""}">${st.ended === "win" ? `<span class="stamp">${T("Megoldva")}</span>` : ""}<span class="eyebrow">${cur ? T("E heti rejtély") : T("Korábbi hét")} · ${esc(c.weeklyLabel || "")}</span><h2>${esc(c.title)}</h2><p>${esc(c.teaser)}</p><div class="row"><a class="btn" href="#${c.id}">${T(st.ended === "win" ? "Újrajátszom" : st.clues.length ? "Folytatom" : "Nyomozás indítása")} →</a></div></article>`; };
-    return `<section class="level weeklies"><div class="level-head"><h2>${T("Heti rejtély")}</h2><p>${T("Minden héten egy új, rövid eset egyetlen helyszínnel. Minden újrakezdésnél másik változat jöhet: más lehet a tettes.")}</p></div><div class="cases">${wk.map((c, i) => card(c, i === 0)).join("")}</div></section>`;
+    return `<section class="level weeklies"><div class="level-head"><span class="secno">✦</span><h2>${T("Korábbi heti rejtélyek")}</h2><p>${T("A múlt hetek esetei is újrajátszhatók, mindig más változattal.")}</p></div><div class="cases">${wk.map(c => weeklyCard(c, false)).join("")}</div></section>`;
   }
   function badgeGrid() {
     const b = badges();
