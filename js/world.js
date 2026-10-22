@@ -25,7 +25,15 @@ window.MM_WORLD_ENGINE = function (A) {
   const regAt = (m, tx, ty) => { const r = (m.reg[ty] || "")[tx]; return r && r !== "." ? m.rooms[r.charCodeAt(0) - 97] : null; };
   const roomAt = (m, x, y) => regAt(m, Math.floor(x / TS), Math.floor((y - 1) / TS));
   const overlap = (a, b) => a[0] < b[0] + b[2] && a[0] + a[2] > b[0] && a[1] < b[1] + b[3] && a[1] + a[3] > b[1];
-  const walkers = m => m.npcs.filter(n => !n.static);
+  const gathering = () => !!(W().gather && A.ready && A.ready() && !S().ended);
+  const isSus = n => !!sus(n.id) && !n.static;
+  // összegyűléskor minden gyanúsított a gyülekezőhely térképén áll, a többi térképről eltűnik
+  function npcsOn(m) {
+    if (!gathering()) return m.npcs;
+    const all = Object.values(W().maps).flatMap(x => x.npcs), here = m === W().maps[W().gather.map];
+    return m.npcs.filter(n => !isSus(n)).concat(here ? all.filter(isSus) : []);
+  }
+  const walkers = m => npcsOn(m).filter(n => !n.static);
   const pos = n => NS[n.id] || { x: n.x * TS, y: n.y * TS, dir: n.dir };
   const npcBox = n => { const p = pos(n); return [p.x - 6, p.y - 5, 12, 5]; };
   function blocked(m, x, y, skipNpc) {
@@ -55,10 +63,11 @@ window.MM_WORLD_ENGINE = function (A) {
   function targets() {
     const m = map(), out = [];
     m.inter.forEach(t => {
+      if (t.k === "secret") { out.push({ kind: "secret", id: t.id, r: t.r, label: t.label || T("Valami rejtett"), done: (S().secrets || []).includes(t.id), glint: t.glint, hidden: true }); return; }
       if (t.k === "puzzle") { if (!C().puzzles[t.id]) return; out.push({ kind: "puzzle", id: t.id, r: t.r, label: t.label || C().puzzles[t.id].title, done: !!S().solved[t.id], glint: t.glint }); }
       else out.push({ kind: "spot", id: t.id, r: t.r, label: t.label, done: itemState(t.id).done, glint: t.glint });
     });
-    m.npcs.forEach(n => {
+    npcsOn(m).forEach(n => {
       const p = pos(n), r = n.lie ? [p.x - 16, p.y - 12, 32, 16] : [p.x - 8, p.y - 28, 16, 28], s = sus(n.id);
       // akinél nyom van (pl. a kertész), azt előbb meg kell vizsgálni; utána, ha gyanúsított, beszélgetni is lehet vele
       if (n.spot && (!s || !itemState(n.spot).done)) out.push({ kind: "spot", id: n.spot, r, label: n.label || who(n.id), done: itemState(n.spot).done, npc: n.static ? null : n });
@@ -159,31 +168,35 @@ window.MM_WORLD_ENGINE = function (A) {
     NS = {};
     Object.values(W().maps).forEach(m => m.npcs.forEach(n => { NS[n.id] = { x: n.x * TS, y: n.y * TS, dir: n.dir, ri: 0, wait: 1 + Math.random() * 3, moving: false, bi: 0, quiet: 0 }; }));
   }
+  const NERV = [T("Mit akar még tőlem?"), T("Hagyjon békén, kérem."), T("Már mindent elmondtam!"), T("Ne nézzen így rám.")];
+  const nervous = n => isSus(n) && A.contra(C(), n.id).some(k => k.lie !== false && S().conf.includes(k.id));
   function faceTo(s, x, y) { const dx = x - s.x, dy = y - s.y; s.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up"); }
   function updNpcs(dt) {
     const m = map();
     walkers(m).forEach(n => {
       const s = NS[n.id]; s.moving = false;
-      const close = Math.hypot(P.x - s.x, P.y - s.y) < 30;
-      if ((dlg && dlg.kind === "npc" && dlg.id === n.id) || close) { if (close) faceTo(s, P.x, P.y); return; }
+      const close = Math.hypot(P.x - s.x, P.y - s.y) < 30, nerv = nervous(n) && n.route && !gathering();
+      if (gathering()) { if (close) faceTo(s, P.x, P.y); else s.dir = s.gdir || "down"; return; }
+      if ((dlg && dlg.kind === "npc" && dlg.id === n.id) || (close && !nerv)) { if (close) faceTo(s, P.x, P.y); return; }
       if (!n.route) { s.dir = n.dir; return; }
       if (s.wait > 0) { s.wait -= dt; return; }
       const [tx, ty, wt] = n.route[s.ri], dx = tx * TS - s.x, dy = ty * TS - s.y, d = Math.hypot(dx, dy);
       if (d < 1) { s.x = tx * TS; s.y = ty * TS; s.wait = wt; s.ri = (s.ri + 1) % n.route.length; if (wt) s.dir = n.dir; return; }
-      const st = Math.min(d, NPC_SPEED * dt), nx = s.x + dx / d * st, ny = s.y + dy / d * st;
+      const st = Math.min(d, NPC_SPEED * (nerv ? 1.7 : 1) * dt), nx = s.x + dx / d * st, ny = s.y + dy / d * st;
       if (overlap([nx - 6, ny - 5, 12, 5], [P.x - 5, P.y - 6, 10, 6])) return;
       s.x = nx; s.y = ny; s.moving = true; faceTo(s, tx * TS, ty * TS);
     });
   }
   // rövid mondatok buborékban, ha a közelükben jársz
   function updBark(now) {
-    if (dlg || talk) { if (bark) { bark = null; sayEl(null); } return; }
+    if (dlg || talk || gathering()) { if (bark) { bark = null; sayEl(null); } return; }
     if (bark && now < bark.until) { const s = NS[bark.id]; if (s && Math.hypot(P.x - s.x, P.y - s.y) < 70) return; }
     bark = null;
-    const cand = map().npcs.filter(n => n.barks && !n.static).map(n => ({ n, s: NS[n.id], d: Math.hypot(P.x - NS[n.id].x, P.y - NS[n.id].y) }))
+    const cand = npcsOn(map()).filter(n => (n.barks || nervous(n)) && !n.static).map(n => ({ n, s: NS[n.id], d: Math.hypot(P.x - NS[n.id].x, P.y - NS[n.id].y) }))
       .filter(o => o.d < 46 && now > o.s.quiet).sort((a, b) => a.d - b.d)[0];
     if (!cand) { sayEl(null); return; }
-    const { n, s } = cand; bark = { id: n.id, text: n.barks[s.bi % n.barks.length], until: now + 4800 };
+    const { n, s } = cand, lines = nervous(n) ? (n.nervous || NERV) : n.barks;
+    bark = { id: n.id, text: lines[s.bi % lines.length], until: now + 4800 }; voice(n.id, bark.text);
     s.bi++; s.quiet = now + 13000;
   }
   // kihallgatott beszélgetés: ha a megadott helyen jársz, feliratként hallod
@@ -197,12 +210,71 @@ window.MM_WORLD_ENGINE = function (A) {
         A.addNote(T("Kihallgatott beszélgetés:") + "\n" + talk.lines.map(([n, t]) => `${who(n)}: ${t}`).join("\n"));
         talk = null; return;
       }
-      const [n, t] = talk.lines[talk.i++]; sub(who(n), t); talk.at = now + 1800 + t.length * 45; return;
+      const [n, t] = talk.lines[talk.i++]; sub(who(n), t); voice(n, t); talk.at = now + 1800 + t.length * 45; return;
     }
     const tk = (m.talks || []).find(k => !st.heard.includes(k.id) && (!k.after || st.clues.includes(k.after)) &&
       P.x > k.zone[0] * TS && P.x < (k.zone[0] + k.zone[2]) * TS && P.y > k.zone[1] * TS && P.y < (k.zone[1] + k.zone[3]) * TS);
     if (tk && !dlg) { talk = { id: tk.id, lines: tk.lines, i: 0, at: now + 400 }; SFX("paper"); A.toast(T("Hangokat hallasz… Maradj csendben, és figyelj.")); }
   }
+
+  /* ---------- az éjszaka órája: az ügy kezdő időpontja + a lépésekre és sétára elment idő ---------- */
+  const hm = s2 => { const [h, mm] = s2.split(":").map(Number); return h * 60 + mm; };
+  function elapsed() { return (S().min || 0) + Math.floor((S().wsec || 0) / 8); }
+  function clockStr() { const c = W().clock; if (!c) return ""; const t = (hm(c) + elapsed()) % 1440; return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); }
+  function updClock(now) {
+    const el = root && root.querySelector(".w-clock"); if (el && W().clock) { const c = clockStr(); if (el.dataset.t !== c) { el.dataset.t = c; el.textContent = "🕰 " + c; } }
+    const st = S(); st.wtl = st.wtl || [];
+    (W().timeline || []).forEach(ev => {
+      if (st.wtl.includes(ev.at)) return;
+      let at = hm(ev.at) - hm(W().clock); if (at < 0) at += 1440;
+      if (elapsed() < at) return;
+      st.wtl.push(ev.at); A.save(); A.toast(`${ev.at} · ${ev.msg}`); if (ev.sfx) SFX(ev.sfx); if (ev.flash) window.dispatchEvent(new CustomEvent("mm:lightning"));
+    });
+  }
+  // „valaki figyel”: egyszer egy sötét alak suhan át a helyiségen
+  let shadow = null; const silh = {};
+  function updShadow(dt) {
+    const st = S(); st.wsh = st.wsh || [];
+    if (!shadow) {
+      const sh = (W().shadows || []).find(k => !st.wsh.includes(k.id) && k.map === P.map && (!k.after || st.clues.includes(k.after) || (st.events || []).includes(k.after)) &&
+        P.x > k.zone[0] * TS && P.x < (k.zone[0] + k.zone[2]) * TS && P.y > k.zone[1] * TS && P.y < (k.zone[1] + k.zone[3]) * TS);
+      if (!sh || dlg) return;
+      st.wsh.push(sh.id); A.save();
+      shadow = { pts: sh.path.map(([x, y]) => [x * TS, y * TS]), i: 1, x: sh.path[0][0] * TS, y: sh.path[0][1] * TS, ch: sh.char || "detektiv", dir: "right" };
+      SFX("door"); setTimeout(() => A.toast(sh.msg), 700); return;
+    }
+    const [tx, ty] = shadow.pts[shadow.i], dx = tx - shadow.x, dy = ty - shadow.y, d = Math.hypot(dx, dy), stp = 95 * dt;
+    if (d <= stp) { shadow.x = tx; shadow.y = ty; if (++shadow.i >= shadow.pts.length) shadow = null; return; }
+    shadow.x += dx / d * stp; shadow.y += dy / d * stp; shadow.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
+  }
+  function drawShadow(g, t) {
+    const im = img(W().chars[shadow.ch]); if (!im.complete || !im.naturalWidth) return;
+    if (!silh[shadow.ch]) { const c = document.createElement("canvas"); c.width = im.width; c.height = im.height; const x = c.getContext("2d"); x.drawImage(im, 0, 0); x.globalCompositeOperation = "source-in"; x.fillStyle = "#0b0a12"; x.fillRect(0, 0, c.width, c.height); silh[shadow.ch] = c; }
+    const fr = DIRS[shadow.dir] * 6 + Math.floor(t * 12) % 6;
+    g.globalAlpha = .85; g.drawImage(silh[shadow.ch], fr * 16, 32, 16, 32, Math.round(shadow.x - 8), Math.round(shadow.y - 32), 16, 32); g.globalAlpha = 1;
+  }
+  // összegyűlés: ha minden bizonyíték megvan, a gyanúsítottak a gyülekezőhelyre mennek
+  function startGather() {
+    const g = W().gather, st = S(); if (!g || st.wgath) return;
+    st.wgath = 1; A.save();
+    const m = W().maps[g.map], sus2 = Object.values(W().maps).flatMap(x => x.npcs).filter(isSus);
+    sus2.forEach((n, i) => {
+      let x = g.x * TS + (i - (sus2.length - 1) / 2) * 22, y = g.y * TS;
+      for (let k = 1; k < 60 && blocked(m, x, y, true); k++) { x += Math.cos(k * 2.4) * k * .6; y += Math.sin(k * 2.4) * k * .6; }
+      Object.assign(NS[n.id], { x, y, gdir: "down", moving: false });
+    });
+    A.toast(T("Mindenki összegyűlt: {0}. Menj oda, és mutass rá a tettesre.", g.label)); banner(g.label); SFX("stamp");
+  }
+  // gondolatbuborék: ha két nyomod összefügg, a nyomozó elgondolkodik
+  function updThought() {
+    const pend = A.pendingDed ? A.pendingDed() : [], st = S(); st.wth = st.wth || [];
+    thinking = pend.length > 0;
+    const nw = pend.find(id => !st.wth.includes(id));
+    if (nw && !dlg) { st.wth.push(nw); A.save(); A.toast(T("Hmm… két nyomod összefügghet. Nézd meg a Táblán!")); }
+  }
+  let thinking = false;
+  // szereplők hangja: rövid csipogás, mindenkinek más magasságú
+  function voice(id, text) { window.MM_AUDIO && window.MM_AUDIO.blip && window.MM_AUDIO.blip([...String(id)].reduce((a, c) => a + c.charCodeAt(0), 0), Math.min(7, 2 + Math.round(text.length / 18))); }
 
   /* ---------- útkeresés 8 pixeles rácson ---------- */
   const G = 8;
@@ -244,6 +316,7 @@ window.MM_WORLD_ENGINE = function (A) {
     if (t.kind === "spot") examine(t.id, t);
     else if (t.kind === "puzzle") { SFX("paper"); openDlg("puzzle", t.id); }
     else if (t.kind === "npc") { SFX("paper"); openDlg("npc", t.id); }
+    else if (t.kind === "secret") { const st = S(); st.secrets = st.secrets || []; if (!st.secrets.includes(t.id)) { st.secrets.push(t.id); A.save(); SFX("success"); } openDlg("secret", t.id); }
   }
   function examine(id) {
     const { L, it } = itemState(id); if (!L) return;
@@ -275,8 +348,13 @@ window.MM_WORLD_ENGINE = function (A) {
       }
       return `${head}<p>${A.rich(L.decoys[id])}</p><p class="meta">${T("Nem tűnik nyomnak. De ki tudja.")}</p>${close}`;
     }
-    if (kind === "npc") return `${A.susCard(sus(id))}${close}`;
+    if (kind === "npc") return `${gathering() ? `<div class="accuse-box"><span class="eyebrow">${T("Mindenki rád figyel")}</span><p>${T("Ha biztos vagy benne, hogy ő a tettes, most mutass rá. Utána el kell mondanod, hogyan történt.")}</p><button class="btn" data-point="${id}">${T("Rámutatok: ő volt!")}</button></div>` : ""}${A.susCard(sus(id))}${close}`;
     if (kind === "help") return helpHtml();
+    if (kind === "secret") {
+      const all = W().secrets || [], sc = all.find(x => x.id === id) || {}, got = (st.secrets || []).filter(x => all.some(y => y.id === x)).length;
+      return `<div class="w-head"><div class="w-zoom" data-zoom></div><div><span class="eyebrow">✶ ${T("Titkot találtál")}</span><h2>${esc(sc.title || "")}</h2></div></div><p>${A.rich(sc.text || "")}</p>
+        <p class="found">${T("{0} / {1} titok ebben az ügyben", got, all.length)}</p><p class="meta">${T("A titkok nem kellenek a megoldáshoz, de a végén kiderül, mennyit találtál meg.")}</p>${close}`;
+    }
     if (kind === "puzzle") return `<div class="item" data-puzzle="${id}">${A.renderPuzzle(id)}</div>${st.solved[id] ? close : `<div class="row"><button class="link" data-wclose>${T("Később folytatom")}</button></div>`}`;
     return close;
   }
@@ -311,7 +389,11 @@ window.MM_WORLD_ENGINE = function (A) {
     card.className = "intro-card wcard w-" + kind;
     card.innerHTML = dlgHtml(kind, id); card.scrollTop = refresh ? y : 0;
     card.querySelectorAll("[data-wclose]").forEach(b => b.onclick = closeDlg);
-    const zb = card.querySelector("[data-zoom]"); if (zb) zoomInto(zb, id);
+    const zb = card.querySelector("[data-zoom]"); if (zb) zoomInto(zb, id, kind);
+    card.querySelectorAll("[data-point]").forEach(b => b.onclick = () => {
+      if (b.dataset.sure !== "1") { b.dataset.sure = "1"; b.textContent = T("Biztos vagy benne? Ha ártatlan, nincs visszaút. Kattints újra!"); b.classList.add("danger"); return; }
+      const sid = b.dataset.point, ov = document.querySelector(".wdlg"); if (ov) ov.remove(); dlg = null; A.pointAt(sid);
+    });
     if (kind === "npc") A.bindGyan(card);
     if (kind === "puzzle") A.bindPuzzleIn(card);
     if (!refresh) (card.querySelector("input,select,[data-wclose]") || card).focus({ preventScroll: true });
@@ -322,8 +404,8 @@ window.MM_WORLD_ENGINE = function (A) {
     if (was && was.kind === "help") { const r = curRoom(), st = S(); if (r && r.loc && !(st.wvis || []).includes(r.loc)) { st.wvis.push(r.loc); A.save(); openDlg("scene", r.loc); } }
   }
   // nagyító: a megvizsgált részlet pixeles közelképe
-  function zoomInto(box, id) {
-    const t = targets().find(x => x.kind === "spot" && x.id === id); if (!t) return;
+  function zoomInto(box, id, kind) {
+    const t = targets().find(x => x.kind === (kind === "secret" ? "secret" : "spot") && x.id === id); if (!t) return;
     const R = 22, cx = Math.round(t.r[0] + t.r[2] / 2), cy = Math.round(t.r[1] + Math.min(t.r[3], 40) / 2 + (t.glint ? 4 : 0));
     const c = document.createElement("canvas"), K = 5; c.width = c.height = R * 2 * K;
     const g = c.getContext("2d"); g.imageSmoothingEnabled = false;
@@ -419,6 +501,16 @@ window.MM_WORLD_ENGINE = function (A) {
       }
     });
   }
+  // eső vagy hó az ablakokon, ha odakint rossz idő van
+  function drawWindows(g, m, t) {
+    const fx = W().fx; if (!fx || !m.windows) return;
+    m.windows.forEach(([x, y, w, h], wi) => {
+      g.save(); g.beginPath(); g.rect(x, y, w, h); g.clip();
+      if (fx === "snow") { g.fillStyle = "rgba(255,255,255,.9)"; for (let i = 0; i < 5; i++) g.fillRect(x + ((i * 7 + wi * 3 + t * 6) % w), y + ((i * 5 + t * 9 + wi) % h), 1, 1); }
+      else { g.fillStyle = "rgba(170,200,235,.75)"; for (let i = 0; i < 4; i++) { const yy = y + ((i * 9 + t * (14 + i * 3) + wi * 5) % (h + 4)) - 4; g.fillRect(x + ((i * 5 + wi * 7) % Math.max(1, w - 1)), yy, 1, 3); } }
+      g.restore();
+    });
+  }
   function drawDoors(g, m) {
     const at = img(W().atlas), r = W().sprites.door; if (!r || !at.complete) return;
     lockedDoors(m).forEach(d => {
@@ -431,15 +523,20 @@ window.MM_WORLD_ENGINE = function (A) {
   function drawLayer(g, t, still) {
     const m = map(), w = W();
     const bg = img(m.bg); if (bg.complete && bg.naturalWidth) g.drawImage(bg, 0, 0);
-    drawDecals(g, m); drawDoors(g, m);
+    drawDecals(g, m); drawDoors(g, m); if (!still) drawWindows(g, m, t);
     const at = img(w.atlas), list = [];
     m.fg.forEach(f => list.push({ base: f.base, f }));
-    m.npcs.forEach(n => list.push({ base: pos(n).y + (n.lie ? 4 : n.static ? 1 : 0), n }));
+    npcsOn(m).forEach(n => list.push({ base: pos(n).y + (n.lie ? 4 : n.static ? 1 : 0), n }));
+    if (shadow && !still) list.push({ base: shadow.y, sh: true });
     if (!still) list.push({ base: P.y, p: true });
     list.sort((a, b) => a.base - b.base);
     list.forEach(o => {
       if (o.f) { const r = w.sprites[o.f.s]; if (r && at.complete) g.drawImage(at, r[0], r[1], r[2], r[3], o.f.x, o.f.y, r[2], r[3]); }
-      else if (o.n) { const p = pos(o.n); drawChar(g, o.n.id, p.x, p.y, p.dir, p.moving, t, { sit: o.n.sit, dy: o.n.dy, still: o.n.static, lie: o.n.lie, ph: o.n.x * 3 }); }
+      else if (o.n) {
+        const p = pos(o.n); drawChar(g, o.n.id, p.x, p.y, p.dir, p.moving, t, { sit: o.n.sit, dy: o.n.dy, still: o.n.static, lie: o.n.lie, ph: o.n.x * 3 });
+        if (!still && nervous(o.n) && Math.sin(t * 3 + p.x) > .3) { g.fillStyle = "#9fd4ff"; g.fillRect(Math.round(p.x) + 5, Math.round(p.y) - 27, 2, 3); g.fillRect(Math.round(p.x) + 5, Math.round(p.y) - 28, 1, 1); }
+      }
+      else if (o.sh) drawShadow(g, t);
       else drawChar(g, "detektiv", P.x, P.y, P.dir, P.moving, t);
     });
   }
@@ -457,6 +554,7 @@ window.MM_WORLD_ENGINE = function (A) {
       if (tg.done) return;
       const cx = tg.r[0] + tg.r[2] / 2;
       if (dk && Math.hypot(cx - P.x, tg.r[1] + tg.r[3] / 2 - P.y) > 70) return;
+      if (tg.hidden) { if (Math.hypot(cx - P.x, tg.r[1] + tg.r[3] / 2 - P.y) < 44) sparkle(cx, tg.r[1] + tg.r[3] / 2, t * 1.6, "#ffd0f0"); return; }
       if (tg.kind === "npc") {
         const bx = Math.round(cx) - 5, by = Math.round(tg.r[1] - 9 + Math.sin(t * 3) * 1.2);
         ctx.fillStyle = "#fff8e8"; ctx.fillRect(bx, by, 11, 7); ctx.fillRect(bx + 3, by + 7, 2, 2);
@@ -466,6 +564,11 @@ window.MM_WORLD_ENGINE = function (A) {
         ctx.fillRect(Math.round(cx) - 1, Math.round(y) - 3, 3, 7); ctx.fillRect(Math.round(cx) - 3, Math.round(y) - 1, 7, 3); ctx.globalAlpha = 1;
       } else sparkle(cx + (tg.glint ? 0 : (tg.r[2] / 4) * Math.sin(tg.r[0])), tg.r[1] + (tg.glint ? tg.r[3] / 2 : Math.min(8, tg.r[3] / 3)), t, "#fffbe0");
     });
+    if (thinking && !dlg && Math.sin(t * 1.3) > .2) {
+      const bx = Math.round(P.x) + 4, by = Math.round(P.y) - 44 + Math.round(Math.sin(t * 4));
+      ctx.fillStyle = "#fff8e8"; ctx.fillRect(bx, by, 9, 9); ctx.fillRect(bx - 2, by + 10, 2, 2); ctx.fillRect(bx - 4, by + 13, 1, 1);
+      ctx.fillStyle = "#c0392b"; ctx.fillRect(bx + 3, by + 2, 3, 1); ctx.fillRect(bx + 5, by + 3, 1, 2); ctx.fillRect(bx + 4, by + 5, 1, 1); ctx.fillRect(bx + 4, by + 7, 1, 1);
+    }
     if (near && !dlg) {
       const cx = near.r[0] + near.r[2] / 2, y = Math.round(near.r[1] - (near.kind === "npc" && !near.done ? 16 : 7) + Math.sin(t * 5) * 1.5);
       ctx.fillStyle = "#ffffff"; ctx.fillRect(Math.round(cx) - 3, y, 7, 2); ctx.fillRect(Math.round(cx) - 2, y + 2, 5, 1); ctx.fillRect(Math.round(cx) - 1, y + 3, 3, 1); ctx.fillRect(Math.round(cx), y + 4, 1, 1);
@@ -554,7 +657,10 @@ window.MM_WORLD_ENGINE = function (A) {
       if (!P.moving && path) { path = null; pending = null; }
       if (P.moving) savePos();
     }
-    updNpcs(dt); updBark(now); updTalk(now); sounds(now, moved);
+    if (!dlg) S().wsec = (S().wsec || 0) + dt;
+    if (gathering() && !S().wgath) startGather();
+    updNpcs(dt); updBark(now); updTalk(now); updShadow(dt); sounds(now, moved);
+    if (now > (updClock.n || 0)) { updClock.n = now + 500; updClock(now); updThought(); }
     const n2 = dlg ? null : findNear();
     if ((n2 && n2.id) !== (near && near.id)) { near = n2; hud(); } else near = n2;
     actButton();
@@ -614,7 +720,7 @@ window.MM_WORLD_ENGINE = function (A) {
       ensure();
       return `<div class="stack world-wrap">
         <div class="row" style="justify-content:space-between"><span class="eyebrow">${T("Helyszínelés · {0}", esc(map().name))}</span>${A.viewSwitch ? A.viewSwitch() : ""}</div>
-        <div class="world" data-world><canvas aria-label="${T("A helyszín térképe. Nyilakkal vagy WASD-vel mozogsz, E-vel vizsgálsz.")}"></canvas><div class="w-banner" aria-live="polite"></div><div class="w-say" hidden></div><div class="w-sub" aria-live="polite" hidden></div><button class="w-act" hidden></button><button class="w-help-btn" data-whelp aria-label="${T("Útmutató")}" title="${T("Útmutató")}">?</button></div>
+        <div class="world" data-world><canvas aria-label="${T("A helyszín térképe. Nyilakkal vagy WASD-vel mozogsz, E-vel vizsgálsz.")}"></canvas><div class="w-banner" aria-live="polite"></div>${W().clock ? `<div class="w-clock" title="${T("Az éjszaka órája")}"></div>` : ""}<div class="w-say" hidden></div><div class="w-sub" aria-live="polite" hidden></div><button class="w-act" hidden></button><button class="w-help-btn" data-whelp aria-label="${T("Útmutató")}" title="${T("Útmutató")}">?</button></div>
         <p class="w-hud">${hudHtml()}</p>
         <p class="meta">${T("Mozgás: nyilak vagy WASD, illetve koppints oda, ahová menjen a nyomozó. A csillogó dolgokat E-vel vagy a gombbal vizsgálod meg, a szereplőkkel beszélgethetsz is. Amíg egy helyiség minden nyomát meg nem találod, a következőbe nem léphetsz be.")}</p>
         <div class="w-found">${foundHtml()}</div>
@@ -653,4 +759,40 @@ window.MM_WORLD_ENGINE = function (A) {
     interact(kind, id) { const t = targets().find(t => t.kind === kind && t.id === id); if (t) interact(t); return !!t; },
     walk(x, y) { walkTo(x, y); }
   };
+};
+
+/* A címoldali nyomozóiroda: a megoldott ügyek tárgyai a polcon, a fekete szegfű cédulái a parafatáblán.
+   Kattintásra a tárgy ügye nyílik meg. */
+window.MM_OFFICE = {
+  mount(cv, info) {
+    const D = window.MM_WORLDS && window.MM_WORLDS.iroda; if (!D || !cv) return;
+    const m = D.maps.m, W = m.w * 16, H = m.h * 16, ctx = cv.getContext("2d"), imgs = {};
+    const img = s => { if (!imgs[s]) { imgs[s] = new Image(); imgs[s].onload = draw; imgs[s].src = s; } return imgs[s]; };
+    let hover = null, k = 1;
+    const trophies = m.fg.filter(f => f.trophy);
+    function size() { const dpr = Math.min(2, window.devicePixelRatio || 1); k = Math.max(1, Math.floor(cv.clientWidth * dpr / W)); cv.width = W * k; cv.height = H * k; draw(); }
+    function draw() {
+      ctx.setTransform(k, 0, 0, k, 0, 0); ctx.imageSmoothingEnabled = false; ctx.fillStyle = "#17131d"; ctx.fillRect(0, 0, W, H);
+      const bg = img(m.bg); if (bg.complete) ctx.drawImage(bg, 0, 0);
+      const at = img(D.atlas), ch = img(D.chars.detektiv);
+      const list = m.fg.filter(f => !f.trophy || info.won.includes(f.trophy)).map(f => ({ b: f.base, f }));
+      list.push({ b: m.npcs[0].y * 16, n: m.npcs[0] }); list.sort((a, b) => a.b - b.b);
+      list.forEach(o => {
+        if (o.f) { const r = D.sprites[o.f.s]; if (r && at.complete) ctx.drawImage(at, r[0], r[1], r[2], r[3], o.f.x, o.f.y, r[2], r[3]); }
+        else if (ch.complete) ctx.drawImage(ch, 6 * 16, 0, 16, 32, Math.round(o.n.x * 16 - 8), Math.round(o.n.y * 16 - 32), 16, 32);
+      });
+      // cédulák a parafatáblán
+      const bx = 4.4 * 16 + 4, by = 2.9 * 16 - 34 + 4;
+      info.thread.forEach((t, i) => {
+        const x = bx + (i % 3) * 20, y = by + Math.floor(i / 3) * 14;
+        ctx.fillStyle = t.won ? "#f4ecd6" : "rgba(244,236,214,.35)"; ctx.fillRect(x, y, 12, 11); ctx.fillStyle = "#b03a2e"; ctx.fillRect(x + 5, y - 1, 2, 2);
+        if (t.won) { ctx.fillStyle = "#b03a2e"; ctx.font = "bold 8px serif"; ctx.textAlign = "center"; ctx.fillText(t.letter, x + 6, y + 9); }
+      });
+      if (hover) { const f = hover; ctx.strokeStyle = "#ffd76a"; ctx.lineWidth = 1; ctx.strokeRect(f.x - 1.5, f.y - 1.5, f.w + 3, f.h + 3); }
+    }
+    const pick = e => { const r = cv.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * W, y = (e.clientY - r.top) / r.height * H; return trophies.find(f => info.won.includes(f.trophy) && x >= f.x - 2 && x <= f.x + f.w + 2 && y >= f.y - 2 && y <= f.y + f.h + 2) || null; };
+    cv.onpointermove = e => { const h = pick(e); if (h !== hover) { hover = h; cv.style.cursor = h ? "pointer" : "default"; cv.title = h ? info.titles[h.trophy] : ""; draw(); } };
+    cv.onclick = e => { const h = pick(e); if (h) location.hash = h.trophy; };
+    size(); window.addEventListener("resize", size);
+  }
 };

@@ -218,6 +218,12 @@
 
   window.MM_AUDIO = {
     setScene(name) { want = name || "home"; apply(); },
-    sfx(name) { if (on && ctx && ctx.state === "running" && SFX[name]) SFX[name](ctx.currentTime + 0.01); }
+    sfx(name) { if (on && ctx && ctx.state === "running" && SFX[name]) SFX[name](ctx.currentTime + 0.01); },
+    // beszédhang: rövid csipogások, a magasság szereplőnként más
+    blip(seed, n) {
+      if (!(on && ctx && ctx.state === "running")) return;
+      const base = 300 + (seed * 37) % 420, t0 = ctx.currentTime + 0.01;
+      for (let i = 0; i < n; i++) tone(t0 + i * 0.075, base * (1 + ((seed * (i + 3)) % 5) * 0.06), 0.05, 0.035, "square");
+    }
   };
 })();

@@ -3,6 +3,7 @@
   id: "ejszakai-gyors",
   fx: "snow",
   sound: "train",
+  sounds: { etkezo: "jazz" },
   cover: "train",
   number: 3,
   title: "Éjszakai gyors",

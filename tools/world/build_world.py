@@ -8,6 +8,14 @@ RAW, CHARS, CASE = sys.argv[1], sys.argv[2], sys.argv[3]
 HERE = os.path.dirname(os.path.abspath(__file__)); REPO = os.path.dirname(os.path.dirname(HERE))
 SPEC = json.load(open(os.path.join(HERE, CASE + ".json")))
 SPR = json.load(open(os.path.join(HERE, "sprites_px.json")))
+# hangulati kiegészítők és titkok (tools/world/src/extras.py)
+sys.path.insert(0, os.path.join(HERE, "src")); from extras import EXTRAS
+_X = EXTRAS.get(CASE, {})
+for k in ("clock", "timeline", "shadows", "gather", "fx"):
+    if k in _X: SPEC[k] = _X[k]
+SPEC["secrets"] = [{k: v for k, v in sc.items() if k not in ("map", "x", "b")} for sc in _X.get("secrets", [])]
+for sc in _X.get("secrets", []):
+    SPEC["maps"][sc["map"]]["objects"].append({"glint": sc["id"], "x": sc["x"], "b": sc["b"], "label": sc["title"], "secret": True})
 TS = os.path.join(RAW, "1_Interiors/16x16/Theme_Sorter")
 RB = os.path.join(RAW, "1_Interiors/16x16/Room_Builder_subfiles")
 FLOORS = Image.open(os.path.join(RB, "Room_Builder_Floors_16x16.png")).convert("RGBA")
@@ -102,14 +110,14 @@ def build(mid, M):
             if kind[y][x] == "d" and (face[y][x - 1] or face[y][x + 1] if 0 < x < W - 1 else False):
                 pass
     # tárgyak: a padló- és falitárgyak, meg a hátsó fal előtti bútorok a háttérbe sülnek, a szabadon állók külön rétegen y szerint rendezve
-    objs, fg, solids, inter, warps, lights, ticks = M["objects"], [], [], [], [], [], []
+    objs, fg, solids, inter, warps, lights, ticks, wins = M["objects"], [], [], [], [], [], [], []
     def rect_of(o):
         im = sprite(o["s"]); w, h = im.size
         return im, round(o["x"] * T), round(o["b"] * T) - h, w, h
     order = sorted([o for o in objs if "s" in o], key=lambda o: (0 if o.get("floor") else 1 if o.get("wall") else 2, o["b"] + o.get("z", 0)))
     for o in order:
         im, x, y, w, h = rect_of(o)
-        if o.get("fg"): fg.append({"s": o["s"], "x": x, "y": y, "w": w, "h": h, "base": round((o["b"] + o.get("z", 0)) * T)})
+        if o.get("fg"): fg.append({"s": o["s"], "x": x, "y": y, "w": w, "h": h, "base": round((o["b"] + o.get("z", 0)) * T), **({"trophy": o["trophy"]} if o.get("trophy") else {})})
         else: img.alpha_composite(im, (x, y))
         if not (o.get("floor") or o.get("wall") or o.get("nosolid") or o.get("z")):
             sd = min(h, round(o.get("sd", 0.9) * T)); solids.append([x + 1, y + h - sd, w - 2, sd])
@@ -118,12 +126,13 @@ def build(mid, M):
             warps.append({"r": [x + wr[0], y + wr[1], wr[2], wr[3]], "to": o["warp"], "label": o.get("label", "")})
         if o.get("light"): lights.append([x + w / 2, y + h * .6, o["light"][0], o["light"][1]])
         if o.get("tick"): ticks.append([x + w / 2, y + h])
-        for key in ("spot", "puzzle"):
+        if o["s"].startswith("window") or o["s"] == "curtainwin": wins.append([x + 2, y + 2, w - 4, h - 6])
+        for key in ("spot", "puzzle", "secret"):
             if o.get(key): inter.append({"k": key, "id": o[key], "r": [x, y, w, h], "label": o.get("label", "")})
     for o in objs:
         if "glint" in o:
             x, y = round(o["x"] * T), round(o["b"] * T) - 10
-            inter.append({"k": "puzzle" if o.get("puzzle") else "spot", "id": o["glint"], "r": [x - 4, y - 2, 14, 12], "label": o.get("label", ""), "glint": True})
+            inter.append({"k": "secret" if o.get("secret") else "puzzle" if o.get("puzzle") else "spot", "id": o["glint"], "r": [x - 4, y - 2, 14, 12], "label": o.get("label", ""), "glint": True})
     img.save(os.path.join(OUT_IMG, mid + ".png"), optimize=True)
     rid = [r[0] for r in rooms]
     return {"name": M["name"], "w": W, "h": H, "bg": f"images/world/{CASE}/{mid}.png",
@@ -132,9 +141,10 @@ def build(mid, M):
             "rooms": [{"loc": None if r[0].startswith("_") else r[0], "label": r[7] if len(r) > 7 else None, "rect": r[1:5]} for r in rooms],
             "weather": M.get("weather", {}), "fog": M.get("fog"),
             "solids": solids, "fg": fg, "inter": inter, "warps": warps, "npcs": M.get("npcs", []),
-            "doors": M["doors"], "snd": M.get("snd", []), "lights": lights, "ticks": ticks, "decals": M.get("decals", []), "talks": M.get("talks", [])}
+            "doors": M["doors"], "snd": M.get("snd", []), "windows": wins, "lights": lights, "ticks": ticks, "decals": M.get("decals", []), "talks": M.get("talks", [])}
 
-out = {"case": CASE, "start": SPEC["start"], "dark": SPEC.get("dark"), "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
+out = {"case": CASE, "start": SPEC["start"], "dark": SPEC.get("dark"), "clock": SPEC.get("clock"), "timeline": SPEC.get("timeline", []),
+       "shadows": SPEC.get("shadows", []), "gather": SPEC.get("gather"), "secrets": SPEC.get("secrets", []), "fx": SPEC.get("fx"), "maps": {}, "atlas": f"images/world/{CASE}/atlas.png", "chars": {}}
 for mid, M in SPEC["maps"].items(): out["maps"][mid] = build(mid, M)
 # atlasz a szabadon álló tárgyakból
 names = sorted({f["s"] for m in out["maps"].values() for f in m["fg"]} | {"door"})

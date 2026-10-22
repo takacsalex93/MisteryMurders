@@ -1,0 +1,188 @@
+{
+ "case": "iroda",
+ "start": [
+  "m",
+  8,
+  8
+ ],
+ "chars": [
+  "detektiv"
+ ],
+ "maps": {
+  "m": {
+   "name": "Az iroda",
+   "w": 22,
+   "h": 12,
+   "rooms": [
+    [
+     "_iroda",
+     1,
+     3,
+     20,
+     8,
+     [
+      8,
+      10
+     ],
+     [
+      11,
+      6
+     ],
+     "Az iroda"
+    ]
+   ],
+   "snd": [
+    "wood"
+   ],
+   "doors": [],
+   "objects": [
+    {
+     "s": "rug_purple",
+     "x": 8.0,
+     "b": 10.6,
+     "floor": true
+    },
+    {
+     "s": "window_red",
+     "x": 1.6,
+     "b": 2.8,
+     "wall": true
+    },
+    {
+     "s": "window_red",
+     "x": 17.6,
+     "b": 2.8,
+     "wall": true
+    },
+    {
+     "s": "corkboard",
+     "x": 4.4,
+     "b": 2.9,
+     "wall": true
+    },
+    {
+     "s": "shelf_trophy",
+     "x": 10.6,
+     "b": 4.6
+    },
+    {
+     "s": "trophy_glass",
+     "x": 11.0,
+     "b": 3.1,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "szegfu-villa"
+    },
+    {
+     "s": "statue",
+     "x": 12.2,
+     "b": 3.3,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "arany-griff"
+    },
+    {
+     "s": "locket",
+     "x": 13.6,
+     "b": 3.1,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "ejszakai-gyors"
+    },
+    {
+     "s": "cake",
+     "x": 15.0,
+     "b": 3.1,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "hollos-cukraszda"
+    },
+    {
+     "s": "sandbag",
+     "x": 11.2,
+     "b": 4.25,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "corvin-szinhaz"
+    },
+    {
+     "s": "aszu",
+     "x": 12.8,
+     "b": 4.25,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "tokaji-pince"
+    },
+    {
+     "s": "vase_flower",
+     "x": 14.4,
+     "b": 4.25,
+     "fg": true,
+     "z": 1.6,
+     "trophy": "fekete-szegfu"
+    },
+    {
+     "s": "bookcase_b",
+     "x": 1.2,
+     "b": 4.3
+    },
+    {
+     "s": "globe",
+     "x": 6.0,
+     "b": 4.6
+    },
+    {
+     "s": "plant_a",
+     "x": 19.4,
+     "b": 4.8
+    },
+    {
+     "s": "palm",
+     "x": 9.0,
+     "b": 4.6
+    },
+    {
+     "s": "table_dark",
+     "x": 15.0,
+     "b": 9.4,
+     "fg": true
+    },
+    {
+     "s": "lamp_red",
+     "x": 15.6,
+     "b": 7.9,
+     "fg": true,
+     "z": 1.6
+    },
+    {
+     "s": "papers",
+     "x": 16.2,
+     "b": 8.0,
+     "fg": true,
+     "z": 1.5
+    },
+    {
+     "s": "tubchair_r",
+     "x": 17.6,
+     "b": 9.6,
+     "fg": true
+    },
+    {
+     "s": "coatrack",
+     "x": 19.6,
+     "b": 8.6,
+     "fg": true
+    }
+   ],
+   "npcs": [
+    {
+     "id": "detektiv",
+     "x": 16.4,
+     "y": 10.0,
+     "dir": "up",
+     "static": true
+    }
+   ]
+  }
+ }
+}

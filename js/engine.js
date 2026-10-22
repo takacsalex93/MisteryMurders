@@ -132,7 +132,9 @@
   const budget = c => 10 * c.locations.reduce((n, l) => n + (l.items || []).length + Object.keys(l.decoys || {}).length / 2, 0) + 15 * (c.contradictions || []).length + 15 * pids(c).length + 10 * (c.deductions || []).length + 90;
   const fmtLeft = m => { m = Math.max(0, m); const h = Math.floor(m / 60), mm = m % 60; return h ? T("{0} óra {1} perc", h, mm) : T("{0} perc", mm); };
   function spend(min) {
-    if (!S.timed || S.ended) return false;
+    if (S.ended) return false;
+    S.min = (S.min || 0) + min;
+    if (!S.timed) { save(); return false; }
     S.used = (S.used || 0) + min;
     if (S.used >= budget(C)) { S.ended = "timeout"; S.tab = "vad"; S.loc = null; save(); SND("wrong"); return true; }
     save(); return false;
@@ -227,6 +229,7 @@
         <h1>${T("Rejtélyes gyilkosságok")}</h1>
         <p>${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
       </header>
+      ${window.MM_OFFICE && window.MM_WORLDS && window.MM_WORLDS.iroda ? `<section class="office"><canvas data-office aria-label="${T("A nyomozó irodája")}"></canvas><p class="meta">${T("Az irodád. A megoldott ügyek emlékei a polcra kerülnek, a fekete szegfű cédulái a parafatáblára. Kattints egy tárgyra, és újra elolvashatod az ügyét.")}</p></section>` : ""}
       ${sections}
       ${FINALE ? threadSection() : ""}
       <section class="howto">
@@ -243,6 +246,9 @@
         <p>${T("A játékállás ebben a böngészőben mentődik, bármikor folytathatod.")}</p>
       </section>
     </div>`;
+    const oc = app.querySelector("[data-office]");
+    if (oc) window.MM_OFFICE.mount(oc, { won: CASES.filter(wonCase).map(c => c.id), titles: Object.fromEntries(CASES.map(c => [c.id, c.title])),
+      thread: THREAD.map(c => ({ won: wonCase(c), letter: (c.carnation || {}).letter || "?" })) });
     bindLang(); bindGloss(); SCENE("home"); FX();
   }
 
@@ -351,8 +357,11 @@
       liar = found.some(k => k.lie !== false);
       notes = found.map(k => `<p class="note">${rich(k.reveal)}</p>`).join("");
     }
+    const cool = (S.cool || {})[s.id] > Date.now();
     const tool = legacy || S.ended ? "" : S.clues.length
-      ? `<div class="confront"><select id="cf-${s.id}" aria-label="${T("Nyom a szembesítéshez")}"><option value="">${T("Szembesítés nyommal…")}</option>${opts}</select><button class="btn ghost small" data-cf="${s.id}">${T("Szembesítem")}</button></div><p class="msg" data-cfmsg="${s.id}"></p>`
+      ? `<div class="confront" data-cfbox="${s.id}"><span class="eyebrow">${T("Szembesítés")}</span><p class="meta">${cool ? T("Sértődötten hallgat. Próbáld újra egy kicsit később.") : T("Válaszd ki azt a nyomot, amelyik ellentmond a szavainak, és tedd elé.")}</p>
+        <div class="cfcards">${S.clues.map(k => `<button class="cfcard ${isDed(k) ? "ded" : ""}" data-cfpick="${s.id}" data-k="${k}" ${cool ? "disabled" : ""}>${isDed(k) ? "◆ " : ""}${esc(plain(C.clues[k].t))}</button>`).join("")}</div>
+        <button class="btn small" data-cf="${s.id}" ${cool ? "disabled" : ""}>${T("Elé teszem")}</button></div><p class="msg" data-cfmsg="${s.id}"></p>`
       : `<p class="meta">${T("Még nincs nyomod, amivel szembesíthetnéd.")}</p>`;
     const qs = ((C.interviews || {})[s.id] || []).filter(q => (!q.after || S.clues.includes(q.after)) && (!q.afterConf || S.conf.includes(q.afterConf)));
     const asked = qs.filter(q => S.asked.includes(s.id + ":" + q.id)), open = S.ended ? [] : qs.filter(q => !S.asked.includes(s.id + ":" + q.id));
@@ -432,7 +441,8 @@
           <ul class="checklist">${row(pn === pids(C).length, T("Rejtvények: {0} / {1}", pn, pids(C).length))}${row(dn === dt, T("Levont következtetések: {0} / {1}", dn, dt))}</ul>
           <div class="row"><button class="btn ghost" data-gotab="tabla">${T("A Táblához")} →</button><button class="btn ghost" data-gotab="gyan">${T("A gyanúsítottakhoz")} →</button></div></div>`;
       }
-      return `<div class="stack"><span class="eyebrow">${T("Mindenki rád vár")}</span><h2>${T("Vádemelés")}</h2>
+      const pointed = S.pointed && C.suspects.find(x => x.id === S.pointed);
+      return `<div class="stack">${pointed ? `<div class="pointed"><div class="art portrait">${ART.portrait(pointed)}</div><div><span class="eyebrow">${T("Mindenki elhallgat")}</span><p>${T("Rámutatsz: {0}. A teremben megáll a levegő. Most mondd el, hogyan történt.", pointed.name)}</p></div></div>` : ""}<span class="eyebrow">${T("Mindenki rád vár")}</span><h2>${T("Vádemelés")}</h2>
         <p>${T("Összehívod a ház lakóit, és elmondod, mi történt. Egészítsd ki a történetet a szókártyáidból. Az ügyvéd csak akkor fogadja el, ha minden szó a helyén van.")}</p>
         <p class="meta">${T("Még {0} próbálkozásod van.", triesLeft)}${left && !S.master ? " " + T("{0} rejtvény megoldatlan.", left) : ""}</p>
         <p class="warn">${T("Vigyázz: akit tettesként megnevezel, azt a csendőrök letartóztatják. Ha ártatlan, nincs visszaút. A részletekben tévedhetsz, a személyben nem.")}</p>
@@ -705,6 +715,19 @@
     return h + `</div>`;
   }
 
+  // „Mit hagytál ki?”: titkok, le nem leplezett hazugságok, meg nem nézett részletek
+  function missedHtml() {
+    const sec = (WDATA() && WDATA().secrets) || [], got = sec.filter(x => (S.secrets || []).includes(x.id));
+    const lies = contra(C).filter(k => k.lie !== false), hidden = lies.filter(k => !S.conf.includes(k.id));
+    const dec = C.locations.flatMap(l => Object.keys(l.decoys || {}).map(k => l.id + ":" + k)), seen = dec.filter(k => S.seen.includes(k)).length;
+    const who = [...new Set(hidden.map(k => (C.suspects.find(x => x.id === k.suspect) || {}).name).filter(Boolean))];
+    const row = (ok, t) => `<li class="${ok ? "ok" : ""}">${ok ? "✓" : "○"} ${t}</li>`;
+    return `<div class="missed"><span class="eyebrow">${T("Mit hagytál ki?")}</span><ul class="checklist">
+      ${sec.length ? row(got.length === sec.length, T("Titkok: {0} / {1}", got.length, sec.length)) : ""}
+      ${lies.length ? row(!hidden.length, T("Leleplezett hazugságok: {0} / {1}", lies.length - hidden.length, lies.length) + (who.length ? " · " + T("titkát megtartotta: {0}", who.join(", ")) : "")) : ""}
+      ${dec.length ? row(seen === dec.length, T("Megnézett részletek: {0} / {1}", seen, dec.length)) : ""}
+      </ul>${sec.length > got.length ? `<p class="meta">${T("Rejtve maradt:")} ${sec.filter(x => !got.includes(x)).map(x => esc(x.hint)).join(" · ")}</p>` : ""}</div>`;
+  }
   function viewEnding(revealOnly) {
     const hu = hintsUsed(S), sc = score(S);
     const culprit = C.suspects.find(s => s.id === culpritId());
@@ -717,6 +740,7 @@
       ${!revealOnly && C.carnation ? `<div class="carnation"><span class="eyebrow">${T("A titkos szál")}</span><p>${esc(C.carnation.found)}</p><p class="typed">${glyphText(C.carnation.note)}</p><span class="cletter big">${esc(C.carnation.letter)}</span><p class="meta">${FINALE && unlocked(FINALE) ? T("Megvan mind a hat cédula. A címoldalon megnyílt a záró ügy.") : T("{0} / {1} cédula a címoldalon, A titkos szál alatt.", THREAD.filter(wonCase).length, THREAD.length)}</p></div>` : ""}
       ${C.ending.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}
       ${revealOnly ? "" : aftermath()}
+      ${revealOnly ? "" : missedHtml()}
       ${stats}</div>
       <div class="row"><a class="btn" href="#">${T("Vissza az ügyekhez")}</a>${revealOnly ? `<button class="btn ghost" data-restart>${T("Újrakezdem az ügyet")}</button>` : `<button class="btn ghost" data-share>${T("Eredménykártya")}</button>`}</div></div>`;
   }
@@ -756,12 +780,17 @@
     if (dd.length) return S.unl.some(id => dd.find(d => d.id === id))
       ? { t: T("Van egy megnyitott következtetésed. Töltsd ki a hiányos mondatot a szókártyáiddal (a nyomok szövegében aláhúzott szavak)."), tab: "jegy" }
       : { t: T("Gondold végig a nyomokat: a Táblán köss össze piros fonallal kettőt, amelyek összetartoznak. Még {0} következtetés vár rád.", dd.length), tab: "tabla" };
-    if (ready()) return { t: T("Minden bizonyíték megvan. A Vádemelés fülön mondd el, mi történt, és nevezd meg a tettest."), tab: "vad" };
+    if (ready()) return world && WDATA().gather ? { t: T("Minden bizonyíték megvan. Mindenki összegyűlt: {0}. Menj oda a tettes elé, beszélj vele, és mutass rá. Utána a Vádemelés fülön mondd el, mi történt.", WDATA().gather.label), tab: "hely" }
+      : { t: T("Minden bizonyíték megvan. A Vádemelés fülön mondd el, mi történt, és nevezd meg a tettest."), tab: "vad" };
     return null;
   }
   const coachHtml = () => { const n = nextStep(); return n ? `<span class="coach-k">${T("Következő lépés")}</span><span class="coach-t">${esc(n.t)}</span>${n.tab !== S.tab ? `<button class="link" data-coach="${n.tab}">${T("Odamegyek")} →</button>` : ""}` : ""; };
   function bindCoach() { const b = document.querySelector("[data-coachbar]"); if (!b) return; b.hidden = !b.innerHTML.trim(); b.querySelectorAll("[data-coach]").forEach(x => x.onclick = () => go(x.dataset.coach)); }
   function updateCoach() { const b = document.querySelector("[data-coachbar]"); if (b) { b.innerHTML = coachHtml(); bindCoach(); } }
+  function pointAt(sid) {
+    const A = C.accusation, wi = (A.who || [0])[0];
+    S.dsel.acc = S.dsel.acc || []; S.dsel.acc[wi] = sid; S.pointed = sid; save(); SND("stamp"); go("vad");
+  }
   const ready = () => dedsOf(C).every(d => S.clues.includes(d.id)) && pids(C).every(p => S.solved[p]);
   const culpritId = () => [].concat(C.accusation.b[(C.accusation.who || [0])[0]])[0];
   function viewWrong() {
@@ -1017,14 +1046,23 @@
   function bindGyan(root) {
     const q = sel => root.querySelectorAll(sel);
     q("[data-ask]").forEach(b => b.onclick = () => { S.asked.push(b.dataset.ask); save(); SND("paper"); spend(COST.ask); const y = window.scrollY; renderCase(); window.scrollTo({ top: y }); });
+    q("[data-cfpick]").forEach(b => b.onclick = () => {
+      const box = root.querySelector(`[data-cfbox="${b.dataset.cfpick}"]`); box.dataset.pick = b.dataset.k;
+      box.querySelectorAll("[data-cfpick]").forEach(x => x.classList.toggle("on", x === b)); SND("tick");
+    });
     q("[data-cf]").forEach(b => b.onclick = () => {
-        const sid = b.dataset.cf, sel = root.querySelector("#cf-" + sid), m = root.querySelector(`[data-cfmsg="${sid}"]`), clue = sel.value;
+        const sid = b.dataset.cf, m = root.querySelector(`[data-cfmsg="${sid}"]`), clue = root.querySelector(`[data-cfbox="${sid}"]`).dataset.pick || "";
+        S.cool = S.cool || {}; S.wrongBy = S.wrongBy || {};
+        if (S.cool[sid] > Date.now()) { m.className = "msg bad"; m.textContent = T("Sértődötten hallgat. Próbáld újra egy kicsit később."); return; }
         const s = C.suspects.find(x => x.id === sid), first = s.short || (LANG === "en" ? s.name.split(" ")[0] : s.name.split(" ").slice(-1)[0]);
         if (!clue) { m.className = "msg bad"; m.textContent = T("Előbb válassz egy nyomot."); return; }
         const hit = contra(C, sid).find(k => !S.conf.includes(k.id) && has(k.clue, clue));
-        if (hit) { S.conf.push(hit.id); if (hit.gives) gain(hit.gives); save(); SND(hit.lie === false ? "success" : "stamp"); spend(COST.confront); renderCase(); return; }
+        if (hit) { S.conf.push(hit.id); S.wrongBy[sid] = 0; if (hit.gives) gain(hit.gives); save(); SND(hit.lie === false ? "success" : "stamp"); spend(COST.confront); renderCase(); return; }
         if (contra(C, sid).some(k => S.conf.includes(k.id) && has(k.clue, clue))) { m.className = "msg"; m.textContent = T("Ezt már tisztáztátok."); return; }
-        S.wrongConf = (S.wrongConf || 0) + 1; save(); SND("wrong");
+        S.wrongConf = (S.wrongConf || 0) + 1; S.wrongBy[sid] = (S.wrongBy[sid] || 0) + 1;
+        const sulk = S.wrongBy[sid] >= 2; if (sulk) { S.wrongBy[sid] = 0; S.cool[sid] = Date.now() + 40000; }
+        save(); SND("wrong");
+        if (sulk) { toast(T("{0} megsértődött, és most nem hajlandó beszélni.", first)); spend(COST.confront); renderCase(); return; }
         if (spend(COST.confront)) { renderCase(); return; }
         updateClock();
         m.className = "msg bad"; m.textContent = `${first} ${REBUFF[(S.wrongConf + sid.length) % REBUFF.length]}`;
@@ -1155,7 +1193,7 @@
   // a pixelvilág a motor belső függvényeit ezen keresztül éri el
   const WORLD = window.MM_WORLD_ENGINE ? window.MM_WORLD_ENGINE({
     get C() { return C; }, get S() { return S; }, save, T, esc, rich, plain, ART, SND, toast, gain, spend, COST, remaining, itemOf,
-    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote, updateCoach
+    renderPuzzle, bindPuzzleIn, susCard, bindGyan, renderCase, rerender, data: WDATA, contra, viewSwitch, addNote, updateCoach, ready: () => ready(), pointAt, go, pendingDed: () => dedsOf(C).filter(d => !S.clues.includes(d.id) && !S.unl.includes(d.id) && haveAny(d.from[0]) && haveAny(d.from[1])).map(d => d.id)
   }) : null;
   window.MM_WORLD = WORLD;
 

@@ -3,7 +3,7 @@
   id: "corvin-szinhaz",
   fx: "dust",
   sound: "theatre",
-  sounds: { zsinorpadlas: "loft", kellektar: "loft" },
+  sounds: { zsinorpadlas: "loft", kellektar: "loft", bufe: "jazz" },
   cover: "generic",
   number: 5,
   title: "Utolsó felvonás",

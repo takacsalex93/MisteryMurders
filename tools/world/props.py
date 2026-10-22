@@ -413,3 +413,23 @@ def make(name):
 def compact():
     im, d = new(12, 8); d.ellipse([0, 1, 7, 7], fill=BRASS, outline=O); d.ellipse([2, 2, 5, 5], fill=C(200, 225, 240)); rect(d, 9, 0, 11, 7, RED); return im
 PROPS["compact"] = compact
+
+def trophy_glass():
+    im, d = new(10, 14); d.polygon([(1, 0), (8, 0), (7, 6), (2, 6)], fill=C(210, 230, 240), outline=O); d.polygon([(2, 3), (7, 3), (6, 6), (3, 6)], fill=C(170, 100, 40))
+    d.line([4, 7, 4, 11], fill=O); d.line([5, 7, 5, 11], fill=C(210, 230, 240)); rect(d, 1, 11, 8, 13, C(210, 230, 240)); return im
+def statue():
+    im, d = new(12, 22); rect(d, 1, 17, 10, 21, C(90, 70, 50)); d.ellipse([3, 0, 8, 5], fill=C(176, 120, 60), outline=O)
+    d.polygon([(3, 5), (8, 5), (9, 17), (2, 17)], fill=C(176, 120, 60), outline=O); d.line([8, 7, 11, 2], fill=O); d.line([4, 8, 4, 15], fill=C(214, 160, 90)); return im
+def locket():
+    im, d = new(10, 13); d.arc([2, 0, 7, 5], 180, 360, fill=IRON_L); d.ellipse([0, 3, 9, 12], fill=IRON_L, outline=O); d.ellipse([2, 5, 7, 10], fill=C(230, 230, 236)); return im
+def aszu():
+    im, d = new(8, 18); rect(d, 3, 0, 4, 4, C(40, 30, 20)); d.rounded_rectangle([0, 4, 7, 17], 2, fill=C(214, 150, 40), outline=O); rect(d, 1, 9, 6, 13, PAPER); return im
+def corkboard():
+    im, d = new(64, 34); rect(d, 0, 0, 63, 33, C(170, 120, 70)); rect(d, 2, 2, 61, 31, C(196, 150, 96), None)
+    for x in range(6, 60, 9): d.point([x, 5], fill=C(150, 100, 60)); d.point([x + 4, 22], fill=C(150, 100, 60))
+    return im
+def shelf_trophy():
+    im, d = new(96, 40); rect(d, 0, 0, 95, 39, WOOD_D); rect(d, 3, 3, 92, 36, C(70, 46, 34), None)
+    for y in (18, 36): rect(d, 2, y, 93, y + 3, WOOD)
+    return im
+for _f in (trophy_glass, statue, locket, aszu, corkboard, shelf_trophy): PROPS[_f.__name__] = _f

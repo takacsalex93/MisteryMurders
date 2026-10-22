@@ -393,5 +393,15 @@
    "outfit": "21_02",
    "hair": "15_04"
   }
+ },
+ "iroda": {
+  "detektiv": {
+   "body": "03",
+   "outfit": "18_02",
+   "hair": "06_04",
+   "acc": [
+    "08_Detective_Hat_03"
+   ]
+  }
  }
 }
