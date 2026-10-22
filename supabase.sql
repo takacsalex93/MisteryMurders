@@ -20,6 +20,10 @@ create table if not exists public.results (
 create index if not exists results_case_idx  on public.results (case_id, run, score desc);
 create index if not exists results_player_idx on public.results (player_id);
 
+-- Jogok a nyilvános (anon) szerepnek: csak olvasás és beszúrás.
+grant usage on schema public to anon, authenticated;
+grant select, insert on public.results to anon, authenticated;
+
 -- Sorszintű védelem: bárki olvashat és új eredményt küldhet, de módosítani és törölni senki sem tud.
 alter table public.results enable row level security;
 
