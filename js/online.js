@@ -3,13 +3,14 @@
    Az „anon” kulcs nyilvános: a táblát a sorszintű szabályok védik (csak olvasni és új sort beszúrni lehet). */
 window.MM_ONLINE_CONFIG = window.MM_ONLINE_CONFIG || {
   url: "",   // pl. https://abcdefgh.supabase.co
-  key: ""    // Project Settings → API → anon public kulcs
+  key: ""    // Project Settings → API Keys → Publishable key (sb_publishable_…) vagy a régi anon public kulcs
 };
 window.MM_ONLINE = (function () {
   "use strict";
   const cfg = window.MM_ONLINE_CONFIG, enabled = !!(cfg.url && cfg.key);
   const base = () => cfg.url.replace(/\/$/, "") + "/rest/v1/results";
-  const H = () => ({ apikey: cfg.key, Authorization: "Bearer " + cfg.key, "Content-Type": "application/json" });
+  // az új „sb_publishable_…” kulcs csak az apikey fejlécben mehet; a régi (eyJ…) anon kulcs mehet Bearer-ként is
+  const H = () => Object.assign({ apikey: cfg.key, "Content-Type": "application/json" }, /^eyJ/.test(cfg.key) ? { Authorization: "Bearer " + cfg.key } : {});
   const get = (k, d) => { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
   const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
   function uuid() { return (crypto.randomUUID && crypto.randomUUID()) || "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c => (c ^ Math.random() * 16 >> c / 4).toString(16)); }
