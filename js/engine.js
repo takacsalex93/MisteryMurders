@@ -145,6 +145,13 @@
   const COST = { take: 10, wrong: 5, hint: 20, confront: 15, accuse: 30, ask: 5, look: 5, deduce: 5 };
   const budget = c => 10 * c.locations.reduce((n, l) => n + (l.items || []).length + Object.keys(l.decoys || {}).length / 2, 0) + 15 * (c.contradictions || []).length + 15 * pids(c).length + 10 * (c.deductions || []).length + 90;
   const fmtLeft = m => { m = Math.max(0, m); const h = Math.floor(m / 60), mm = m % 60; return h ? T("{0} óra {1} perc", h, mm) : T("{0} perc", mm); };
+  // valódi, aktív játékidő (másodperc): csak nyitott ügyben, látható lapon, és ha az utolsó 2 percben volt egér- vagy billentyűmozgás
+  let lastAct = Date.now();
+  ["pointerdown", "keydown", "wheel", "touchstart"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, { passive: true, capture: true }));
+  setInterval(() => {
+    if (!C || !S || S.ended || !S.introSeen || document.hidden || Date.now() - lastAct > 120000 || !location.hash || location.hash === "#") return;
+    S.secs = (S.secs || 0) + 5; save();
+  }, 5000);
   function spend(min) {
     if (S.ended) return false;
     S.min = (S.min || 0) + min;
@@ -980,7 +987,7 @@
       if (n.length < 2) { m.className = "msg bad"; m.textContent = T("A becenév legalább 2 karakter legyen."); return; }
       ON.setNick(n); sub.disabled = true; m.className = "msg"; m.textContent = T("Küldés…");
       const vi = C.variants && C.variants.length ? C.variants[S.variant % C.variants.length].id : null;
-      ON.submit({ player: n, case_id: C.id, run: runId, score: score(S), tries: Math.max(1, Math.min(5, S.tries || 1)), hints: hintsUsed(S), minutes: Math.min(5000, Math.round(S.min || 0)) || null, mode: S.noir ? "noir" : S.master ? "master" : "normal", timed: !!S.timed, variant: vi ? String(vi) : null })
+      ON.submit({ player: n, case_id: C.id, run: runId, score: score(S), tries: Math.max(1, Math.min(5, S.tries || 1)), hints: hintsUsed(S), minutes: S.secs ? Math.max(1, Math.min(5000, Math.round(S.secs / 60))) : null, mode: S.noir ? "noir" : S.master ? "master" : "normal", timed: !!S.timed, variant: vi ? String(vi) : null })
         .then(ok => { if (!ok) throw 0; S.submitted = 1; save(); SND("stamp"); renderCase(); })
         .catch(() => { sub.disabled = false; m.className = "msg bad"; m.textContent = T("Nem sikerült elküldeni. Ellenőrizd a netet, és próbáld újra."); });
     };
