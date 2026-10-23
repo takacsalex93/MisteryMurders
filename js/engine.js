@@ -124,7 +124,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false, SKEY = null;
   function save() { try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
@@ -484,7 +484,14 @@
       : `<article class="casecard finale locked"><span class="eyebrow">${T("{0}. ügy", FINALE.number)} · ${T("Zárás")}</span><h2>${T("Lezárt ügy")}</h2>
           <p>${T("Mind a hat ügy végén egy préselt fekete szegfű és egy cédula vár. Ha mindet megtalálod, kiderül, ki áll mögöttük.")}</p>
           <span class="meta">${T("{0} / {1} cédula", n, THREAD.length)}</span></article>`;
-    const s2 = st.ended === "win" ? `<article class="casecard finale locked season2"><span class="eyebrow">${T("2. évad")}</span><h2>${T("A vörös pecsét")}</h2><p>${T("Fekete Szilárd a börtönben hallgat. De a cellájában valaki egy vörös viaszpecsétes levelet hagyott. Hamarosan.")}</p></article>` : "";
+    // 2. évad: amíg a záró ügy nincs meg, pecsétes, elmosott kártya; utána az első visszatéréskor feltörik a pecsét
+    const s2open = st.ended === "win", s2fresh = s2open && lsGet("mm:s2seen", "") !== "1";
+    if (s2fresh) { lsSet("mm:s2seen", "1"); setTimeout(() => SND("paper"), 700); }
+    const s2 = `<article class="casecard finale season2 ${s2open ? "open" : "sealed"} ${s2fresh ? "fresh" : ""}"><div class="wax" aria-hidden="true"><span>F</span></div>
+      <span class="eyebrow">${T("2. évad")}</span>
+      <h2 class="s2t">${s2open ? T("A vörös pecsét") : "▇▇▇▇ ▇▇▇▇▇ ▇▇▇▇▇▇"}</h2>
+      <p class="s2p">${s2open ? T("Fekete Szilárd a börtönben hallgat. De a cellájában valaki egy vörös viaszpecsétes levelet hagyott. Hamarosan.") : T("Valaki már a következő levelet írja. A borítékot vörös viasz zárja, és csak az törheti fel, aki az egész titkos szálat végigjárta.")}</p>
+      <span class="meta">${s2open ? T("Hamarosan") : T("Oldd meg a záró ügyet, és feltörheted a pecsétet.") + " · " + T("{0} / {1} cédula", n, THREAD.length)}</span></article>`;
     return `<section class="level thread"><div class="level-head"><h2>${T("A titkos szál")}</h2><p>${T("Hat gyilkosság, hat cédula, egy aláírás: F. Sz.")}</p></div>
       <div class="cnotes">${THREAD.map(c => noteCard(c, wonCase(c))).join("")}</div>
       ${glossary()}
