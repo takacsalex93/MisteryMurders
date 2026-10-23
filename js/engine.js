@@ -124,7 +124,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false, SKEY = null;
   function save() { try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
@@ -209,16 +209,48 @@
   }
   document.addEventListener("selectionchange", () => { clearTimeout(hlCheck._t); hlCheck._t = setTimeout(hlCheck, 250); });
 
+  /* ---------- filmes átmenetek ---------- */
+  const REDUCE = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // ügy megnyitásakor: írógépes főcím (munkamenetenként ügyenként egyszer, és csak ha az ügy még nincs lezárva)
+  function titleCard() {
+    if (!C || S.ended || REDUCE) return;
+    const k = "mm:tc:" + C.id; try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1"); } catch (e) {}
+    const ov = document.createElement("div"); ov.className = "titlecard"; ov.setAttribute("aria-hidden", "true");
+    const has = HAS.has(`${C.id}/cover.webp`);
+    ov.innerHTML = `${has ? `<div class="tc-bg" style="background-image:url('images/${C.id}/cover.webp')"></div>` : ""}<div class="tc-in"><span class="tc-meta"></span><h1 class="tc-title"></h1><span class="tc-no">${S.daily ? T("Napi kihívás") : C.weekly ? T("Heti rejtély") : T("{0}. ügy", C.number)}</span></div><span class="tc-skip">${T("Kattints a továbblépéshez")}</span>`;
+    document.body.appendChild(ov);
+    let done = false, timers = [];
+    const end = () => { if (done) return; done = true; timers.forEach(clearTimeout); ov.classList.add("out"); setTimeout(() => ov.remove(), 600); document.removeEventListener("keydown", end, true); };
+    ov.onclick = end; document.addEventListener("keydown", end, true);
+    const type = (el, txt, speed, cb) => { let i = 0; const step = () => { if (done) return; el.textContent = txt.slice(0, ++i); if (txt[i - 1] !== " ") SND("type"); if (i < txt.length) timers.push(setTimeout(step, speed)); else cb && cb(); }; step(); };
+    const meta = ov.querySelector(".tc-meta"), title = ov.querySelector(".tc-title");
+    timers.push(setTimeout(() => type(meta, C.meta, 28, () => timers.push(setTimeout(() => { title.textContent = C.title; title.classList.add("on"); ov.querySelector(".tc-no").classList.add("on"); SND("bell"); timers.push(setTimeout(end, 1900)); }, 250))), 350));
+  }
+  // a leleplezés végén: tárgyalótermi ítélet (egyszer)
+  function verdict() {
+    if (!C || S.ended !== "win" || S.verdict !== 0 || (C.reveal && S.rstep < C.reveal.length)) return;
+    S.verdict = 1; save();
+    const cu = C.suspects.find(x => x.id === culpritId());
+    if (!cu || REDUCE) return;
+    const ov = document.createElement("div"); ov.className = "verdict"; ov.setAttribute("role", "dialog");
+    ov.innerHTML = `<div class="vd-in"><span class="vd-k">${T("A bíróság ítélete")}</span><div class="art portrait vd-p">${ART.portrait(cu)}</div><b class="vd-name">${esc(cu.name)}</b><span class="vd-stamp">${T("Bűnös")}</span><p class="vd-t">${T("A vád megállt. Az ügyet {0} pont értékben zártad le.", score(S))}</p><button class="btn" data-vclose>${T("Tovább a zárójelentéshez")} →</button></div>`;
+    document.body.appendChild(ov);
+    SND("gavel"); setTimeout(() => SND("stamp"), 1500);
+    const close = () => { ov.classList.add("out"); setTimeout(() => ov.remove(), 500); };
+    ov.querySelector("[data-vclose]").onclick = close; ov.onclick = e => { if (e.target === ov) close(); };
+  }
+
   /* ---------- útvonal ---------- */
   function route() {
     const id = (location.hash || "").slice(1);
+    document.querySelectorAll("body > .intro, body > .titlecard, body > .verdict").forEach(x => x.remove());
     if (id === "napi") {
       const d = daily(), base = CASES.find(x => x.id === d.id);
       SKEY = "mm3:" + d.id + "@" + d.key; S = loadKey(SKEY);
       if (!S.daily) Object.assign(S, { daily: d.key, timed: d.rule.id === "timed", mode: d.rule.id === "master" || d.rule.id === "noir" ? d.rule.id : "normal", master: d.rule.id === "master" || d.rule.id === "noir", noir: d.rule.id === "noir", onetry: d.rule.id === "onetry", used: 0 });
       if (S.variant === undefined) S.variant = Math.floor(Math.random() * 97);
       if (S.seed === undefined) S.seed = Math.floor(Math.random() * 1e6);
-      C = withVariant(base, S.variant); save(); renderCase(); window.scrollTo({ top: 0 }); return;
+      C = withVariant(base, S.variant); save(); renderCase(); titleCard(); window.scrollTo({ top: 0 }); return;
     }
     const c = CASES.find(x => x.id === id);
     if (c && !unlocked(c)) { location.hash = ""; return; }
@@ -226,7 +258,7 @@
       SKEY = KEY(c.id); S = loadState(c.id);
       if (S.variant === undefined) S.variant = Math.floor(Math.random() * 97);
       if (S.seed === undefined) S.seed = Math.floor(Math.random() * 1e6);
-      C = withVariant(c, S.variant); renderCase();
+      C = withVariant(c, S.variant); renderCase(); titleCard();
     }
     else { C = null; S = null; SKEY = null; renderHome(); }
     window.scrollTo({ top: 0 });
@@ -264,10 +296,39 @@
     now.forEach((b, i) => setTimeout(() => toast(`${b.ico} ${T("Új kitüntetés:")} ${b.t}`), 600 + i * 2400));
   }
   const RANKS = [[0, "Újonc"], [100, "Segédnyomozó"], [250, "Nyomozó"], [450, "Felügyelő"], [650, "Főfelügyelő"], [800, "Legenda"]];
+  const RANKICO = ["🔰", "🔍", "🕵️", "🎖️", "⭐", "👑"];
+  const AVATARS = ["🕵️", "🎩", "🔍", "🦉", "🐈‍⬛", "🌹", "🗝️", "📜", "☂️", "🎻", "🕯️", "🦊"];
+  const lsGet = (k2, d) => { try { return localStorage.getItem(k2) || d; } catch (e) { return d; } };
+  const lsSet = (k2, v) => { try { localStorage.setItem(k2, v); } catch (e) {} };
+  const profile = () => ({ nick: lsGet("mm:nick", ""), avatar: lsGet("mm:avatar", "🕵️") });
+  function timeOfDay() {
+    const h = new Date().getHours(), p = profile(), who = p.nick || T("nyomozó");
+    return { night: h >= 19 || h < 6, greet: h < 6 ? T("Késő éjjel van, {0}. A legjobb ügyek ilyenkor nyílnak meg.", who) : h < 10 ? T("Jó reggelt, {0}!", who) : h < 19 ? T("Jó napot, {0}!", who) : T("Jó estét, {0}. Hosszú éjszaka lesz.", who) };
+  }
+  function openProfile() {
+    const p = profile(), k = career();
+    const ov = document.createElement("div"); ov.className = "intro on"; ov.setAttribute("role", "dialog");
+    ov.innerHTML = `<div class="intro-card profile"><span class="eyebrow">${T("Nyomozói igazolvány")}</span>
+      <div class="idbig"><span class="av" data-avshow>${esc(p.avatar)}</span><div><input class="nick" data-pnick maxlength="20" placeholder="${T("Becenév")}" value="${esc(p.nick)}" aria-label="${T("Becenév")}"><p class="meta">${RANKICO[k.i]} ${esc(k.rank)} · ${T("{0} pont", k.pts)}</p></div></div>
+      <span class="eyebrow">${T("Válassz jelképet")}</span><div class="avgrid">${AVATARS.map(a => `<button class="${a === p.avatar ? "on" : ""}" data-av="${a}">${a}</button>`).join("")}</div>
+      <span class="eyebrow">${T("Rangok")}</span><ol class="ranks">${RANKS.map(([pt, n], i) => `<li class="${i < k.i ? "done" : i === k.i ? "cur" : ""}"><span>${RANKICO[i]}</span><b>${T(n)}</b><span class="meta">${T("{0} ponttól", pt)}</span></li>`).join("")}</ol>
+      <p class="meta">${T("A beceneved és a jelképed a ranglistán is látszik. Pontot a megoldott ügyek és a napi kihívások adnak.")}</p>
+      <div class="row"><button class="btn" data-psave>${T("Mentés")}</button><button class="link" data-close>${T("Bezárás")}</button></div><p class="msg" data-pmsg></p></div>`;
+    document.body.appendChild(ov);
+    let av = p.avatar;
+    ov.querySelectorAll("[data-av]").forEach(b => b.onclick = () => { av = b.dataset.av; ov.querySelectorAll("[data-av]").forEach(x => x.classList.toggle("on", x === b)); ov.querySelector("[data-avshow]").textContent = av; SND("tick"); });
+    const close = () => ov.remove();
+    ov.querySelector("[data-close]").onclick = close; ov.onclick = e => { if (e.target === ov) close(); };
+    ov.querySelector("[data-psave]").onclick = () => {
+      const n = ov.querySelector("[data-pnick]").value.trim();
+      if (n && n.length < 2) { const m = ov.querySelector("[data-pmsg]"); m.className = "msg bad"; m.textContent = T("A becenév legalább 2 karakter legyen."); return; }
+      lsSet("mm:nick", n); lsSet("mm:avatar", av); SND("stamp"); close(); if (!C) renderHome();
+    };
+  }
   function career() {
     const pts = CASES.reduce((n, c) => { const st = loadState(c.id); return n + (st.ended === "win" ? score(st) : 0); }, 0) + Object.values(dailyLog()).reduce((n, x) => n + Math.round((x.score || 0) / 4), 0);
     let i = 0; while (i + 1 < RANKS.length && pts >= RANKS[i + 1][0]) i++;
-    return { pts, rank: T(RANKS[i][1]), next: RANKS[i + 1] ? RANKS[i + 1][0] : null, nextName: RANKS[i + 1] ? T(RANKS[i + 1][1]) : "" };
+    return { pts, i, rank: T(RANKS[i][1]), next: RANKS[i + 1] ? RANKS[i + 1][0] : null, nextName: RANKS[i + 1] ? T(RANKS[i + 1][1]) : "" };
   }
   /* ---------- napi kihívás: minden nap ugyanaz az ügy és szabály mindenkinek ---------- */
   const RULES = [{ id: "timed", t: "Hajnalig, időre" }, { id: "master", t: "Mester mód: súgó és jelölés nélkül" }, { id: "noir", t: "Noir mód" }, { id: "onetry", t: "Egyetlen vád: nincs második esély" }];
@@ -294,13 +355,20 @@
   /* ---------- címoldal ---------- */
   function renderHome() {
     document.title = T("Rejtélyes gyilkosságok"); notesUI(false);
+    let stamped = []; try { stamped = JSON.parse(localStorage.getItem("mm:stamped")) || []; } catch (e) {}
+    const stampedNow = [];
     const card = c => {
       const st = loadState(c.id);
       const done = pids(c).filter(p => st.solved[p]).length, total = pids(c).length;
       const started = st.clues.length > 0 || st.tries > 0;
-      const status = st.ended === "win" ? `<span class="stamp">${T("Megoldva")}</span>` : st.ended ? `<span class="stamp">${T("Elszalasztva")}</span>` : "";
+      const status = st.ended && st.ended !== "win" ? `<span class="stamp">${T("Elszalasztva")}</span>` : "";
+      const won = st.ended === "win", fresh = won && !stamped.includes(c.id);
+      if (fresh) stampedNow.push(c.id);
+      const tag = won ? `<div class="bigstamp ${fresh ? "fresh" : ""}"><b>${T("Lezárva")}</b><span>${T("{0} pont", score(st))}</span></div>`
+        : started && !st.ended ? `<div class="filetag open">${T("Folyamatban")}</div><div class="fileprog"><i style="width:${Math.round(100 * (done + Math.min(st.clues.length, 20) / 20) / (total + 1))}%"></i></div>`
+        : !st.ended ? `<div class="filetag secret">${T("Szigorúan titkos")}</div>` : "";
       const label = T(st.ended === "win" ? "Újraolvasom" : st.ended ? "Megnézem" : started ? "Folytatom" : "Nyomozás indítása");
-      return `<article class="casecard">${coverOf(c)}${status}
+      return `<article class="casecard ${won ? "s-won" : started && !st.ended ? "s-open" : !st.ended ? "s-new" : ""}">${c.cover ? coverOf(c).replace(/<\/div>$/, tag + "</div>") : tag}${status}
         <span class="eyebrow">${T("{0}. ügy · {1} rejtvény · {2} gyanúsított", c.number, pids(c).length, c.suspects.length)}</span>
         <h2>${esc(c.title)}</h2>
         <span class="meta">${esc(c.meta)}</span>
@@ -321,6 +389,7 @@
     const resume = mainCases.concat(CASES.filter(c => c.weekly)).find(c => { const st = loadState(c.id); return !st.ended && (st.clues.length || st.tries); });
     const nextC = resume || mainCases.find(c => loadState(c.id).ended !== "win") || mainCases[0];
     const heroImg = (window.MM_IMAGES || []).includes(nextC.id + "/cover.webp") ? nextC.id : "szegfu-villa";
+    const tod = timeOfDay(), prof = profile();
     const k = career(), solvedN = mainCases.filter(wonCase).length, bAll = badges(), bGot = bAll.filter(x => x.got).length;
     const curWeek = CASES.filter(c => c.weekly && new Date(c.weekly) <= new Date()).sort((a, b) => b.weekly.localeCompare(a.weekly))[0];
     const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
@@ -340,9 +409,12 @@
       ["⚖️", T("A vádban mondd el az egész történetet a szókártyáidból. Ha ártatlant nevezel meg, azt letartóztatják, és az ügy elveszett.")],
       ["✒️", T("A Jegyzetlap a te papírod és tollad: a játék semmit sem ír rá helyetted.")]];
     app.innerHTML = `<div class="wrap home">
-      <header class="hero" style="background-image:url('images/${heroImg}/cover.webp')">
+      <header class="hero ${tod.night ? "night" : "day"}">
+        <div class="hero-bg" style="background-image:url('images/${heroImg}/cover.webp')"></div>
+        <div class="hero-fx cover" data-fx="${nextC.fx || "rain"}"></div>
+        <div class="hero-glow"></div>
         <div class="hero-in">
-          <div class="topnav"><span class="hero-eyebrow">${T("Klasszikus krimik a böngészőben")}</span>${langSwitch()}</div>
+          <div class="topnav"><span class="hero-eyebrow">${esc(tod.greet)}</span><button class="idcard" data-profile title="${T("Nyomozói igazolvány")}"><span class="av">${esc(prof.avatar)}</span><span class="idtx"><b>${prof.nick ? esc(prof.nick) : T("Névtelen nyomozó")}</b><small>${RANKICO[k.i]} ${esc(k.rank)}</small></span></button>${langSwitch()}</div>
           <h1>${T("Rejtélyes gyilkosságok")}</h1>
           <p class="hero-lead">${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
           <div class="hero-cta">
@@ -353,10 +425,11 @@
             <div><b>${solvedN}<small>/${mainCases.length}</small></b><span>${T("megoldott ügy")}</span></div>
             <div><b>${k.pts}</b><span>${T("pont")}</span></div>
             <div><b>${bGot}<small>/${bAll.length}</small></b><span>${T("kitüntetés")}</span></div>
-            <div class="hero-rank"><span class="stamp">${esc(k.rank)}</span><span>${k.next !== null ? T("még {0} pont: {1}", k.next - k.pts, k.nextName) : T("a legmagasabb rang")}</span></div>
+            <div class="hero-rank"><span class="stamp">${RANKICO[k.i]} ${esc(k.rank)}</span><span>${k.next !== null ? T("még {0} pont: {1}", k.next - k.pts, k.nextName) : T("a legmagasabb rang")}</span></div>
           </div>
         </div>
       </header>
+      ${ON ? `<div class="ticker" data-ticker hidden><span class="tk-k">${T("Friss jelentések")}</span><div class="tk-w"><div class="tk-in" data-tkin></div></div></div>` : ""}
       <section class="today">${dailyCard()}${curWeek ? weeklyCard(curWeek, true) : ""}</section>
       ${levelSecs}
       ${weeklyPast()}
@@ -375,13 +448,16 @@
     if (oc) window.MM_OFFICE.mount(oc, { won: CASES.filter(wonCase).map(c => c.id), titles: Object.fromEntries(CASES.map(c => [c.id, c.title])),
       thread: THREAD.map(c => ({ won: wonCase(c), letter: (c.carnation || {}).letter || "?" })) });
     bindLang(); bindGloss(); bindBoards(); SCENE("home"); FX();
+    if (stampedNow.length) { lsSet("mm:stamped", JSON.stringify(stamped.concat(stampedNow))); setTimeout(() => SND("stamp"), 500); }
+    const pb = app.querySelector("[data-profile]"); if (pb) pb.onclick = openProfile;
+    bindTicker(); bindCountdown();
   }
 
   function dailyCard() {
     const d = daily(), base = CASES.find(x => x.id === d.id), st = loadKey("mm3:" + d.id + "@" + d.key), streak = dailyStreak();
     const status = st.ended === "win" ? T("Teljesítve: {0} pont", score(st)) : st.ended ? T("Ma nem sikerült") : st.introSeen ? T("Folyamatban") : "";
     return `<section class="daily"><div><span class="eyebrow">${T("Napi kihívás")} · ${esc(d.label)}</span><h2>${esc(base.title)}</h2><p><b>${T("A mai szabály:")}</b> ${esc(d.rule.t)}</p>
-      <p class="meta">${T("Mindenki ugyanazt kapja ma. Holnap új ügy és új szabály jön.")}${streak ? " · 🔥 " + T("{0} nap egymás után", streak) : ""}</p></div>
+      <p class="cd" data-countdown></p><p class="meta">${T("Mindenki ugyanazt kapja ma. Holnap új ügy és új szabály jön.")}${streak ? " · 🔥 " + T("{0} nap egymás után", streak) : ""}</p></div>
       <div class="dstat">${status ? `<span class="stamp">${esc(status)}</span>` : ""}<a class="btn" href="#napi">${T(st.ended ? "Megnézem" : st.introSeen ? "Folytatom" : "Elfogadom a kihívást")} →</a></div></section>`;
   }
   function weeklyCard(c, cur) {
@@ -464,7 +540,7 @@
     if (S.ended) newBadges();
     const dc = document.querySelector("[data-dcopy]");
     if (dc) dc.onclick = () => { const t = dailyShareText(), m = document.querySelector("[data-dmsg]"); try { navigator.clipboard.writeText(t).then(() => { m.className = "msg ok"; m.textContent = T("Kimásolva, beillesztheted bárhová."); }); } catch (e) { m.textContent = T("Jelöld ki és másold ki a fenti szöveget."); } };
-    bindOnline();
+    bindOnline(); verdict();
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
     else checkEvents();
     const sl = S.loc || (worldOn() && S.cur);
@@ -792,8 +868,9 @@
   }
 
   /* ---------- megosztható eredménykártya ---------- */
-  async function shareCard() {
-    const sc = score(S), W = 1080, H = 1350;
+  async function shareCard(fmt) {
+    fmt = fmt === "story" ? "story" : "post";
+    const sc = score(S), W = 1080, H = fmt === "story" ? 1920 : 1350;
     try { await Promise.all(['italic 700 72px "Bodoni Moda"', '700 30px "Courier Prime"', '28px "Crimson Pro"'].map(f => document.fonts.load(f))); } catch (e) {}
     const img = new Image();
     if (HAS.has(`${C.id}/cover.webp`)) await new Promise(r => { img.onload = r; img.onerror = r; img.src = `images/${C.id}/cover.webp`; });
@@ -801,14 +878,14 @@
     // ha a borító valamiért nem rajzolható vásznra, a kártya borító nélkül készül
     for (const withCover of [true, false]) { try { url = paintCard(sc, W, H, withCover && img.naturalWidth ? img : null); break; } catch (e) {} }
     if (!url) return;
-    openShare(url, sc);
+    openShare(url, sc, fmt);
   }
   function paintCard(sc, W, H, img) {
     const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const g = cv.getContext("2d");
     g.fillStyle = "#12151c"; g.fillRect(0, 0, W, H);
-    const CH = 400;
-    if (img) g.drawImage(img, 0, 0, W, CH);
+    const story = H > 1600, CH = story ? 780 : 400, GAP = story ? 40 : 0;
+    if (img) { const r = W / CH, ir = img.naturalWidth / img.naturalHeight, sw = ir > r ? img.naturalHeight * r : img.naturalWidth, sh = ir > r ? img.naturalHeight : img.naturalWidth / r; g.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, 0, 0, W, CH); }
     else { g.strokeStyle = "rgba(201,164,92,.18)"; g.lineWidth = 2; for (let i = 0; i <= 24; i++) { const a = Math.PI * i / 24; g.beginPath(); g.moveTo(W / 2, CH); g.lineTo(W / 2 - Math.cos(a) * 900, CH - Math.sin(a) * 900); g.stroke(); } }
     const grd = g.createLinearGradient(0, CH - 160, 0, CH); grd.addColorStop(0, "rgba(18,21,28,0)"); grd.addColorStop(1, "#12151c"); g.fillStyle = grd; g.fillRect(0, CH - 160, W, 160);
     g.strokeStyle = "#c9a45c"; g.lineWidth = 3; g.strokeRect(40, 40, W - 80, H - 80);
@@ -818,23 +895,28 @@
     g.fillStyle = "#e8e0c9"; g.font = 'italic 700 74px "Bodoni Moda", Georgia, serif'; let y = wrap(C.title, W / 2, CH + 130, W - 200, 84);
     g.save(); g.translate(W / 2, y + 80); g.rotate(-0.06); g.strokeStyle = "#e2595e"; g.lineWidth = 6; g.strokeRect(-220, -46, 440, 74);
     g.fillStyle = "#e2595e"; g.font = '700 44px "Courier Prime", monospace'; g.fillText(T("Ügy lezárva").toUpperCase(), 0, 6); g.restore();
-    y += 280; g.fillStyle = "#c9a45c"; g.font = 'italic 700 170px "Bodoni Moda", Georgia, serif'; g.fillText(String(sc), W / 2, y);
+    y += 280 + GAP; g.fillStyle = "#c9a45c"; g.font = 'italic 700 170px "Bodoni Moda", Georgia, serif'; g.fillText(String(sc), W / 2, y);
     g.font = '700 28px "Courier Prime", monospace'; g.fillText(T("pont").toUpperCase(), W / 2, y + 44);
     g.fillStyle = "#e8e0c9"; g.font = 'italic 46px "Crimson Pro", Georgia, serif'; y = wrap(rank(sc), W / 2, y + 120, W - 220, 54);
     g.fillStyle = "#9ba1b3"; g.font = '28px "Courier Prime", monospace';
     g.fillText(`${T("{0}. vádra", S.tries)} · ${hintsUsed(S) ? T("{0} súgó", hintsUsed(S)) : T("súgó nélkül")} · ${T("{0}/{1} ellentmondás", S.conf.length, contra(C).length)}`, W / 2, y + 64);
     if (S.timed) { g.fillStyle = "#7cc68e"; g.fillText(T("Hajnal előtt, {0} tartalékkal", fmtLeft(budget(C) - S.used)), W / 2, y + 108); }
+    const pf = profile(), kc = career();
+    const yEnd = y + 64 + (S.timed ? 44 : 0);
+    if (story) { g.fillStyle = "#c9a45c"; g.font = 'italic 44px "Crimson Pro", Georgia, serif'; g.fillText(T("Te rájönnél, ki a gyilkos?"), W / 2, yEnd + 110); }
+    g.fillStyle = "#e8e0c9"; g.font = '34px "Crimson Pro", Georgia, serif'; g.fillText(`${pf.avatar} ${pf.nick || T("Névtelen nyomozó")} · ${RANKICO[kc.i]} ${kc.rank}`, W / 2, story ? yEnd + 220 : Math.max(yEnd + 70, H - 150));
     g.fillStyle = "#c9a45c"; g.font = '700 26px "Courier Prime", monospace'; g.fillText("takacsalex93.github.io/MisteryMurders", W / 2, H - 80);
     return cv.toDataURL("image/png");
   }
-  async function openShare(url, sc) {
+  async function openShare(url, sc, fmt) {
     const text = `🕵️ ${T("Rejtélyes gyilkosságok")} – ${C.title}\n${T("{0} pont", sc)} · ${rank(sc)}\n${T("{0}. vádra", S.tries)}, ${hintsUsed(S) ? T("{0} súgóval", hintsUsed(S)) : T("súgó nélkül")}${S.timed ? ", " + T("hajnal előtt") : ""}\nhttps://takacsalex93.github.io/MisteryMurders/`;
     const ov = document.createElement("div"); ov.className = "intro on"; ov.setAttribute("role", "dialog");
-    ov.innerHTML = `<div class="intro-card"><img class="sharecard" src="${url}" alt="${T("Eredménykártya")}"><div class="row"><button class="btn" data-native hidden>${T("Megosztás")}</button><a class="btn ghost" href="${url}" download="${C.id}-eredmeny.png">${T("Kép letöltése")}</a><button class="btn ghost" data-copytext>${T("Szöveg másolása")}</button><button class="link" data-close>${T("Bezárás")}</button></div><p class="msg" data-sharemsg></p></div>`;
+    ov.innerHTML = `<div class="intro-card sharebox"><div class="btabs fmt"><button class="chip ${fmt === "post" ? "on" : ""}" data-fmt="post">${T("Bejegyzés")} · 4:5</button><button class="chip ${fmt === "story" ? "on" : ""}" data-fmt="story">${T("Story")} · 9:16</button></div><img class="sharecard ${fmt}" src="${url}" alt="${T("Eredménykártya")}"><div class="row"><button class="btn" data-native hidden>${T("Megosztás")}</button><a class="btn ghost" href="${url}" download="${C.id}-${fmt}.png">${T("Kép letöltése")}</a><button class="btn ghost" data-copytext>${T("Szöveg másolása")}</button><button class="link" data-close>${T("Bezárás")}</button></div><p class="msg" data-sharemsg></p></div>`;
     document.body.appendChild(ov);
     const m = ov.querySelector("[data-sharemsg]");
     ov.querySelector("[data-close]").onclick = () => ov.remove();
     ov.onclick = e => { if (e.target === ov) ov.remove(); };
+    ov.querySelectorAll("[data-fmt]").forEach(b => b.onclick = () => { if (b.dataset.fmt === fmt) return; ov.remove(); shareCard(b.dataset.fmt); });
     ov.querySelector("[data-copytext]").onclick = () => { try { navigator.clipboard.writeText(text).then(() => { m.className = "msg ok"; m.textContent = T("Kimásolva, beillesztheted bárhová."); }, () => { m.textContent = text; }); } catch (e) { m.textContent = text; } };
     try {
       const blob = await (await fetch(url)).blob(), file = new File([blob], `${C.id}-eredmeny.png`, { type: "image/png" });
@@ -986,7 +1068,7 @@
   function onlineBox() {
     if (!ON || S.ended !== "win") return "";
     const form = !S.submitted ? `<p>${T("Tedd fel az eredményed a közös ranglistára, és nézd meg, hogyan teljesítettek a többiek.")}</p>
-      <div class="row"><input class="nick" data-nick maxlength="24" placeholder="${T("Becenév")}" value="${esc(ON.nick())}" aria-label="${T("Becenév")}"><button class="btn" data-submit>${T("Felteszem")}</button><button class="link" data-noboard>${T("Most nem")}</button></div>
+      <div class="row"><input class="nick" data-nick maxlength="20" placeholder="${T("Becenév")}" value="${esc(ON.nick())}" aria-label="${T("Becenév")}"><button class="btn" data-submit>${T("Felteszem")}</button><button class="link" data-noboard>${T("Most nem")}</button></div>
       <p class="meta">${T("Csak a beceneved, a pontszámod, a próbálkozások, a súgók és az idő kerül fel. Ne add meg a valódi neved, ha nem szeretnéd.")}</p><p class="msg" data-onmsg></p>` : "";
     return `<div class="onlinebox"><span class="eyebrow">${T(S.daily ? "A mai kihívás ranglistája" : "Ranglista: {0}", S.daily ? "" : C.title)}</span>${form}<div data-oblist>${S.submitted ? `<p class="meta">${T("Betöltés…")}</p>` : ""}</div></div>`;
   }
@@ -1018,10 +1100,43 @@
       if (n.length < 2) { m.className = "msg bad"; m.textContent = T("A becenév legalább 2 karakter legyen."); return; }
       ON.setNick(n); sub.disabled = true; m.className = "msg"; m.textContent = T("Küldés…");
       const vi = C.variants && C.variants.length ? C.variants[S.variant % C.variants.length].id : null;
-      ON.submit({ player: n, case_id: C.id, run: runId, score: score(S), tries: Math.max(1, Math.min(5, S.tries || 1)), hints: hintsUsed(S), minutes: S.secs ? Math.max(1, Math.min(5000, Math.round(S.secs / 60))) : null, mode: S.noir ? "noir" : S.master ? "master" : "normal", timed: !!S.timed, variant: vi ? String(vi) : null })
+      ON.submit({ player: profile().avatar + " " + n, case_id: C.id, run: runId, score: score(S), tries: Math.max(1, Math.min(5, S.tries || 1)), hints: hintsUsed(S), minutes: S.secs ? Math.max(1, Math.min(5000, Math.round(S.secs / 60))) : null, mode: S.noir ? "noir" : S.master ? "master" : "normal", timed: !!S.timed, variant: vi ? String(vi) : null })
         .then(ok => { if (!ok) throw 0; S.submitted = 1; save(); SND("stamp"); renderCase(); })
         .catch(() => { sub.disabled = false; m.className = "msg bad"; m.textContent = T("Nem sikerült elküldeni. Ellenőrizd a netet, és próbáld újra."); });
     };
+  }
+  let cdTimer = 0;
+  function bindCountdown() {
+    clearInterval(cdTimer);
+    const tick = () => {
+      const el = document.querySelector("[data-countdown]"); if (!el) { clearInterval(cdTimer); return; }
+      const now = new Date(), mid = new Date(now); mid.setHours(24, 0, 0, 0);
+      const m = Math.max(0, Math.round((mid - now) / 60000)), h = Math.floor(m / 60);
+      el.textContent = "⏳ " + (h ? T("Új ügy {0} óra {1} perc múlva", h, m % 60) : T("Új ügy {0} perc múlva", m));
+    };
+    tick(); cdTimer = setInterval(tick, 30000);
+  }
+  function ago(iso) {
+    const m = Math.max(0, Math.round((Date.now() - new Date(iso)) / 60000));
+    return m < 1 ? T("az imént") : m < 60 ? T("{0} perce", m) : m < 1440 ? T("{0} órája", Math.floor(m / 60)) : T("{0} napja", Math.floor(m / 1440));
+  }
+  function bindTicker() {
+    const box = document.querySelector("[data-ticker]"); if (!ON || !box) return;
+    const d = daily(), title = id => (CASES.find(c => c.id === id) || {}).title || id;
+    Promise.all([ON.recent().catch(() => []), ON.board(d.id, "daily:" + d.key).catch(() => [])]).then(([rows, today]) => {
+      const items = [];
+      if (today.length) items.push(T("Ma már {0} nyomozó teljesítette a napi kihívást. A legjobb: {1}, {2} ponttal.", today.length, today[0].player, today[0].score));
+      rows.slice(0, 12).forEach(r => items.push(`<b>${esc(r.player)}</b> ${r.run.startsWith("daily") ? T("teljesítette a napi kihívást") : T("megoldotta: {0}", "<i>" + esc(title(r.case_id)) + "</i>")} · ${T("{0} pont", r.score)} · <span>${ago(r.created_at)}</span>`));
+      if (!items.length) return;
+      const line = items.map(t => `<span class="tk-it">${t.includes("<") ? t : esc(t)}</span>`).join('<span class="tk-sep">✦</span>');
+      const inn = box.querySelector("[data-tkin]"); inn.innerHTML = line + '<span class="tk-sep">✦</span>' + line + '<span class="tk-sep">✦</span>';
+      box.hidden = false; inn.style.animationDuration = Math.max(25, items.length * 9) + "s";
+    });
+  }
+  // a nyitókép háttere lassabban mozdul, mint a szöveg
+  if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+    let pr = 0;
+    window.addEventListener("scroll", () => { if (pr) return; pr = requestAnimationFrame(() => { pr = 0; const b = document.querySelector(".hero-bg"); if (b && scrollY < 900) b.style.transform = `translate3d(0,${(scrollY * 0.32).toFixed(1)}px,0) scale(1.08)`; }); }, { passive: true });
   }
   function boardSection() {
     if (!ON) return "";
@@ -1417,7 +1532,7 @@
         const whoWrong = (A.who || [0]).find(i => !has(A.b[i], pick[i]));
         if (whoWrong !== undefined) { S.ended = "wrong"; S.accused = pick[whoWrong]; save(); SND("wrong"); renderCase(); window.scrollTo({ top: 0 }); return; }
         const n = wrongBlanks("acc", A.b);
-        if (!n) { S.ended = "win"; save(); SND("stamp"); renderCase(); window.scrollTo({ top: 0 }); return; }
+        if (!n) { S.ended = "win"; S.verdict = 0; save(); SND("stamp"); renderCase(); window.scrollTo({ top: 0 }); return; }
         SND("wrong");
         if (spend(COST.accuse)) { renderCase(); window.scrollTo({ top: 0 }); return; }
         if (S.tries >= MAXTRIES(C)) { S.ended = "lose"; save(); renderCase(); window.scrollTo({ top: 0 }); return; }

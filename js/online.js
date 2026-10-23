@@ -56,6 +56,10 @@ window.MM_ONLINE = (function () {
       return Object.entries(per).map(([id, p]) => ({ player_id: id, player: p.player, solved: Object.keys(p.cases).length, points: Object.values(p.cases).reduce((a, b) => a + b, 0) }))
         .sort((a, b) => b.points - a.points || b.solved - a.solved);
     },
+    // a legutóbbi beküldések a címoldali hírcsíkhoz
+    async recent() {
+      return q("select=player,case_id,run,score,created_at&order=created_at.desc&limit=30", 60000);
+    },
     // hány különböző játékos oldotta meg az egyes ügyeket
     async counts() {
       const rows = await q("select=player_id,case_id&run=in.(normal,weekly)&limit=5000", 60000);

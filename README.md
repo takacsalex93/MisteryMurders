@@ -99,3 +99,14 @@ Ha be van állítva, a megoldott ügy végén a játékos becenévvel felteheti 
 4. Írd be őket a `js/online.js` elejére (`url` és `key`), majd töltsd fel a változást.
 
 Az anon kulcs nyilvános, ez így rendben van: a tábla sorszintű szabályai csak az olvasást és új eredmény beküldését engedik, módosítást és törlést nem, és egy játékos ügyenként legfeljebb 20 eredményt küldhet. Mivel bárki küldhet adatot, egy ügyes csaló beírhat hamis pontszámot; ha ilyen történik, a Supabase *Table Editor*-ában a sor kézzel törölhető.
+
+## Címoldal és hangulat
+
+- **Élő nyitókép:** a folytatandó (vagy következő) ügy borítója, rajta az ügy saját effektje (eső, vihar villámmal, hó, köd, por), görgetéskor lassabban mozgó háttérrel. Este (19 és 6 óra között) sötétebb, lámpafényes, nappal világosabb.
+- **Nyomozói igazolvány:** becenév, választható jelkép és rangjelvény; a jelkép a ranglistán is a név előtt áll.
+- **Friss jelentések:** futó hírcsík a közös ranglista legutóbbi eredményeiből.
+- **Aktaállapotok:** az el nem kezdett ügy „Szigorúan titkos”, a félbehagyott „Folyamatban” (haladássávval), a megoldottra a megoldás utáni első visszatéréskor rácsapódik a „Lezárva” pecsét.
+- **Napi visszaszámláló** a következő napi kihívásig.
+- **Filmes átmenetek:** ügy megnyitásakor írógépes főcím, a sikeres vád után tárgyalótermi ítélet. A mozgáscsökkentést kérő böngészőkben ezek elmaradnak.
+- **Eredménykártya** bejegyzés (4:5) és story (9:16) méretben.
+- **Címoldali hang:** halk eső és zongora (a hang alapból ki van kapcsolva).

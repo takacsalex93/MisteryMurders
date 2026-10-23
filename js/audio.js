@@ -112,7 +112,7 @@
   /* ---------- hangulatok ---------- */
   const RAIN = (bus, lvl) => { loop(white, [["highpass", 500], ["lowpass", 5500]], 0.09 * lvl, bus); loop(white, [["bandpass", 2400, 0.6]], 0.035 * lvl, bus); };
   const PROFILES = {
-    home: { setup: b => loop(brown, [["lowpass", 180]], 0.05, b), next: MYSTERY },
+    home: { setup: b => { RAIN(b, 0.35); loop(brown, [["lowpass", 180]], 0.04, b); }, next: MYSTERY, thunder: true },
     storm: { setup: b => RAIN(b, 1), next: (t, i, b) => { burst(t, 0.03, [["bandpass", rnd(2500, 6000), 2]], rnd(0.01, 0.04), b); return rnd(0.06, 0.25); }, thunder: true, auto: [28, 45] },
     "storm-piano": { setup: b => RAIN(b, 0.5), next: NOCTURNE, thunder: true, auto: [35, 60] },
     city: { setup: b => { RAIN(b, 0.7); loop(brown, [["lowpass", 220]], 0.07, b); }, next: (t, i, b) => { if (Math.random() < 0.15) creak(t, b); return rnd(2, 5); } },
@@ -188,6 +188,9 @@
   const SFX = {
     paper: t => burst(t, 0.28, [["bandpass", 3200, 0.6]], 0.16, master, white, 0.03),
     tick: t => burst(t, 0.03, [["bandpass", 3000, 4]], 0.12),
+    type: t => { burst(t, 0.02, [["bandpass", rnd(2200, 3400), 3]], 0.13, master, white, 0.001); burst(t + 0.008, 0.05, [["lowpass", 500]], 0.08, master, brown, 0.002); },
+    bell: t => { tone(t, 1900, 0.9, 0.05, "sine"); tone(t, 2850, 0.6, 0.02, "sine"); },
+    gavel: t => { for (let k = 0; k < 2; k++) { burst(t + k * 0.32, 0.12, [["lowpass", 420], ["peaking", 180, 1.2]], 0.7, master, brown, 0.002); tone(t + k * 0.32, 140, 0.18, 0.18, "sine", master, 70); } },
     success: t => { piano(t, 72, 0.12); piano(t + 0.12, 79, 0.12); piano(t + 0.26, 84, 0.14); },
     wrong: t => { tone(t, midi(47), 0.35, 0.09, "triangle"); tone(t, midi(48), 0.35, 0.08, "triangle"); },
     step_wood: t => { burst(t, 0.07, [["lowpass", 700], ["peaking", 220, 1]], 0.22, master, brown, 0.003); burst(t, 0.02, [["bandpass", 1800, 2]], 0.015); },
