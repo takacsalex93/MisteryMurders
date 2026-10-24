@@ -129,3 +129,7 @@ Kiértékelés a Supabase-ben (Table Editor vagy SQL Editor):
 - `stat_feedback` és a `feedback` tábla: értékelések és szöveges megjegyzések.
 
 A játékosok a címoldal alján kikapcsolhatják a statisztikát. Ha a táblák nincsenek létrehozva, a játék egyszerűen nem küld semmit.
+
+## Játék több eszközön (szinkron)
+
+A `supabase_sync.sql` lefuttatása után a címoldal alján (és a nyomozói igazolványban) bekapcsolható a szinkron. A játékos kap egy 20 karakteres nyomozói kódot; ahol ezt megadja (vagy megnyitja a `#sync=KÓD` linket), ott ugyanonnan folytathatja. Regisztráció nem kell. A haladás mentéskor néhány másodperc késéssel felkerül, induláskor és a lapra visszatéréskor letöltődik. Összefésülés: első összekapcsoláskor ügyenként a nagyobb előrehaladás nyer, utána a frissebb mentés; a kitüntetések és a napi napló egyesül, a ranglistás azonosító is közös lesz. A szerver a kódot csak lenyomatként (sha256) tárolja, a mentéseket csak a kód ismeretében lehet elérni.
