@@ -124,7 +124,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen", "mm:nostats", "mm:sync", "mm:synclast", "mm:syncerr"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen", "mm:nostats", "mm:auth", "mm:authlinked", "mm:authnew", "mm:synclast", "mm:syncerr"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false, SKEY = null;
   function save() { if (S) S._t = Date.now(); if (window.MM_SYNC) window.MM_SYNC.schedule(); const wd = WDATA(); if (wd && wd.secrets && wd.secrets.length) S.secAll = wd.secrets.every(k => (S.secrets || []).includes(k.id)); try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
@@ -305,7 +305,6 @@
   }
   function route() {
     const id = (location.hash || "").slice(1);
-    if (id.startsWith("sync=")) { const c = decodeURIComponent(id.slice(5)); history.replaceState(null, "", location.pathname + location.search); renderHome(); openSync(c); return; }
     if (needWorld(id === "napi" ? daily().id : (CASES.find(x => x.id === id) || {}).id)) return;
     document.querySelectorAll("body > .intro, body > .titlecard, body > .verdict").forEach(x => x.remove());
     if (id === "napi") {
@@ -378,14 +377,14 @@
       <span class="eyebrow">${T("Válassz jelképet")}</span><div class="avgrid">${AVATARS.map(a => `<button class="${a === p.avatar ? "on" : ""}" data-av="${a}">${a}</button>`).join("")}</div>
       <span class="eyebrow">${T("Rangok")}</span><ol class="ranks">${RANKS.map(([pt, n], i) => `<li class="${i < k.i ? "done" : i === k.i ? "cur" : ""}"><span>${RANKICO[i]}</span><b>${T(n)}</b><span class="meta">${T("{0} ponttól", pt)}</span></li>`).join("")}</ol>
       <p class="meta">${T("A beceneved és a jelképed a ranglistán is látszik. Pontot a megoldott ügyek és a napi kihívások adnak.")}</p>
-      ${window.MM_SYNC && window.MM_SYNC.enabled ? `<button class="btn ghost" data-psync>☁️ ${T(window.MM_SYNC.on() ? "Szinkron több eszközön: bekapcsolva" : "Folytatnád másik eszközön is? Szinkron bekapcsolása")}</button>` : ""}
+      ${window.MM_SYNC && window.MM_SYNC.enabled ? `<button class="btn ghost" data-psync>☁️ ${window.MM_SYNC.on() ? T("Bejelentkezve: {0}", esc(window.MM_SYNC.user().email || window.MM_SYNC.user().name || "")) : T("Bejelentkezés: folytasd bármelyik eszközön")}</button>` : ""}
       <div class="row"><button class="btn" data-psave>${T("Mentés")}</button><button class="link" data-close>${T("Bezárás")}</button></div><p class="msg" data-pmsg></p></div>`;
     document.body.appendChild(ov);
     let av = p.avatar;
     ov.querySelectorAll("[data-av]").forEach(b => b.onclick = () => { av = b.dataset.av; ov.querySelectorAll("[data-av]").forEach(x => x.classList.toggle("on", x === b)); ov.querySelector("[data-avshow]").textContent = av; SND("tick"); });
     const close = () => ov.remove();
     ov.querySelector("[data-close]").onclick = close; ov.onclick = e => { if (e.target === ov) close(); };
-    const ps = ov.querySelector("[data-psync]"); if (ps) ps.onclick = () => { ov.remove(); openSync(); };
+    const ps = ov.querySelector("[data-psync]"); if (ps) ps.onclick = () => { ov.remove(); openAccount(); };
     ov.querySelector("[data-psave]").onclick = () => {
       const n = ov.querySelector("[data-pnick]").value.trim();
       if (n && n.length < 2) { const m = ov.querySelector("[data-pmsg]"); m.className = "msg bad"; m.textContent = T("A becenév legalább 2 karakter legyen."); return; }
@@ -410,57 +409,84 @@
     keys.forEach(k => localStorage.setItem(k, j.d[k]));
     return keys.filter(k => k.startsWith("mm3:")).length;
   }
-  /* ---------- szinkron több eszköz között (js/sync.js) ---------- */
-  function openSync(prefill) {
+  /* ---------- fiók: bejelentkezés Google-lel vagy e-maillel, a játékállás a fiókban (js/sync.js) ---------- */
+  const AUTHERR = e => {
+    const c = (e && e.message) || "";
+    if (/invalid_credentials|invalid_grant/.test(c)) return T("Hibás e-mail cím vagy jelszó.");
+    if (/user_already_exists|already/.test(c) || /already registered/i.test(e.msg || "")) return T("Ezzel az e-mail címmel már van fiók. Jelentkezz be.");
+    if (/weak_password/.test(c) || /password/i.test(e.msg || "") && /6/.test(e.msg || "")) return T("A jelszó legalább 6 karakter legyen.");
+    if (/email_address_invalid|validation_failed/.test(c)) return T("Ez nem tűnik érvényes e-mail címnek.");
+    if (/over_email_send_rate_limit|over_request_rate_limit/.test(c)) return T("Túl sok próbálkozás. Várj pár percet, és próbáld újra.");
+    if (/email_not_confirmed/.test(c)) return T("Előbb erősítsd meg az e-mail címed a kapott levélben.");
+    if (/provider_disabled|validation_failed/.test(c)) return T("Ez a bejelentkezési mód még nincs bekapcsolva.");
+    return T("Most nem érem el a szervert. Ellenőrizd a netet, és próbáld újra.");
+  };
+  function openAccount(mode) {
     const Y = window.MM_SYNC;
     if (!Y || !Y.enabled) { openBackup(); return; }
-    const ov = document.createElement("div"); ov.className = "intro on"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", T("Játék több eszközön"));
-    const link = () => location.origin + location.pathname + "#sync=" + encodeURIComponent(Y.code());
+    mode = mode || (Y.recovery() ? "newpw" : "login");
+    const ov = document.createElement("div"); ov.className = "intro on"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", T("Fiók"));
     const when = t => t ? new Date(t).toLocaleString("hu-HU", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "–";
-    const draw = msg => {
-      ov.innerHTML = `<div class="intro-card syncbox"><span class="eyebrow">☁️ ${T("Játék több eszközön")}</span>${Y.on() ? `
-        <p>${T("A szinkron be van kapcsolva. A haladásod automatikusan felkerül a felhőbe, és bármelyik eszközön folytathatod, ahol megadod ezt a kódot:")}</p>
-        <div class="synccode" data-scode>${esc(Y.code())}</div>
-        <div class="row"><button class="btn" data-scopy>${T("Kód másolása")}</button><button class="btn ghost" data-slink>${T("Link másolása")}</button><button class="btn ghost" data-sshare hidden>${T("Küldés magamnak")}</button></div>
-        <p class="meta">${T("Legutóbbi szinkron: {0}", when(Y.last()))}${Y.error() ? " · ⚠️ " + T("az utolsó feltöltés nem sikerült, később újrapróbálom") : ""}</p>
-        <p class="meta">🔒 ${T("A kód olyan, mint egy jelszó: aki ismeri, az látja és folytatja az állásodat. Csak a saját eszközeidre írd be.")}</p>
-        <div class="row"><button class="btn ghost" data-snow>${T("Szinkronizálás most")}</button><button class="link" data-soff>${T("Kikapcsolom ezen az eszközön")}</button></div>` : `
-        <p>${T("Ha telefonon is, gépen is játszol, kapcsold be a szinkront. Kapsz egy nyomozói kódot, és ahol megadod, ott ugyanonnan folytathatod, ahol abbahagytad. Regisztráció és e-mail nem kell.")}</p>
-        <div class="syncopt"><b>${T("Ez az első eszközöm")}</b><p class="meta">${T("Új kódot kapsz, és a mostani állásod felkerül a felhőbe.")}</p><button class="btn" data-sstart>${T("Bekapcsolom a szinkront")}</button></div>
-        <div class="syncopt"><b>${T("Már van kódom")}</b><p class="meta">${T("Írd be a másik eszközön kapott kódot. Az ottani és az itteni állás összefésülődik: ügyenként a frissebb marad meg.")}</p>
-          <div class="row"><input class="nick" data-sin placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" value="${esc(prefill ? Y.pretty(prefill) : "")}" aria-label="${T("Nyomozói kód")}" autocomplete="off" spellcheck="false"><button class="btn" data-slinkin>${T("Összekapcsolom")}</button></div></div>`}
-        <div class="row"><button class="link" data-close>${T("Bezárás")}</button></div><p class="msg" data-smsg>${msg || ""}</p></div>`;
-      const m = ov.querySelector("[data-smsg]"), say = (t, ok) => { m.className = "msg " + (ok ? "ok" : "bad"); m.textContent = t; };
-      ov.querySelector("[data-close]").onclick = close;
-      const copy = (t, okMsg) => { try { navigator.clipboard.writeText(t).then(() => say(okMsg, true), () => say(t, true)); } catch (e) { say(t, true); } };
-      const q = sel => ov.querySelector(sel);
-      if (q("[data-scopy]")) q("[data-scopy]").onclick = () => copy(Y.code(), T("Kimásolva."));
-      if (q("[data-slink]")) q("[data-slink]").onclick = () => copy(link(), T("A link kimásolva. Nyisd meg a másik eszközön, és a játék automatikusan összekapcsolódik."));
-      if (q("[data-sshare]") && navigator.share) { q("[data-sshare]").hidden = false; q("[data-sshare]").onclick = () => navigator.share({ title: T("Rejtélyes gyilkosságok"), text: T("A nyomozói kódom: {0}", Y.code()), url: link() }).catch(() => {}); }
-      if (q("[data-snow]")) q("[data-snow]").onclick = async e => { e.currentTarget.disabled = true; try { const ch = await Y.pull(); await Y.push(); draw(ch.length ? T("Kész: {0} változást töltöttem le.", ch.length) : T("Kész, minden naprakész.")); if (ch.length && !C) renderHome(); } catch (err) { draw(); say(T("Most nem érem el a felhőt. Ellenőrizd a netet.")); } };
-      if (q("[data-soff]")) q("[data-soff]").onclick = () => { Y.off(); draw(T("Ezen az eszközön kikapcsoltam a szinkront. Az itteni állás megmaradt.")); if (!C) renderHome(); };
-      if (q("[data-sstart]")) q("[data-sstart]").onclick = async e => { e.currentTarget.disabled = true; try { await Y.start(); SND("stamp"); draw(T("Bekapcsolva! Ezt a kódot írd be a másik eszközödön.")); if (!C) renderHome(); } catch (err) { draw(); say(T("Most nem sikerült bekapcsolni. Próbáld újra később.")); } };
-      if (q("[data-slinkin]")) {
-        const inp = q("[data-sin]"); inp.onkeydown = e => { if (e.key === "Enter") q("[data-slinkin]").click(); };
-        q("[data-slinkin]").onclick = async e => {
-          e.currentTarget.disabled = true;
-          try { const ch = await Y.link(inp.value); SND("success"); const n = ch.filter(k => k.startsWith("mm3:")).length; draw(n ? T("Összekapcsolva! {0} ügy állását töltöttem le.", n) : T("Összekapcsolva! Mostantól ez az eszköz is szinkronban van.")); if (!C) renderHome(); }
-          catch (err) { draw(); say(err.message === "notfound" ? T("Ilyen kódot nem találtam. Nézd meg, jól írtad-e be.") : err.message === "short" ? T("A kód 20 karakter, kötőjelekkel együtt így néz ki: XXXX-XXXX-XXXX-XXXX-XXXX.") : T("Most nem érem el a felhőt. Ellenőrizd a netet.")); }
-        };
-      }
-    };
     const close = () => ov.remove();
+    const draw = (msg, ok) => {
+      const u = Y.user();
+      let body;
+      if (mode === "newpw") body = `<p>${T("Adj meg egy új jelszót a fiókodhoz.")}</p>
+        <form class="authform" data-aform="newpw"><input type="password" name="pw" autocomplete="new-password" placeholder="${T("Új jelszó (legalább 6 karakter)")}" aria-label="${T("Új jelszó")}" minlength="6" required><button class="btn" type="submit">${T("Jelszó mentése")}</button></form>`;
+      else if (Y.on()) body = `<div class="acct"><span class="av">${esc(profile().avatar)}</span><div><b>${esc(u.name || u.email || T("Bejelentkezve"))}</b>${u.name && u.email ? `<span class="meta">${esc(u.email)}</span>` : ""}</div></div>
+        <p>${T("A haladásod a fiókodban van: bármelyik eszközön folytathatod, ahol bejelentkezel. Mentés után pár másodperccel magától felkerül.")}</p>
+        <p class="meta">${T("Legutóbbi szinkron: {0}", when(Y.last()))}${Y.error() ? " · ⚠️ " + T("az utolsó feltöltés nem sikerült, később újrapróbálom") : ""}</p>
+        <div class="row"><button class="btn ghost" data-anow>${T("Szinkronizálás most")}</button><button class="link" data-aout>${T("Kijelentkezés")}</button></div>`;
+      else body = `<p>${T("Jelentkezz be, és a haladásod a fiókodba kerül: telefonon, gépen, bármelyik böngészőben ott folytathatod, ahol abbahagytad.")}</p>
+        <button class="btn gbtn" data-agoogle><span class="g" aria-hidden="true">G</span> ${T("Folytatás Google-fiókkal")}</button>
+        <div class="orline"><span>${T("vagy e-mail címmel")}</span></div>
+        <div class="btabs atabs"><button class="chip ${mode === "login" ? "on" : ""}" data-amode="login">${T("Belépés")}</button><button class="chip ${mode === "signup" ? "on" : ""}" data-amode="signup">${T("Új fiók")}</button></div>
+        <form class="authform" data-aform="${mode}">
+          <input type="email" name="email" autocomplete="email" placeholder="${T("E-mail cím")}" aria-label="${T("E-mail cím")}" required>
+          ${mode === "forgot" ? "" : `<input type="password" name="pw" autocomplete="${mode === "signup" ? "new-password" : "current-password"}" placeholder="${T(mode === "signup" ? "Jelszó (legalább 6 karakter)" : "Jelszó")}" aria-label="${T("Jelszó")}" minlength="6" required>`}
+          <button class="btn" type="submit">${T(mode === "signup" ? "Fiók létrehozása" : mode === "forgot" ? "Küldd el a visszaállító levelet" : "Belépés")}</button>
+        </form>
+        ${mode === "login" ? `<button class="link" data-amode="forgot">${T("Elfelejtettem a jelszavam")}</button>` : mode === "forgot" ? `<button class="link" data-amode="login">← ${T("Vissza a belépéshez")}</button>` : ""}
+        <p class="meta">${T("A meglévő haladásod nem vész el: bejelentkezéskor összefésülöm a fiókban lévővel, ügyenként a nagyobb előrehaladás marad meg.")}</p>`;
+      ov.innerHTML = `<div class="intro-card authbox"><span class="eyebrow">☁️ ${T(Y.on() && mode !== "newpw" ? "Fiókod" : "Bejelentkezés")}</span>${body}
+        <div class="row"><button class="link" data-close>${T("Bezárás")}</button></div><p class="msg ${msg ? (ok ? "ok" : "bad") : ""}" data-amsg>${esc(msg || "")}</p></div>`;
+      const q = sel => ov.querySelector(sel), say = (t, good) => { const m = q("[data-amsg]"); m.className = "msg " + (good ? "ok" : "bad"); m.textContent = t; };
+      q("[data-close]").onclick = close;
+      ov.querySelectorAll("[data-amode]").forEach(b => b.onclick = () => { mode = b.dataset.amode; draw(); const f = q("input[name=email]"); if (f) f.focus(); });
+      if (q("[data-agoogle]")) q("[data-agoogle]").onclick = () => { say(T("Átirányítalak a Google-höz…"), true); Y.google(); };
+      if (q("[data-aout]")) q("[data-aout]").onclick = async () => { await Y.signOut(); SND("paper"); draw(T("Kijelentkeztél. Ezen az eszközön az állásod megmaradt."), true); if (!C) renderHome(); };
+      if (q("[data-anow]")) q("[data-anow]").onclick = async e => { e.currentTarget.disabled = true; try { const ch = await Y.pull(); await Y.push(); draw(ch.length ? T("Kész: {0} változást töltöttem le.", ch.length) : T("Kész, minden naprakész."), true); if (ch.length && !C) renderHome(); } catch (err) { draw(AUTHERR(err)); } };
+      const f = q("[data-aform]");
+      if (f) f.onsubmit = async e => {
+        e.preventDefault();
+        const em = f.email ? f.email.value.trim() : "", pw = f.pw ? f.pw.value : "", btn = f.querySelector("button"); btn.disabled = true;
+        try {
+          if (mode === "login") { await Y.signIn(em, pw); await afterLogin(); }
+          else if (mode === "signup") { const r = await Y.signUp(em, pw); if (r.confirm) { draw(T("Küldtem egy megerősítő levelet erre a címre: {0}. Kattints a benne lévő linkre, és már be is vagy jelentkezve.", em), true); return; } await afterLogin(); }
+          else if (mode === "forgot") { await Y.recover(em); draw(T("Ha van fiók ezzel a címmel, elküldtem a jelszó-visszaállító levelet."), true); return; }
+          else if (mode === "newpw") { await Y.setPassword(pw); mode = "login"; draw(T("Az új jelszavad mentve."), true); return; }
+        } catch (err) { btn.disabled = false; say(AUTHERR(err)); }
+      };
+    };
+    async function afterLogin() {
+      SND("stamp"); draw(T("Bejelentkezve. Összefésülöm az állásodat…"), true);
+      try { const ch = await Y.pull(); const n = ch.filter(k => k.startsWith("mm3:")).length; draw(n ? T("Kész! {0} ügy állását töltöttem le a fiókodból.", n) : T("Kész! A haladásod mostantól a fiókodban van."), true); }
+      catch (e) { draw(T("Bejelentkeztél, de a mentést most nem értem el. Később magától újrapróbálom."), false); }
+      if (!C) renderHome(); else renderCase();
+    }
     ov.onclick = e => { if (e.target === ov) close(); };
-    draw(prefill ? T("Ezt a kódot egy linkből kaptad. Nyomd meg az Összekapcsolom gombot.") : "");
+    draw();
     document.body.appendChild(ov);
-    if (prefill) setTimeout(() => { const b = ov.querySelector("[data-slinkin]"); if (b) b.focus(); }, 80);
   }
+  // az ügy végén, ha a játékos nincs bejelentkezve
+  const saveNudge = () => window.MM_SYNC && window.MM_SYNC.enabled && !window.MM_SYNC.on()
+    ? `<div class="nudge"><span>☁️ ${T("Ne veszítsd el a haladásod: jelentkezz be, és bármelyik eszközön folytathatod.")}</span><button class="btn ghost" data-account>${T("Bejelentkezés")}</button></div>` : "";
   function openBackup() {
     const code = exportSave();
     const ov = document.createElement("div"); ov.className = "intro on"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", T("Játékállás"));
     ov.innerHTML = `<div class="intro-card backup"><span class="eyebrow">${T("Játékállás")}</span>
       <p>${T("A haladásod ebben a böngészőben van. Ha másik gépen vagy böngészőben szeretnéd folytatni, mentsd el ezt a kódot (vagy fájlt), és ott töltsd be.")}</p>
-      ${window.MM_SYNC && window.MM_SYNC.enabled ? `<p class="tip">☁️ ${T("Kényelmesebb, ha bekapcsolod a szinkront: akkor magától frissül minden eszközödön.")} <button class="link" data-gosync>${T("Szinkron beállítása")}</button></p>` : ""}
+      ${window.MM_SYNC && window.MM_SYNC.enabled ? `<p class="tip">☁️ ${T("Kényelmesebb, ha bejelentkezel: akkor magától frissül minden eszközödön.")} <button class="link" data-gosync>${T("Bejelentkezés")}</button></p>` : ""}
       <textarea readonly data-bcode rows="4" aria-label="${T("Mentési kód")}">${esc(code)}</textarea>
       <div class="row"><button class="btn" data-bcopy>${T("Kód másolása")}</button><a class="btn ghost" data-bfile download="rejtelyes-gyilkossagok-mentes.txt">${T("Mentés fájlba")}</a></div>
       <hr><span class="eyebrow">${T("Betöltés")}</span>
@@ -469,7 +495,7 @@
       <p class="meta">${T("A betöltés felülírja az itteni állást azoknál az ügyeknél, amelyek a mentésben szerepelnek.")}</p><p class="msg" data-bmsg></p></div>`;
     document.body.appendChild(ov);
     const m = ov.querySelector("[data-bmsg]"), close = () => ov.remove();
-    const gs = ov.querySelector("[data-gosync]"); if (gs) gs.onclick = () => { close(); openSync(); };
+    const gs = ov.querySelector("[data-gosync]"); if (gs) gs.onclick = () => { close(); openAccount(); };
     ov.querySelector("[data-close]").onclick = close; ov.onclick = e => { if (e.target === ov) close(); };
     ov.querySelector("[data-bfile]").href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
     ov.querySelector("[data-bcopy]").onclick = () => { const ta = ov.querySelector("[data-bcode]"); ta.select(); try { navigator.clipboard.writeText(code).then(() => { m.className = "msg ok"; m.textContent = T("Kimásolva."); }); } catch (e) { document.execCommand && document.execCommand("copy"); } };
@@ -598,7 +624,7 @@
       <section class="howto">${head(T("Hogyan játssz?"), T("Hét lépés a vádemelésig. A játékállás ebben a böngészőben mentődik, bármikor folytathatod."))}
         <ol class="steps">${steps.map(([i, t]) => `<li><span class="sico">${i}</span><p>${t}</p></li>`).join("")}</ol>
       </section>
-      <footer class="homefoot"><span>${T("Rejtélyes gyilkosságok")}</span>${window.MM_SYNC && window.MM_SYNC.enabled ? `<button class="link" data-sync>☁️ ${T(window.MM_SYNC.on() ? "Szinkron: bekapcsolva" : "Játék több eszközön")}</button>` : ""}<button class="link" data-backup>💾 ${T("Játékállás mentése vagy betöltése")}</button>${ON ? `<button class="link" data-stats aria-pressed="${ON.statsOn()}">📊 ${T(ON.statsOn() ? "Névtelen statisztika: be" : "Névtelen statisztika: ki")}</button>` : ""}<span>${T("Pixelgrafika:")} <a href="https://limezu.itch.io/" target="_blank" rel="noopener">LimeZu</a></span></footer>
+      <footer class="homefoot"><span>${T("Rejtélyes gyilkosságok")}</span>${window.MM_SYNC && window.MM_SYNC.enabled ? `<button class="link" data-account>☁️ ${window.MM_SYNC.on() ? T("Fiókod: {0}", esc(window.MM_SYNC.user().email || window.MM_SYNC.user().name || "")) : T("Bejelentkezés: játék több eszközön")}</button>` : ""}<button class="link" data-backup>💾 ${T("Játékállás mentése vagy betöltése")}</button>${ON ? `<button class="link" data-stats aria-pressed="${ON.statsOn()}">📊 ${T(ON.statsOn() ? "Névtelen statisztika: be" : "Névtelen statisztika: ki")}</button>` : ""}<span>${T("Pixelgrafika:")} <a href="https://limezu.itch.io/" target="_blank" rel="noopener">LimeZu</a></span></footer>
     </div>`;
     const oc = app.querySelector("[data-office]");
     if (oc) window.MM_OFFICE.mount(oc, { won: CASES.filter(wonCase).map(c => c.id), titles: Object.fromEntries(CASES.map(c => [c.id, c.title])),
@@ -607,7 +633,7 @@
     if (stampedNow.length) { lsSet("mm:stamped", JSON.stringify(stamped.concat(stampedNow))); setTimeout(() => SND("stamp"), 500); }
     const pb = app.querySelector("[data-profile]"); if (pb) pb.onclick = openProfile;
     const bk = app.querySelector("[data-backup]"); if (bk) bk.onclick = openBackup;
-    app.querySelectorAll("[data-sync]").forEach(x => x.onclick = () => openSync());
+    app.querySelectorAll("[data-account]").forEach(x => x.onclick = () => openAccount());
     const sb = app.querySelector("[data-stats]"); if (sb) { sb.title = T("Névtelenül rögzítjük, hol akadnak el a játékosok, hogy javíthassuk az ügyeket. Nevet, e-mailt vagy más személyes adatot nem gyűjtünk."); sb.onclick = () => { ON.setStats(!ON.statsOn()); renderHome(); }; }
     bindTicker(); bindCountdown();
   }
@@ -707,6 +733,7 @@
     const dc = document.querySelector("[data-dcopy]");
     if (dc) dc.onclick = () => { const t = dailyShareText(), m = document.querySelector("[data-dmsg]"); try { navigator.clipboard.writeText(t).then(() => { m.className = "msg ok"; m.textContent = T("Kimásolva, beillesztheted bárhová."); }); } catch (e) { m.textContent = T("Jelöld ki és másold ki a fenti szöveget."); } };
     bindOnline(); verdict(); bindFeedback();
+    document.querySelectorAll("[data-account]").forEach(x => x.onclick = () => openAccount());
     if (S.ended && S.ended !== "reveal" && !S.trk) { S.trk = 1; save(); TR(S.ended === "win" ? "win" : S.ended === "wrong" ? "wrong" : "lose", S.ended === "wrong" ? S.accused : S.ended); }
     if (!S.introSeen && !S.ended && !S.clues.length) showIntro();
     else checkEvents();
@@ -1192,6 +1219,7 @@
       ${stats}</div>
       ${revealOnly ? "" : dailyBox()}
       ${revealOnly ? "" : onlineBox()}
+      ${revealOnly ? "" : saveNudge()}
       ${revealOnly ? "" : feedbackBox()}
       ${!revealOnly && C.sequel ? `<div class="sequel"><span class="eyebrow">${T("Utóirat")}</span>${C.sequel.map(p => `<p>${esc(p)}</p>`).join("")}<p class="meta">${T("A második évad hamarosan.")}</p></div>` : ""}
       <div class="row"><a class="btn" href="#">${T("Vissza az ügyekhez")}</a>${revealOnly ? `<button class="btn ghost" data-restart>${T("Újrakezdem az ügyet")}</button>` : `<button class="btn ghost" data-share>${T("Eredménykártya")}</button>`}</div></div>`;
@@ -1763,6 +1791,9 @@
     if (!C) { renderHome(); return; }
     if (changed.includes(SKEY || KEY(C.id))) { toast(T("Újabb állást töltöttem le egy másik eszközödről.")); route(); }
   }
+  if (SY && SY.recovery()) setTimeout(() => openAccount("newpw"), 300);
+  else if (SY && SY.authError()) setTimeout(() => toast(T("A bejelentkezés nem sikerült: {0}", SY.authError())), 600);
+  if (SY && SY.on() && SY.justSignedIn()) setTimeout(() => { const u = SY.user(); toast(T("Bejelentkezve: {0}. A haladásod a fiókodban van.", u.email || u.name || "")); }, 1200);
   if (SY && SY.on()) {
     let started = false;
     const go1 = () => { if (!started) { started = true; route(); } };

@@ -1,41 +1,34 @@
--- Rejtélyes gyilkosságok · játékállás szinkronizálása több eszköz között (Supabase)
+-- Rejtélyes gyilkosságok · játékállás a játékos fiókjában (Supabase Auth)
 -- Futtatás: Supabase → SQL Editor → New query → ezt a fájlt bemásolni → Run.
 --
--- Működés: minden játékos kap egy hosszú, véletlen „nyomozói kódot”. A mentést ezzel a kóddal lehet feltölteni és letölteni.
--- A táblát közvetlenül senki sem olvashatja: csak a két lenti függvényen át, és csak az, aki ismeri a kódot.
--- A kódot nem tároljuk, csak a lenyomatát (sha256).
+-- Minden bejelentkezett játékosnak egy sora van: a teljes mentése. A sorszintű szabályok miatt
+-- mindenki kizárólag a saját sorát látja és írja; a nyilvános (anon) szerep semmit sem ér el.
 
-create table if not exists public.saves (
-  key_hash   text primary key,
+create table if not exists public.user_saves (
+  user_id    uuid primary key references auth.users (id) on delete cascade default auth.uid(),
   data       jsonb not null,
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint user_saves_size check (pg_column_size(data) < 600000)
 );
-alter table public.saves enable row level security;
-revoke all on public.saves from anon, authenticated;
 
-create or replace function public.sync_push(p_key text, p_data jsonb) returns timestamptz
-language plpgsql security definer set search_path = public as $$
-declare t timestamptz := now();
-begin
-  if p_key is null or char_length(p_key) < 16 or char_length(p_key) > 64 then raise exception 'bad key'; end if;
-  if pg_column_size(p_data) > 600000 then raise exception 'too large'; end if;
-  insert into public.saves (key_hash, data, updated_at)
-    values (encode(sha256(convert_to(p_key, 'UTF8')), 'hex'), p_data, t)
-    on conflict (key_hash) do update set data = excluded.data, updated_at = t;
-  return t;
-end $$;
+alter table public.user_saves enable row level security;
+revoke all on public.user_saves from anon;
+grant select, insert, update on public.user_saves to authenticated;
 
-create or replace function public.sync_pull(p_key text) returns jsonb
-language plpgsql security definer set search_path = public as $$
-declare r public.saves;
-begin
-  if p_key is null or char_length(p_key) < 16 or char_length(p_key) > 64 then raise exception 'bad key'; end if;
-  select * into r from public.saves where key_hash = encode(sha256(convert_to(p_key, 'UTF8')), 'hex');
-  if not found then return null; end if;
-  return jsonb_build_object('data', r.data, 'updated_at', r.updated_at);
-end $$;
+drop policy if exists "sajat mentes olvasasa" on public.user_saves;
+create policy "sajat mentes olvasasa" on public.user_saves for select to authenticated using (user_id = auth.uid());
+drop policy if exists "sajat mentes letrehozasa" on public.user_saves;
+create policy "sajat mentes letrehozasa" on public.user_saves for insert to authenticated with check (user_id = auth.uid());
+drop policy if exists "sajat mentes frissitese" on public.user_saves;
+create policy "sajat mentes frissitese" on public.user_saves for update to authenticated using (user_id = auth.uid()) with check (user_id = auth.uid());
 
-revoke all on function public.sync_push(text, jsonb) from public;
-revoke all on function public.sync_pull(text) from public;
-grant execute on function public.sync_push(text, jsonb) to anon, authenticated;
-grant execute on function public.sync_pull(text) to anon, authenticated;
+-- a frissítés idejét a szerver állítja
+create or replace function public.touch_user_saves() returns trigger language plpgsql as $$
+begin new.updated_at := now(); return new; end $$;
+drop trigger if exists user_saves_touch on public.user_saves;
+create trigger user_saves_touch before insert or update on public.user_saves for each row execute function public.touch_user_saves();
+
+-- a korábbi, kódos szinkron maradványai (ha valaha lefutott)
+drop function if exists public.sync_push(text, jsonb);
+drop function if exists public.sync_pull(text);
+drop table if exists public.saves;

@@ -130,6 +130,12 @@ Kiértékelés a Supabase-ben (Table Editor vagy SQL Editor):
 
 A játékosok a címoldal alján kikapcsolhatják a statisztikát. Ha a táblák nincsenek létrehozva, a játék egyszerűen nem küld semmit.
 
-## Játék több eszközön (szinkron)
+## Fiók és játék több eszközön
 
-A `supabase_sync.sql` lefuttatása után a címoldal alján (és a nyomozói igazolványban) bekapcsolható a szinkron. A játékos kap egy 20 karakteres nyomozói kódot; ahol ezt megadja (vagy megnyitja a `#sync=KÓD` linket), ott ugyanonnan folytathatja. Regisztráció nem kell. A haladás mentéskor néhány másodperc késéssel felkerül, induláskor és a lapra visszatéréskor letöltődik. Összefésülés: első összekapcsoláskor ügyenként a nagyobb előrehaladás nyer, utána a frissebb mentés; a kitüntetések és a napi napló egyesül, a ranglistás azonosító is közös lesz. A szerver a kódot csak lenyomatként (sha256) tárolja, a mentéseket csak a kód ismeretében lehet elérni.
+A játékos bejelentkezhet **Google-fiókkal** vagy **e-mail címmel és jelszóval**; a játékállása ekkor a fiókjában van, és bármelyik eszközön ott folytathatja, ahol abbahagyta. A haladás mentéskor néhány másodperc késéssel felkerül, induláskor és a lapra visszatéréskor letöltődik. Egy eszköz első bejelentkezésekor ügyenként a nagyobb előrehaladás marad meg, utána a frissebb mentés; a kitüntetések és a napi napló egyesül, a ranglistás azonosító közös lesz. Bejelentkezés nélkül a játék ugyanúgy működik, mint eddig.
+
+Beállítás a Supabase-ben:
+1. SQL Editor: futtasd le a `supabase_sync.sql` fájlt (a `user_saves` tábla; mindenki csak a saját sorát éri el).
+2. Authentication → URL Configuration: **Site URL** = `https://takacsalex93.github.io/MisteryMurders/`, és ugyanezt add hozzá a **Redirect URLs** listához is.
+3. Authentication → Sign In / Providers → **Email**: maradjon bekapcsolva; a **Confirm email** kikapcsolásával a regisztráció azonnal belépteti a játékost (az ingyenes csomag óránként csak néhány levelet küld).
+4. Google: Google Cloud Console → új projekt → OAuth consent screen (External) → Credentials → OAuth client ID (Web application), Authorized redirect URI: `https://<projekt>.supabase.co/auth/v1/callback`. A kapott Client ID-t és Secretet a Supabase Authentication → Providers → **Google** alatt kell megadni.
