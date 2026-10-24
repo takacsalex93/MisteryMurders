@@ -1,6 +1,6 @@
 /* Layout: rendőrségi ügyirat-mappa — füles navigáció, gépelt lapok, piros bélyegzők */
 :root{
-  --bg:#ddcfa6; --paper:#f4ecd6; --paper2:#ebe0c1; --ink:#1e2740; --muted:#5f6378;
+  --bg:#ddcfa6; --paper:#f4ecd6; --paper2:#ebe0c1; --ink:#1e2740; --muted:#474b5e;
   --line:#c5b386; --stamp:#a3262c; --accent:#22534a; --accent-fg:#f4ecd6; --good:#2d6a3e;
   --art-bg:#dccb9c; --art-ink:#1e2740; --art-light:#f7f0dc; --brass:#9c7426;
   --display:"Bodoni Moda", Didot, "Times New Roman", serif;
@@ -393,7 +393,7 @@ figcaption{font-family:var(--type);font-size:12px;color:var(--muted)}
 .w-act kbd{font-family:var(--type);font-size:12px;border:1.5px solid #1e2740;border-radius:3px;padding:0 5px;margin-right:4px;background:#fff}
 .w-hud{font-family:var(--type);font-size:14px;margin:0}
 .w-found{display:flex;flex-direction:column;gap:12px}
-.credit{font-size:12px;opacity:.75}
+.credit{font-size:12px;color:var(--muted)}
 .wcard .suspect{background:none;border:0;padding:0}
 .wcard.w-scene .locart{margin:-6px 0 0}
 @media (max-width:520px){.w-act{font-size:12.5px;padding:7px 10px}.w-banner{font-size:12px}}
@@ -694,3 +694,27 @@ section.level.thread{filter:none;stroke:none}
 .wrap.home .casecard.season2:hover{box-shadow:0 28px 46px -26px rgba(0,0,0,.85),0 0 0 1px #a5191d}
 .casecard.season2 h2,.casecard.season2 p{padding-right:84px}
 @media (max-width:560px){.wax{width:60px;height:60px;right:14px}.wax span{width:42px;height:42px;font-size:26px}.casecard.season2 h2,.casecard.season2 p{padding-right:60px}}
+.cnote.locked{opacity:.85}.cnote.locked .eyebrow,.cnote.locked p{color:var(--muted)}
+.secno{opacity:1}
+/* érintőképernyőn legalább 44 px magas vezérlők */
+@media (pointer:coarse){
+  .btn,nav.tabs button,.chip[data-btab],.fmt .chip,.idcard,.avgrid button{min-height:44px}
+  .intro-card .link,[data-close].link,.coach .link{min-height:40px;padding:8px 6px}
+}
+@media (prefers-reduced-motion: reduce){.wrap.home .casecard,.wrap.home .casecard .cover img{transition:none}.wrap.home .casecard:hover{transform:none}.bigstamp.fresh,.casecard.season2 .wax{animation:none}}
+.intro-card.backup textarea{width:100%;font-family:var(--type);font-size:12px;padding:8px;border:1px solid var(--line);border-radius:4px;background:var(--paper2);color:var(--ink);resize:vertical;word-break:break-all}
+.intro-card.backup hr{border:none;border-top:1px dashed var(--line);width:100%;margin:6px 0}
+.intro-card.backup label.btn{cursor:pointer}
+.homefoot .link{font-size:12.5px;letter-spacing:.06em}
+select.wrongpick{border-color:var(--stamp)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--stamp) 35%,transparent);background:color-mix(in srgb,var(--stamp) 10%,var(--paper))}.whichbtn{font-size:13px;text-decoration:underline}
+.dsrc .tip{font-size:15px;color:var(--accent);margin:6px 0}
+.coach-tut{display:block;margin-top:6px;font-size:.92em;opacity:.9;border-top:1px dashed currentColor;padding-top:6px}
+/* visszajelzés */
+.fbbox{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.fbbox.done{border-style:dashed;color:var(--muted)}
+.stars{display:flex;gap:4px}
+.stars button{font-size:30px;line-height:1;background:none;border:none;cursor:pointer;color:var(--line);padding:4px;min-width:44px;min-height:44px}
+.stars button.on{color:#d9a52a}
+.stars button:hover{transform:scale(1.1)}
+.fbdiff{gap:14px;font-size:16px}.fbdiff label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.fbbox textarea{width:100%;font:inherit;font-size:16px;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--paper2);color:var(--ink);resize:vertical}

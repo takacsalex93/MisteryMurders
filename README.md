@@ -110,3 +110,22 @@ Az anon kulcs nyilvános, ez így rendben van: a tábla sorszintű szabályai cs
 - **Filmes átmenetek:** ügy megnyitásakor írógépes főcím, a sikeres vád után tárgyalótermi ítélet. A mozgáscsökkentést kérő böngészőkben ezek elmaradnak.
 - **Eredménykártya** bejegyzés (4:5) és story (9:16) méretben.
 - **Címoldali hang:** halk eső és zongora (a hang alapból ki van kapcsolva).
+
+## Oktató eset, elakadásgátló, mentés
+
+- **0. ügy · Próbanap** (`cases/oktato.js`): rövid, vezetett gyakorló eset pixeles pálya nélkül. Az új játékosnak a nyitókép ezt ajánlja. A Következő lépés sáv „Oktatás” módban minden lépésnél elmagyarázza a mechanikát (`tutor` mező).
+- **Elakadásgátló:** a következtetés ablaka megmutatja a két összekötött nyom szövegét, és ha egy szükséges szó máshol van, megmondja, hol keresse (a szót nem árulja el). Két rossz próba után, illetve rossz vádnál súgóért megjelölhető a rossz szó.
+- **Játékállás mentése:** a címoldal alján „Játékállás mentése vagy betöltése”: kód vagy fájl, amivel másik böngészőben vagy gépen folytatható a játék.
+- **Lusta betöltés:** a pályák (`cases/<id>.world.js`) csak az ügy megnyitásakor töltődnek le; a kártyákon kisebb borítóképek (`cover-sm.webp`) vannak.
+
+## Névtelen statisztika és visszajelzések (opcionális)
+
+A közös ranglista Supabase projektjében futtasd le a `supabase_stats.sql` fájlt is (SQL Editor → New query → Run). Ezután a játék névtelenül rögzíti, ki hol tart (ügy indítása, rejtvények, súgók, rossz próbák, az ügy vége), az ügyek végén pedig csillagos értékelést és szöveges visszajelzést lehet küldeni. A játékosok csak beküldeni tudnak, olvasni nem.
+
+Kiértékelés a Supabase-ben (Table Editor vagy SQL Editor):
+- `stat_cases`: ügyenként kezdők, megoldók, megoldási arány, átlagos idő;
+- `stat_sticking`: hol kérnek súgót, hol rontanak a legtöbbet;
+- `stat_dropoff`: hol hagyják abba azok, akik nem fejezték be;
+- `stat_feedback` és a `feedback` tábla: értékelések és szöveges megjegyzések.
+
+A játékosok a címoldal alján kikapcsolhatják a statisztikát. Ha a táblák nincsenek létrehozva, a játék egyszerűen nem küld semmit.

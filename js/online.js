@@ -16,6 +16,20 @@ window.MM_ONLINE = (function () {
   function uuid() { return (crypto.randomUUID && crypto.randomUUID()) || "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c => (c ^ Math.random() * 16 >> c / 4).toString(16)); }
   function pid() { let p = get("mm:pid", ""); if (!p) { p = uuid(); set("mm:pid", p); } return p; }
   const cache = {};
+  // névtelen játékstatisztika: kötegelve küldi, és ha a tábla még nincs létrehozva (supabase_stats.sql), csendben leáll
+  const root = () => cfg.url.replace(/\/$/, "") + "/rest/v1/";
+  const SID = Math.random().toString(36).slice(2, 12);
+  let queue = [], statsDead = false, flushT = 0;
+  const statsOn = () => enabled && !statsDead && get("mm:nostats", "") !== "1";
+  function flush(beacon) {
+    clearTimeout(flushT); flushT = 0;
+    if (!queue.length || !statsOn()) { queue = []; return; }
+    const body = JSON.stringify(queue); queue = [];
+    fetch(root() + "events", { method: "POST", keepalive: !!beacon, headers: Object.assign(H(), { Prefer: "return=minimal" }), body })
+      .then(r => { if (r.status === 404 || r.status === 401 || r.status === 403) statsDead = true; }).catch(() => {});
+  }
+  addEventListener("pagehide", () => flush(true));
+  addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(true); });
   async function q(params, ttl) {
     if (!enabled) return [];
     const k = params; if (cache[k] && Date.now() - cache[k].t < (ttl || 30000)) return cache[k].v;
@@ -41,6 +55,18 @@ window.MM_ONLINE = (function () {
       const body = Object.assign({ player_id: pid(), player: get("mm:nick", "") }, rec);
       const r = await fetch(base(), { method: "POST", headers: Object.assign(H(), { Prefer: "return=minimal" }), body: JSON.stringify(body) });
       Object.keys(cache).forEach(k => delete cache[k]);
+      return r.ok;
+    },
+    statsOn,
+    setStats: v => set("mm:nostats", v ? "" : "1"),
+    track(caseId, ev, detail, extra) {
+      if (!statsOn() || !caseId) return;
+      queue.push(Object.assign({ player_id: pid(), session_id: SID, case_id: String(caseId).slice(0, 40), ev, detail: detail == null ? null : String(detail).slice(0, 60) }, extra || {}));
+      if (queue.length >= 20) flush(); else if (!flushT) flushT = setTimeout(flush, 5000);
+    },
+    async feedback(rec) {
+      if (!enabled) return false;
+      const r = await fetch(root() + "feedback", { method: "POST", headers: Object.assign(H(), { Prefer: "return=minimal" }), body: JSON.stringify(Object.assign({ player_id: pid() }, rec)) });
       return r.ok;
     },
     // egy ügy (vagy egy nap kihívása) ranglistája

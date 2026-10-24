@@ -724,7 +724,8 @@ window.MM_WORLD_ENGINE = function (A) {
   function onTap(e) {
     if (dlg) return;
     const r = cv.getBoundingClientRect(), x = cam.x + (e.clientX - r.left) / z, y = cam.y + (e.clientY - r.top) / z;
-    const hit = targets().filter(t => x >= t.r[0] - 3 && x <= t.r[0] + t.r[2] + 3 && y >= t.r[1] - 3 && y <= t.r[1] + t.r[3] + 3)
+    const tol = e.pointerType === "touch" ? 9 : 3; // ujjal nagyobb a tévedés, ezért bővebb a találati terület
+    const hit = targets().filter(t => x >= t.r[0] - tol && x <= t.r[0] + t.r[2] + tol && y >= t.r[1] - tol && y <= t.r[1] + t.r[3] + tol)
       .sort((a, b) => a.r[2] * a.r[3] - b.r[2] * b.r[3])[0];
     if (hit) { if (distTo(hit.r, P.x, P.y - 3) <= 17) interact(hit); else walkTo(0, 0, hit); }
     else walkTo(x, y);

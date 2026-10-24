@@ -1,6 +1,13 @@
 /* A feltöltött illusztrációk listája. Amit itt felsorolsz, az a kóddal rajzolt kép helyett jelenik meg.
    Elnevezés: <ügy-azonosító>/cover.webp, portrait-<gyanúsított>.webp, scene-<helyszín>.webp */
 window.MM_IMAGES = [
+  "tokaji-pince/cover-sm.webp",
+  "szegfu-villa/cover-sm.webp",
+  "hollos-cukraszda/cover-sm.webp",
+  "fekete-szegfu/cover-sm.webp",
+  "ejszakai-gyors/cover-sm.webp",
+  "corvin-szinhaz/cover-sm.webp",
+  "arany-griff/cover-sm.webp",
   "arany-griff/cover.webp",
   "arany-griff/portrait-ferenczy.webp",
   "arany-griff/portrait-hartmann.webp",
