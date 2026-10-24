@@ -130,7 +130,9 @@ Kiértékelés a Supabase-ben (Table Editor vagy SQL Editor):
 
 A játékosok a címoldal alján kikapcsolhatják a statisztikát. Ha a táblák nincsenek létrehozva, a játék egyszerűen nem küld semmit.
 
-## Fiók és játék több eszközön
+## Fiók és játék több eszközön (jelenleg kikapcsolva)
+
+> A bejelentkezés kódja kész (`js/sync.js`, `supabase_sync.sql`), de az `index.html` most nem tölti be, mert személyes adatot (e-mail címet) kezelne. Bekapcsolás: a `js/online.js` után vedd fel újra a `<script src="js/sync.js?v=1"></script>` sort.
 
 A játékos bejelentkezhet **Google-fiókkal** vagy **e-mail címmel és jelszóval**; a játékállása ekkor a fiókjában van, és bármelyik eszközön ott folytathatja, ahol abbahagyta. A haladás mentéskor néhány másodperc késéssel felkerül, induláskor és a lapra visszatéréskor letöltődik. Egy eszköz első bejelentkezésekor ügyenként a nagyobb előrehaladás marad meg, utána a frissebb mentés; a kitüntetések és a napi napló egyesül, a ranglistás azonosító közös lesz. Bejelentkezés nélkül a játék ugyanúgy működik, mint eddig.
 
