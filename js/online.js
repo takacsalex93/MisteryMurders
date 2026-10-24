@@ -20,7 +20,8 @@ window.MM_ONLINE = (function () {
   const root = () => cfg.url.replace(/\/$/, "") + "/rest/v1/";
   const SID = Math.random().toString(36).slice(2, 12);
   let queue = [], statsDead = false, flushT = 0;
-  const statsOn = () => enabled && !statsDead && get("mm:nostats", "") !== "1";
+  // csak akkor gyűjt, ha a játékos kifejezetten igent mondott (mm:stats = "1")
+  const statsOn = () => enabled && !statsDead && get("mm:stats", "") === "1";
   function flush(beacon) {
     clearTimeout(flushT); flushT = 0;
     if (!queue.length || !statsOn()) { queue = []; return; }
@@ -58,7 +59,8 @@ window.MM_ONLINE = (function () {
       return r.ok;
     },
     statsOn,
-    setStats: v => set("mm:nostats", v ? "" : "1"),
+    setStats: v => set("mm:stats", v ? "1" : "0"),
+    statsAsked: () => get("mm:stats", "") !== "",
     track(caseId, ev, detail, extra) {
       if (!statsOn() || !caseId) return;
       queue.push(Object.assign({ player_id: pid(), session_id: SID, case_id: String(caseId).slice(0, 40), ev, detail: detail == null ? null : String(detail).slice(0, 60) }, extra || {}));

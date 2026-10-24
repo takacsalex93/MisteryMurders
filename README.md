@@ -128,7 +128,13 @@ Kiértékelés a Supabase-ben (Table Editor vagy SQL Editor):
 - `stat_dropoff`: hol hagyják abba azok, akik nem fejezték be;
 - `stat_feedback` és a `feedback` tábla: értékelések és szöveges megjegyzések.
 
-A játékosok a címoldal alján kikapcsolhatják a statisztikát. Ha a táblák nincsenek létrehozva, a játék egyszerűen nem küld semmit.
+A statisztika csak akkor gyűjt, ha a játékos a címoldalon megjelenő kérdésre igent mond (`mm:stats`); a lap alján bármikor ki- és bekapcsolható. Ha a táblák nincsenek létrehozva, a játék egyszerűen nem küld semmit.
+
+## Adatvédelem
+
+- A betűtípusok a saját oldalról töltődnek (`fonts/`, `css/fonts.css`, Fontsource, SIL Open Font License), a látogatók IP-címe nem jut el a Google-höz.
+- Harmadik félhez csak a saját Supabase projekt felé megy adat: a ranglista (becenév és eredmény, ha a játékos felteszi), és a hozzájárulással gyűjtött névtelen statisztika.
+- Bejelentkezés és e-mail cím nincs (a fiókos szinkron kódja kikapcsolva marad).
 
 ## Fiók és játék több eszközön (jelenleg kikapcsolva)
 

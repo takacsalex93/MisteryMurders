@@ -124,7 +124,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen", "mm:nostats", "mm:auth", "mm:authlinked", "mm:authnew", "mm:synclast", "mm:syncerr"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen", "mm:nostats", "mm:stats", "mm:auth", "mm:authlinked", "mm:authnew", "mm:synclast", "mm:syncerr"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false, SKEY = null;
   function save() { if (S) S._t = Date.now(); if (window.MM_SYNC) window.MM_SYNC.schedule(); const wd = WDATA(); if (wd && wd.secrets && wd.secrets.length) S.secAll = wd.secrets.every(k => (S.secrets || []).includes(k.id)); try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
@@ -259,7 +259,7 @@
   // ügy megnyitásakor: írógépes főcím (munkamenetenként ügyenként egyszer, és csak ha az ügy még nincs lezárva)
   function titleCard() {
     if (!C || S.ended || REDUCE) return;
-    const k = "mm:tc:" + C.id; try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1"); } catch (e) {}
+    const cc = C, k = "mm:tc:" + C.id; try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1"); } catch (e) {}
     const ov = document.createElement("div"); ov.className = "titlecard"; ov.setAttribute("aria-hidden", "true");
     const has = HAS.has(`${C.id}/cover.webp`);
     ov.innerHTML = `${has ? `<div class="tc-bg" style="background-image:url('images/${C.id}/cover.webp')"></div>` : ""}<div class="tc-in"><span class="tc-meta"></span><h1 class="tc-title"></h1><span class="tc-no">${S.daily ? T("Napi kihívás") : C.weekly ? T("Heti rejtély") : T("{0}. ügy", C.number)}</span></div><span class="tc-skip">${T("Kattints a továbblépéshez")}</span>`;
@@ -267,9 +267,9 @@
     let done = false, timers = [];
     const end = () => { if (done) return; done = true; timers.forEach(clearTimeout); ov.classList.add("out"); setTimeout(() => ov.remove(), 600); document.removeEventListener("keydown", end, true); };
     ov.onclick = end; document.addEventListener("keydown", end, true);
-    const type = (el, txt, speed, cb) => { let i = 0; const step = () => { if (done) return; el.textContent = txt.slice(0, ++i); if (txt[i - 1] !== " ") SND("type"); if (i < txt.length) timers.push(setTimeout(step, speed)); else cb && cb(); }; step(); };
+    const type = (el, txt, speed, cb) => { let i = 0; const step = () => { if (done || !ov.isConnected) return; el.textContent = txt.slice(0, ++i); if (txt[i - 1] !== " ") SND("type"); if (i < txt.length) timers.push(setTimeout(step, speed)); else cb && cb(); }; step(); };
     const meta = ov.querySelector(".tc-meta"), title = ov.querySelector(".tc-title");
-    timers.push(setTimeout(() => type(meta, C.meta, 28, () => timers.push(setTimeout(() => { title.textContent = C.title; title.classList.add("on"); ov.querySelector(".tc-no").classList.add("on"); SND("bell"); timers.push(setTimeout(end, 1900)); }, 250))), 350));
+    timers.push(setTimeout(() => type(meta, cc.meta, 28, () => timers.push(setTimeout(() => { title.textContent = cc.title; title.classList.add("on"); ov.querySelector(".tc-no").classList.add("on"); SND("bell"); timers.push(setTimeout(end, 1900)); }, 250))), 350));
   }
   function trackStart() {
     if (!C || S.ended) return;
@@ -612,6 +612,7 @@
         </div>
       </header>
       ${ON ? `<div class="ticker" data-ticker hidden><span class="tk-k">${T("Friss jelentések")}</span><div class="tk-w"><div class="tk-in" data-tkin></div></div></div>` : ""}
+      ${ON && !ON.statsAsked() ? `<div class="consent" data-consent><div><b>📊 ${T("Segítesz jobbá tenni a játékot?")}</b><p>${T("Névtelenül rögzítenénk, hol akadnak el a játékosok: melyik ügy, melyik rejtvény, hány súgó. Nevet, e-mail címet vagy más személyes adatot nem gyűjtünk, és bármikor kikapcsolhatod a lap alján.")}</p></div><div class="row"><button class="btn" data-consent-yes>${T("Igen, segítek")}</button><button class="btn ghost" data-consent-no>${T("Nem, köszönöm")}</button></div></div>` : ""}
       <section class="today">${dailyCard()}${curWeek ? weeklyCard(curWeek, true) : ""}</section>
       ${levelSecs}
       ${weeklyPast()}
@@ -634,6 +635,9 @@
     const pb = app.querySelector("[data-profile]"); if (pb) pb.onclick = openProfile;
     const bk = app.querySelector("[data-backup]"); if (bk) bk.onclick = openBackup;
     app.querySelectorAll("[data-account]").forEach(x => x.onclick = () => openAccount());
+    const cy = app.querySelector("[data-consent-yes]"), cn = app.querySelector("[data-consent-no]");
+    if (cy) cy.onclick = () => { ON.setStats(true); SND("success"); renderHome(); };
+    if (cn) cn.onclick = () => { ON.setStats(false); renderHome(); };
     const sb = app.querySelector("[data-stats]"); if (sb) { sb.title = T("Névtelenül rögzítjük, hol akadnak el a játékosok, hogy javíthassuk az ügyeket. Nevet, e-mailt vagy más személyes adatot nem gyűjtünk."); sb.onclick = () => { ON.setStats(!ON.statsOn()); renderHome(); }; }
     bindTicker(); bindCountdown();
   }
