@@ -124,7 +124,7 @@
     return fresh();
   }
   // a régi (mm:) mentések a korábbi játékszabályokhoz tartoztak, töröljük őket
-  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen", "mm:nostats", "mm:stats", "mm:auth", "mm:authlinked", "mm:authnew", "mm:synclast", "mm:syncerr"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+  try { Object.keys(localStorage).filter(k => (k.startsWith("mm:") && !["mm:sound", "mm:lang", "mm:sym", "mm:daily", "mm:ach", "mm:nick", "mm:pid", "mm:noboard", "mm:avatar", "mm:stamped", "mm:s2seen", "mm:nostats", "mm:stats", "mm:char", "mm:charpng", "mm:auth", "mm:authlinked", "mm:authnew", "mm:synclast", "mm:syncerr"].includes(k)) || k.startsWith("mm2:")).forEach(k => localStorage.removeItem(k)); } catch (e) {}
   let C = null, S = null, confirmReset = false, SKEY = null;
   function save() { if (S) S._t = Date.now(); if (window.MM_SYNC) window.MM_SYNC.schedule(); const wd = WDATA(); if (wd && wd.secrets && wd.secrets.length) S.secAll = wd.secrets.every(k => (S.secrets || []).includes(k.id)); try { localStorage.setItem(SKEY || KEY(C.id), JSON.stringify(S)); } catch (e) {} }
   const loadKey = k => { try { const v = JSON.parse(localStorage.getItem(k)); if (v && v.clues) return Object.assign(fresh(), v); } catch (e) {} return fresh(); };
@@ -369,12 +369,15 @@
     const h = new Date().getHours(), p = profile(), who = p.nick || T("nyomozó");
     return { night: h >= 19 || h < 6, greet: h < 6 ? T("Késő éjjel van, {0}. A legjobb ügyek ilyenkor nyílnak meg.", who) : h < 10 ? T("Jó reggelt, {0}!", who) : h < 19 ? T("Jó napot, {0}!", who) : T("Jó estét, {0}. Hosszú éjszaka lesz.", who) };
   }
+  // a saját nyomozó feje pixelképként (ha megalkotta a karakterkészítőben)
+  const pixAv = cls => window.MM_CHAR && window.MM_CHAR.custom() ? `<span class="${cls} pix" style="background-image:url('${window.MM_CHAR.sheet()}')" aria-hidden="true"></span>` : "";
   function openProfile() {
     const p = profile(), k = career();
     const ov = document.createElement("div"); ov.className = "intro on"; ov.setAttribute("role", "dialog");
     ov.innerHTML = `<div class="intro-card profile"><span class="eyebrow">${T("Nyomozói igazolvány")}</span>
       <div class="idbig"><span class="av" data-avshow>${esc(p.avatar)}</span><div><input class="nick" data-pnick maxlength="20" placeholder="${T("Becenév")}" value="${esc(p.nick)}" aria-label="${T("Becenév")}"><p class="meta">${RANKICO[k.i]} ${esc(k.rank)} · ${T("{0} pont", k.pts)}</p></div></div>
-      <span class="eyebrow">${T("Válassz jelképet")}</span><div class="avgrid">${AVATARS.map(a => `<button class="${a === p.avatar ? "on" : ""}" data-av="${a}">${a}</button>`).join("")}</div>
+      ${window.MM_CHAR && window.MM_CHAR.available ? `<div class="cgentry">${pixAv("cgmini") || `<span class="cgmini empty">?</span>`}<div><b>${T("A nyomozód kinézete")}</b><p class="meta">${T(window.MM_CHAR.custom() ? "Így jársz a helyszíneken és az irodádban." : "Alkosd meg a saját nyomozódat: bőr, frizura, ruha, kalap.")}</p></div><button class="btn ghost" data-pchar>${T(window.MM_CHAR.custom() ? "Szerkesztés" : "Megalkotom")}</button></div>` : ""}
+      <span class="eyebrow">${T("Válassz jelképet (a ranglistán)")}</span><div class="avgrid">${AVATARS.map(a => `<button class="${a === p.avatar ? "on" : ""}" data-av="${a}">${a}</button>`).join("")}</div>
       <span class="eyebrow">${T("Rangok")}</span><ol class="ranks">${RANKS.map(([pt, n], i) => `<li class="${i < k.i ? "done" : i === k.i ? "cur" : ""}"><span>${RANKICO[i]}</span><b>${T(n)}</b><span class="meta">${T("{0} ponttól", pt)}</span></li>`).join("")}</ol>
       <p class="meta">${T("A beceneved és a jelképed a ranglistán is látszik. Pontot a megoldott ügyek és a napi kihívások adnak.")}</p>
       ${window.MM_SYNC && window.MM_SYNC.enabled ? `<button class="btn ghost" data-psync>☁️ ${window.MM_SYNC.on() ? T("Bejelentkezve: {0}", esc(window.MM_SYNC.user().email || window.MM_SYNC.user().name || "")) : T("Bejelentkezés: folytasd bármelyik eszközön")}</button>` : ""}
@@ -384,6 +387,7 @@
     ov.querySelectorAll("[data-av]").forEach(b => b.onclick = () => { av = b.dataset.av; ov.querySelectorAll("[data-av]").forEach(x => x.classList.toggle("on", x === b)); ov.querySelector("[data-avshow]").textContent = av; SND("tick"); });
     const close = () => ov.remove();
     ov.querySelector("[data-close]").onclick = close; ov.onclick = e => { if (e.target === ov) close(); };
+    const pc = ov.querySelector("[data-pchar]"); if (pc) pc.onclick = () => { ov.remove(); window.MM_CHAR.open({ onSave: () => { if (!C) renderHome(); openProfile(); } }); };
     const ps = ov.querySelector("[data-psync]"); if (ps) ps.onclick = () => { ov.remove(); openAccount(); };
     ov.querySelector("[data-psave]").onclick = () => {
       const n = ov.querySelector("[data-pnick]").value.trim();
@@ -596,7 +600,7 @@
         <div class="hero-fx cover" data-fx="${nextC.fx || "rain"}"></div>
         <div class="hero-glow"></div>
         <div class="hero-in">
-          <div class="topnav"><span class="hero-eyebrow">${esc(tod.greet)}</span><button class="idcard" data-profile title="${T("Nyomozói igazolvány")}"><span class="av">${esc(prof.avatar)}</span><span class="idtx"><b>${prof.nick ? esc(prof.nick) : T("Névtelen nyomozó")}</b><small>${RANKICO[k.i]} ${esc(k.rank)}${window.MM_SYNC && window.MM_SYNC.on() ? " · ☁️" : ""}</small></span></button>${langSwitch()}</div>
+          <div class="topnav"><span class="hero-eyebrow">${esc(tod.greet)}</span><button class="idcard" data-profile title="${T("Nyomozói igazolvány")}">${pixAv("av") || `<span class="av">${esc(prof.avatar)}</span>`}<span class="idtx"><b>${prof.nick ? esc(prof.nick) : T("Névtelen nyomozó")}</b><small>${RANKICO[k.i]} ${esc(k.rank)}${window.MM_SYNC && window.MM_SYNC.on() ? " · ☁️" : ""}</small></span></button>${langSwitch()}</div>
           <h1>${T("Rejtélyes gyilkosságok")}</h1>
           <p class="hero-lead">${T("Halott a házban, mindenkinek van titka, és csak egyikük gyilkos. Járd be a helyszíneket, fejtsd meg a rejtvényeket, és nevezd meg a tettest.")}</p>
           <div class="hero-cta">
@@ -1077,6 +1081,7 @@
       <div class="intro-text typed" aria-live="polite"></div>
       <div class="intro-choose" hidden>
         <p class="meta">${T("Hogyan nyomozol?")}</p>
+        ${window.MM_CHAR && window.MM_CHAR.available && !window.MM_CHAR.custom() && worldOn() ? `<p class="meta cgnudge">🎨 ${T("A helyszínen a saját nyomozóddal jársz.")} <button class="link" data-chargen>${T("Alkosd meg most")}</button></p>` : ""}
         <div class="row"><button class="btn" data-mode="free">${T("Szabad nyomozás")}</button><button class="btn ghost" data-mode="timed">${T("Hajnalig, időre")}</button></div>
         <p class="meta">${T("Időre játszva minden lépés perceket visz el, és a csendőrök {0} múlva megérkeznek.", fmtLeft(budget(C)))}</p>
         <fieldset class="modes"><legend class="meta">${T("Nehézség")}</legend>
@@ -1089,6 +1094,7 @@
     document.body.appendChild(ov);
     const box = ov.querySelector(".intro-text"), choose = ov.querySelector(".intro-choose");
     let i = 0, t = null;
+    const cgb = ov.querySelector("[data-chargen]"); if (cgb) cgb.onclick = () => window.MM_CHAR.open({ onSave: () => { const p = cgb.closest("p"); if (p) p.textContent = "✓ " + T("A nyomozód elkészült."); } });
     const finish = () => { clearInterval(t); box.textContent = full; choose.hidden = false; ov.querySelector("[data-skip]").hidden = true; const b = ov.querySelector("[data-mode]"); if (b) b.focus(); };
     if (reduce) finish(); else t = setInterval(() => { i += 2; box.textContent = full.slice(0, i); if (i % 6 === 0) SND("tick"); if (i >= full.length) finish(); }, 28);
     ov.querySelector("[data-skip]").onclick = finish;

@@ -504,7 +504,8 @@ window.MM_WORLD_ENGINE = function (A) {
     ctx.imageSmoothingEnabled = false;
   }
   function drawChar(g, id, x, y, dir, moving, t, opt) {
-    const im = img(W().chars[id]); if (!im.complete || !im.naturalWidth) return;
+    // a játékos saját nyomozója (js/chargen.js), ha megalkotta
+    const im = img(id === "detektiv" && window.MM_PLAYER_SHEET ? window.MM_PLAYER_SHEET : W().chars[id]); if (!im.complete || !im.naturalWidth) return;
     const di = DIRS[dir] ?? 3, fr = di * 6 + (opt && opt.still ? 0 : Math.floor(t * (moving ? 10 : 5) + ((opt && opt.ph) || 0)) % 6);
     const sit = (opt && opt.sit) || 0, dy = (opt && opt.dy) || 0;
     if (opt && opt.lie) { g.save(); g.translate(Math.round(x - 16), Math.round(y + 4)); g.rotate(-Math.PI / 2); g.drawImage(im, 18 * 16, 0, 16, 32, 0, 0, 16, 32); g.restore(); return; }
@@ -809,7 +810,7 @@ window.MM_OFFICE = {
     function draw() {
       ctx.setTransform(k, 0, 0, k, 0, 0); ctx.imageSmoothingEnabled = false; ctx.fillStyle = "#17131d"; ctx.fillRect(0, 0, W, H);
       const bg = img(m.bg); if (bg.complete) ctx.drawImage(bg, 0, 0);
-      const at = img(D.atlas), ch = img(D.chars.detektiv);
+      const at = img(D.atlas), ch = img(window.MM_PLAYER_SHEET || D.chars.detektiv);
       const list = m.fg.filter(f => !f.trophy || info.won.includes(f.trophy)).map(f => ({ b: f.base, f }));
       list.push({ b: m.npcs[0].y * 16, n: m.npcs[0] }); list.sort((a, b) => a.b - b.b);
       list.forEach(o => {

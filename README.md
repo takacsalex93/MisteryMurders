@@ -147,3 +147,9 @@ Beállítás a Supabase-ben:
 2. Authentication → URL Configuration: **Site URL** = `https://takacsalex93.github.io/MisteryMurders/`, és ugyanezt add hozzá a **Redirect URLs** listához is.
 3. Authentication → Sign In / Providers → **Email**: maradjon bekapcsolva; a **Confirm email** kikapcsolásával a regisztráció azonnal belépteti a játékost (az ingyenes csomag óránként csak néhány levelet küld).
 4. Google: Google Cloud Console → új projekt → OAuth consent screen (External) → Credentials → OAuth client ID (Web application), Authorized redirect URI: `https://<projekt>.supabase.co/auth/v1/callback`. A kapott Client ID-t és Secretet a Supabase Authentication → Providers → **Google** alatt kell megadni.
+
+## Karakterkészítő
+
+A nyomozói igazolványban (és az ügyek bevezetőjében) a játékos megalkothatja a saját nyomozóját: bőrszín, szemszín, 12 frizura 7 hajszínnel, 10 korhű ruha színváltozatokkal, detektívkalap, bajusz, szakáll, szemüveg vagy monokli, élő, forgatható előnézettel és „Véletlen” gombbal. Az elkészült alak a pixeles helyszíneken és az irodában jelenik meg, a feje pedig a címoldali igazolványon.
+
+A rétegek egy válogatott részhalmaza a LimeZu karaktergenerátorból: `tools/chargen_parts.py` rétegenként csak a játékban használt két sort (állás, járás) vágja ki, és saját elrendezésben egyetlen képbe (`images/world/chargen.png`) csomagolja, a leírót a `js/chargen-data.js`-be írja. A böngésző ebből rakja össze a lapot (`js/chargen.js`), és helyben menti (`mm:char`, `mm:charpng`).
